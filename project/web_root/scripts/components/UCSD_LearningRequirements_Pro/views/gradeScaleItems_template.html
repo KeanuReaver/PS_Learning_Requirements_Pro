@@ -1,0 +1,85 @@
+<div id="lrp-overlay"></div>
+<div    id="lrp-drawer" 
+        class="drawer">
+    <div id="lrp-drawer-header">
+        <div class="button-row lrp-drawer-button-panel">
+            <h2>{{ selected.gradescaleitemid }} - {{ selected.gradescalename }}</h2>
+            <button type="button" 
+                    data-ng-click="closeThisDrawer()">
+                X
+            </button>
+        </div>
+        <p data-ng-bind="selected.gradescaledesc"></p>
+    </div>
+    <div id="lrp-drawer-content">
+        <form name="gradeScaleItemDetails">
+            <div class="fluid-multi-form">
+                <div    class="fluid-form" 
+                        data-ng-repeat="item in selectedList | orderBy: 'value'">
+                    <div>
+                        <div>
+                            <label>Name:</label>
+                            <div    class="bubble-text" 
+                                    data-ng-style="previewColor(item.colorcode)" 
+                                    data-ng-bind="item.gsiname">
+                            </div>
+                        </div>
+                        <div>
+                            <label>Short Description:</label>
+                            <p data-ng-bind="item.gsidescription"></p>
+                        </div>
+                        <div>
+                            <div class="lrp-custom-dropdown">
+                                <div    class="lrp-dropdown-header" 
+                                        data-ng-click="toggleDropdown(item)">
+                                    <div data-ng-show="!item.colorlistid">Select Color</div>
+                                    <div    data-ng-show="item.colorcode" 
+                                            class="bubble-text" 
+                                            data-ng-style="previewColor(item.colorcode)">
+                                    </div>
+                                </div>
+                                <div    class="lrp-dropdown-list" 
+                                        data-ng-show="item.isDropdownOpen">
+                                    <div    lass="lrp-dropdown-item" 
+                                            data-ng-click="selectColor(item, color)">
+                                        <div    class="bubble-text" 
+                                                data-ng-style="previewColor(color.colorcode)">
+                                            {{ item.gsiname }}
+                                        </div>
+                                    </div>
+                                    <div    class="lrp-dropdown-item" 
+                                            data-ng-repeat="color in scoreColorList" 
+                                            data-ng-click="selectColor(item, color)">
+                                        <div    class="bubble-text" 
+                                                data-ng-style="previewColor(color.colorcode)">
+                                            {{ item.gsiname }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label>Detailed Description</label>
+                            <textarea rows="5" 
+                                    data-ng-model="item.ulrpdesc" 
+                                    style="width: 300%"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-row">
+                <button type="button" 
+                        data-ng-click="saveChanges()" 
+                        data-ng-disabled="gradeScaleItemDetails.$invalid">
+                    Save
+                </button>
+                <button type="button" 
+                        data-ng-click="closeThisDrawer()">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>    
+</div>

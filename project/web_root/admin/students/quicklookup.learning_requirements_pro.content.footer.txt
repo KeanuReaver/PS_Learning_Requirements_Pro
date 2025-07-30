@@ -1,0 +1,15 @@
+<script type="text/template" id="version-template-Learning-Requirements">
+
+	<li id="customql"><a href="/admin/students/learning_requirements_pro.html?frn=~(studentfrn)">~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</a></li>
+
+</script>
+
+<script>
+    //Get the contents of the script above, then create a new jQuery object from the inner HTML.
+    const verTemplateCustQuickLookup = $j($j('#version-template-Learning-Requirements').html());
+
+    //Only jQuery objects have the insertAfter, which is why we surrounded the code above in a second $j().
+    $j(document).ready(function() {
+        $j(".tabs").append(verTemplateCustQuickLookup);
+    });
+</script>

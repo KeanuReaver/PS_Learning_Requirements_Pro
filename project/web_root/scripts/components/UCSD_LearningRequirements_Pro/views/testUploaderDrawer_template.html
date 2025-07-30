@@ -1,0 +1,101 @@
+<div id="lrp-overlay"></div>
+<div id="lrp-drawer" class="drawer">
+    <div id="lrp-drawer-header">
+        <div class="button-row lrp-drawer-button-panel">
+            <h2>{{ curgroupid }} : {{ curgroupname }} : Upload Controller</h2>
+            <button type="button" data-ng-click="closeDrawer()">x</button>
+        </div>
+        <p>If you prefer to enter bands in a spreadsheet and upload it rather than editing them directly in PowerSchool, follow the instructions below.</p>
+    </div>
+    <div id="lrp-drawer-content">
+        <div class="lrp-accordion" id="uploadDirections">
+            <h3 data-ng-click="toggleSection(1)">
+                <span   class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" 
+                        data-ng-show="openSection === 1"
+                        style="filter: invert(1)"></span>
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e" data-ng-show="openSection !== 1"></span>
+                Step 1: Download template
+            </h3>
+            <div data-ng-show="openSection === 1">
+                <p>Click the button below to download the TSV template:</p>
+                <button type="button" data-ng-click="downloadTSV()">Download Template</button>
+            </div>
+            <h3 data-ng-click="toggleSection(2)">
+                <span   class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" 
+                        data-ng-show="openSection === 2"
+                        style="filter: invert(1)"></span>
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e" data-ng-show="openSection !== 2"></span>
+                Step 2: Edit the tsv file in spreadsheet editor
+            </h3>
+            <div data-ng-show="openSection === 2">
+                <p>Open the tsv file in a spreadsheet editor such as google sheets or excel.</p>
+                <p>The only fields that you should be editing on the template are bottom_band, top_band and below_benchmark. You can leave as blank if there are no valid bands to enter.</p>
+                <table class="grid">
+                    <thead>
+                        <tr>
+                            <th>Column Header</th>
+                            <th>Required</th>
+                            <th>Editable</th>
+                            <th>Valid Values</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="record in fieldInfo">
+                            <td class="bold" data-ng-bind="record.name"></td>
+                            <td>
+                                <span style="color: red" data-ng-show="!record.required">X</span>
+                                <span style="color: green" data-ng-show="record.required">✔</span>
+                            </td>
+                            <td>
+                                <span style="color: red" data-ng-show="!record.editable">X</span>
+                                <span style="color: green" data-ng-show="record.editable">✔</span>
+                            </td>
+                            <td data-ng-bind="record.valid_values"></td>
+                            <td data-ng-bind="record.notes"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+            <h3 data-ng-click="toggleSection(3)">
+                <span   class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" 
+                        data-ng-show="openSection === 3"
+                        style="filter: invert(1)"></span>
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e" data-ng-show="openSection !== 3"></span>
+                Step 3: Upload edited TSV
+            </h3>
+            <div data-ng-show="openSection === 3">
+                <p>Once your edits are complete, save the file in <strong>.tsv (Tab-Separated Values)</strong> format.</p>
+                <p>Use the upload tool below to submit the file:</p>
+                <input type="file" id="fileInput" accept=".tsv" class="psFilePicker showMimeType" aria-label="Select a TSV file to upload" />
+                <p><small>Only .tsv files are supported. Make sure your file adheres to the template format.</small></p>
+                <div class="button-row">
+                    <button type="button" ng-click="processTSV()">Process File</button>
+                </div>
+            </div>
+            <h3 data-ng-click="toggleSection(4)">
+                <span   class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" 
+                        data-ng-show="openSection === 4"
+                        style="filter: invert(1)"></span>
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e" data-ng-show="openSection !== 4"></span>
+                Step 4: Apply changes
+            </h3>
+            <div data-ng-show="openSection === 4">
+                <p>If the parsed version of the uploaded file looks correct as displayed below, you can now apply the changes:</p>
+                <div class="button-row">
+                    <button type="button" data-ng-click="applyChanges()">Apply Changes</button>
+                </div>
+            </div>
+        </div>
+        <div class="box-round">
+            <h3>Parsed File Preview</h3>
+            <code>
+                <pre>{{ parsedData | json }}</pre>  
+            </code>
+        </div>
+    </div>
+    <div class="button-row">
+        <button type="button" data-ng-click="closeDrawer()">Close</button>
+    </div>   			
+</div>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UCSD Learning Requirements Pro - Test Performance - ~(gpv.testname)</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <link href="/images/css/learning_requirements_pro/learning_requirements_styles.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start here-->
+        <a href="/admin/Learning_Requirements_Pro/home.html" target="_top">Home</a> &gt; <a href="/admin/Learning_Requirements_Pro/testViewSetup.html" target="_top">Test Rules</a> &gt; UCSD Learning Requirements Pro - Test Performance - ~(gpv.testname)
+    <!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>UCSD Learning Requirements Pro - Test Performance - ~(gpv.testname)</h1>
+    <!-- start of content area -->
+    ~[if#checkDistrict.district.office]
+    <div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+            data-module-name="lrpmodule"
+            data-ng-init="curtestdcid='~(gpv.testdcid)';
+                    curtestname='~(gpv.testname)'"
+            data-ng-controller="PerformanceGroups"
+            data-ng-cloak>
+        <form name="testGroupForm">
+            <h3     id="group-header"
+                    class="collapsed"
+                    pss-expand-collapse-item="test-groups"
+                    style="margin-right: 20px">{{ curtestname }} - All Test Peformance Groups</h3>
+            <div class="box-round">
+                <table>
+                    <tbody>
+                        <tr data-ng-repeat="record in performanceGroups">
+                            <td>
+                                <input  type="text" 
+                                        data-ng-model="record.groupname" 
+                                        name="groupName{{$index}}" 
+                                        size="50" 
+                                        placeholder="Group Name"
+                                        data-ng-change="record.isdirty = '1'"
+                                        required>
+                                <div    class="error-message" 
+                                        data-ng-show="testGroupForm['groupName' + $index].$touched && testGroupForm['groupName' + $index].$invalid">
+                                    Must name group!
+                                </div>
+                            </td>
+                            <td>
+                                <label>
+                                    <input  type="checkbox" 
+                                            data-ng-model="record.isdefault"
+                                            data-ng-change="updateDefault(record)"
+                                            data-ng-true-value="'1'" 
+                                            data-ng-false-value="'0'">
+                                    Default?
+                                </label>    
+                            </td>
+                            <td>
+                                <label title="If this is selected, trends will stop and start with year changes. If this is not selected, trends will not be broken.">
+                                    <input type="checkbox"
+                                            data-ng-model="record.split_at_year"
+                                            data-ng-change="record.isdirty = '1'"
+                                            data-ng-true-value="'1'"
+                                            data-ng-false-value="'0'">
+                                    Split At Year
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <button type="button" data-ng-click="addNewPerformanceGroup()">Add</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="button-row">
+                    <button type="button" 
+                        data-ng-click="submitChanges()"
+                        data-ng-disabled="testGroupForm.$invalid">Submit</button>
+                </div>
+            </div>
+            <div class="box-round">
+                <table class="grid">
+                    <thead>
+                        <tr>
+                            <th colspan="3">Current Default Group</th>
+                        </tr>
+                        <tr>
+                            <th>Group ID</th>
+                            <th>Group Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="record in performanceGroups | filter: {isdefault: '1'}">
+                            <td data-ng-bind="record.id" class="center-cell-content"></td>
+                            <td data-ng-bind="record.groupname" class="center-cell-content"></td>
+                            <td class="center-cell-content">
+                                <button type="button" 
+                                        data-ng-click="openContent('testBands', record)"
+                                        data-ng-disabled="!record.id"
+                                        data-ng-class="{'lrp-selected-active-button': showTestBandView && curgroupid == record.id}">
+                                    Bands
+                                </button>
+                                <button type="button" 
+                                        data-ng-click="openContent('testWindows', record)"
+                                        data-ng-disabled="!record.id"
+                                        data-ng-class="{'lrp-selected-active-button': showTestWindowView && curgroupid == record.id}">
+                                    Windows
+                                </button>
+                                <button type="button" 
+                                        data-ng-click="openContent('testPerformance', record)" 
+                                        data-ng-disabled="checkBandWindow(record.testbandcount, record.testwindowcount)"
+                                        data-ng-class="{'lrp-selected-active-button': showTestPerformanceView && curgroupid == record.id}">
+                                    Set Bands
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </form>
+        <!-- Test Band Directive -->
+        <div    lrp-test-bands
+                data-test-bands="testBands"
+                data-test-benchmarks="testBenchmarks"
+                data-show-test-band-view="showTestBandView"
+                data-curtestdcid="curtestdcid"
+                data-curgroupid="curgroupid"
+                data-curgroupname="curgroupname"
+                data-score-color-list="scoreColorList">
+        </div>
+        <!-- Test Window Directive -->
+        <div    lrp-test-windows
+                data-test-windows="testWindows"
+                data-curgroupid="curgroupid"
+                data-curgroupname="curgroupname"
+                data-curtestdcid="curtestdcid"
+                data-show-test-window-view="showTestWindowView">
+        </div>
+        <div    lrp-test-performance
+                data-performance-bands="performanceBands"
+                data-possible-grades="possibleGrades"
+                data-possible-windows="possibleWindows"
+                data-possible-scores="possibleScores"
+                data-curgroupid="curgroupid"
+                data-curgroupname="curgroupname"
+                data-score-color-list="scoreColorList"
+                data-show-test-performance-view="showTestPerformanceView">
+        </div>
+    </div>
+    
+    [else#checkDistrict]
+    <div class="feedback-alert">Must be in school and not in district.</div>
+    [/if#checkDistrict]
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

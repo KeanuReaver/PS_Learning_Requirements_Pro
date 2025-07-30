@@ -1,0 +1,55 @@
+[~[tlist_sql;
+SELECT UNIQUE
+    termbins.date2                      AS date2,
+    courses.course_name                 AS course_name,
+    standard.identifier                 AS standardIdentifier,
+    standard.name                       AS standardName,
+    termbins.storecode                  AS storecode,
+    comment_table.commentvalue          AS comment_value
+FROM
+    standard standard
+    JOIN standardcourseassoc standardcourseassoc ON standardcourseassoc.standardid = standard.standardid
+    JOIN courses courses ON standardcourseassoc.coursesdcid = courses.dcid
+    JOIN sections sections ON sections.course_number = courses.course_number
+    JOIN terms terms ON terms.id = sections.termid 
+        AND terms.yearid = standard.yearid 
+        AND terms.schoolid = sections.schoolid
+        AND sysdate >= terms.firstday
+    JOIN cc cc ON cc.sectionid = sections.id	
+    JOIN students students ON cc.studentid = students.id
+    JOIN termbins termbins ON termbins.yearid = terms.yearid
+        AND termbins.schoolid = students.schoolid
+        AND termbins.termid = terms.id
+    LEFT JOIN (
+        SELECT
+            standardgradesection.studentsdcid AS studentsdcid,
+            standardgradesection.standardid AS standardid,
+            standardgradesection.sectionsdcid AS sectionsdcid,
+            standardgradesection.storecode AS storecode,
+            standardgradesectioncomment.commentvalue AS commentvalue
+        FROM
+            standardgradesection standardgradesection
+            INNER JOIN standardgradesectioncomment standardgradesectioncomment
+                ON standardgradesectioncomment.standardgradesectionid = standardgradesection.standardgradesectionid
+    ) comment_table ON comment_table.studentsdcid = students.dcid
+        AND comment_table.standardid = standardcourseassoc.standardid
+        AND comment_Table.storecode = termbins.storecode
+        AND comment_table.sectionsdcid = sections.dcid
+WHERE
+    terms.yearid = ~(gpv.curyearid)
+    AND standard.isassignmentallowed = 0
+    AND students.id = ~(gpv.curstudid)
+    AND standard.isactive = 1
+    AND standardcourseassoc.isactive = 1
+    AND standard.iscommentincluded = 1
+    AND comment_table.commentvalue IS NOT NULL
+ORDER BY
+    2 desc
+]{
+    "date2": "~(date2;d)",
+    "course_name": "~(course_name;Json)",
+    "standardIdentifier": "~(standardIdentifier)",
+    "standardName": "~(standardName)",
+    "storecode": "~(storecode)",
+    "comment_value": "~(comment_value;Json)"
+},[/tlist_sql]{}]

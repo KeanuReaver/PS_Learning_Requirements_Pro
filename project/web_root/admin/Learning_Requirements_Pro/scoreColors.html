@@ -1,0 +1,69 @@
+<!-- UCSD Learning Requirements Pro -->
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Learning Requirements Pro - Score Color List</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <link href="/images/css/learning_requirements_pro/learning_requirements_styles.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start --><a href="/admin/Learning_Requirements_Pro/home.html" target="_top">Home</a> &gt; Learning Requirements Pro - Score Color List<!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>Learning Requirements Pro - Score Color List</h1>
+    <!-- start of content area -->
+    <div    class="box-round"
+            data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+            data-module-name="lrpmodule"
+            data-ng-controller="ScoreColorListController"
+            data-ng-cloak>
+        <div style="color: red">
+            <ul>
+                <li>RGB formatted colors will work, but will break the palette tool.</li>
+            </ul>
+        </div>
+        <table class="deletable-rows">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Sample Display</th>
+                    <th>Color Code</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="color in scoreColors" data-ng-class="{'selected-delete': color.deleteRecord == 1}">
+                    <td class="center-content" data-ng-bind="color.id"></td>
+                    <td><div class="bubble-text" data-ng-style="previewColor(color.colorcode)">4</div></td>
+                    <td>
+                        <input type="text" data-ng-model="color.colorcode" placeholder="#000000">
+                        <input type="color" data-ng-model="color.colorcode" class="color-picker"> Click for palette
+                    </td>
+                    <td>
+                        <button type="button" data-ng-click="deleteColor(color)">
+                            <span data-ng-show="color.deleteRecord != 1">X</span>
+                            <span data-ng-show="color.deleteRecord == 1">Undo</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <button type="button" data-ng-click="addNewColor()">Add Color</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="button-row">
+            <button type="button" data-ng-click="submitChanges()">Submit</button>
+        </div>
+    </div>
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

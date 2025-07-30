@@ -1,0 +1,120 @@
+<div class="lrp-grade-scale-container">
+    <!-- Tabs (Buttons) for each grade scale -->
+    <div class="lrp-tabs" role="tablist" aria-label="Grade Scale Options">
+        <button role="tab"
+                type="button"
+                data-ng-repeat="gradeScale in gradeScales"
+                aria-selected="{{ currentGradeScale === gradeScale.gradeScales }}"
+                data-ng-click="toggleGradeScale(gradeScale)"
+                class="lrp-expand-button"
+                data-ng-class="{'expanded': currentGradeScale === gradeScale.gradeScales}">
+            {{ gradeScale.school }} {{ tranTags.gradescale || 'Gradescale' }}
+        </button>
+    </div>
+
+
+    <!-- Content area (only show content for the selected tab) -->
+    <div    class="lrp-grade-scale-content"
+            style="border-radius: 0 10px 10px; margin-top: 0;"
+            data-ng-class="{'expanded': currentGradeScale.length > 0}"
+            data-ng-animate="'standard-animate'">
+        <div class="lrp-table lrp-grade-scale-table" role="table">
+            <!-- Table Headers -->
+            <!-- Standard View -->
+            <div class="lrp-table-header lrp-full-view-row" role="rowgroup">
+                <div class="lrp-table-header-cell lrp-flex-tenth" role="columnheader">{{ tranTags.score || 'Score' }}</div>
+                <div class="lrp-table-header-cell lrp-flex-third" role="columnheader">{{ tranTags.level_of_knowledge || 'Level of Knowledge' }}</div>
+                <div class="lrp-table-header-cell" role="columnheader">{{ tranTags.description || 'Description' }}</div>
+            </div>
+            <!-- Mobile View -->
+            <div class="lrp-table-header lrp-mobile-view-row">
+                <div class="lrp-table-header-cell lrp-flex-tenth" role="columnheader">{{ tranTags.score || 'Score' }}</div>
+                <div class="lrp-table-header-cell" role="columnheader">{{ tranTags.level_of_knowledge || 'Level of Knowledge' }}</div>
+            </div>
+            
+            <!-- Table Body -->
+            <!-- Standard View -->
+            <div    class="lrp-table-row lrp-full-view-row"
+                    data-ng-repeat="grade in currentGradeScale"
+                    role="row"
+                    aria-label="Score: {{ grade.gsname }}, Level Of Knowledge: {{ grade.lok }}, Description: {{ grade.description }}."
+                    tabindex="0">
+                <div    class="lrp-table-cell lrp-flex-tenth" 
+                        style="font-size: 1.5em"
+                        role="cell">
+                    <div    class="bubble-text lrp-table-cell-icons"
+                            data-ng-style="previewColor(grade.colorcode, '1.5em')"
+                            data-ng-bind="grade.gsname">
+                    </div>
+                </div>
+                <div class="lrp-table-cell lrp-table-cell-left lrp-flex-third" role="cell">{{ grade.lok }}</div>
+                <div class="lrp-table-cell lrp-table-cell-left" role="cell">{{ grade.description }}</div>
+            </div>
+            <!-- Mobile View -->
+            <div    class="lrp-table-row lrp-mobile-view-row"
+                    data-ng-repeat-start="grade in currentGradeScale"
+                    role="row"
+                    aria-label="Score: {{ grade.gsname }}, Level Of Knowledge: {{ grade.lok }}, Description: {{ grade.description }}."
+                    tabindex="0">
+                <div    class="lrp-table-cell lrp-flex-tenth" 
+                        style="font-size: 1.5em"
+                        role="cell">
+                    <div    class="bubble-text lrp-table-cell-icons"
+                            data-ng-style="previewColor(grade.colorcode, '1.5em')"
+                            data-ng-bind="grade.gsname">
+                    </div>
+                </div>
+                <div class="lrp-table-cell" role="cell">{{ grade.lok }}</div>
+            </div>
+            <div    class="lrp-table-row lrp-mobile-view-row"
+                    role="row"
+                    data-ng-repeat-end>
+                <div class="lrp-table-spacer-content lrp-table-cell-left" role="cell">{{ grade.description }}</div>
+            </div>
+        </div>
+        <!--<table class="lrp-grade-scale-table">-->
+        <!--    <thead>-->
+        <!--        <tr class="lrp-full-view-row">-->
+        <!--            <th>{{ tranTags.score || 'Score' }}</th>-->
+        <!--            <th>{{ tranTags.level_of_knowledge || 'Level of Knowledge' }}</th>-->
+        <!--            <th>{{ tranTags.description || 'Description' }}</th>-->
+        <!--        </tr>-->
+        <!--        <tr class="lrp-mobile-view-row">-->
+        <!--            <th>{{ tranTags.score || 'Score' }}</th>-->
+        <!--            <th>{{ tranTags.level_of_knowledge || 'Level of Knowledge' }}</th>-->
+                
+        <!--        </tr>-->
+        <!--    </thead>-->
+        <!--    <tbody>-->
+                <!-- Regular View -->
+        <!--        <tr     class="lrp-full-view-row"-->
+        <!--                data-ng-repeat="grade in currentGradeScale" >-->
+        <!--            <td>-->
+        <!--                <div    data-ng-style="previewColor(grade.colorcode)"-->
+        <!--                        data-ng-bind="grade.gsname"-->
+        <!--                        class="bubble-text">-->
+        <!--                </div>-->
+        <!--            </td>-->
+        <!--            <td>{{ grade.lok }}</td>-->
+        <!--            <td>{{ grade.description }}</td>-->
+        <!--        </tr>-->
+                
+                <!-- Mobile View -->
+        <!--        <tr     class="lrp-mobile-view-row"-->
+        <!--                data-ng-repeat-start="grade in currentGradeScale">-->
+        <!--            <td>-->
+        <!--                <div    data-ng-style="previewColor(grade.colorcode)"-->
+        <!--                        data-ng-bind="grade.gsname"-->
+        <!--                        class="bubble-text">-->
+        <!--                </div>-->
+        <!--            </td>-->
+        <!--            <td>{{ grade.lok }}</td>-->
+        <!--        </tr>-->
+        <!--        <tr     class="lrp-mobile-view-row"-->
+        <!--                data-ng-repeat-end>-->
+        <!--            <td colspan="2">{{ grade.description }}</td>-->
+        <!--        </tr>-->
+        <!--    </tbody>-->
+        <!--</table>-->
+    </div>
+</div>

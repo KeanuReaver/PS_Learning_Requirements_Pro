@@ -1,0 +1,1211 @@
+<queries>
+    <query name="us.ia.k12.urbandale.powerschool.proLrngReq.classlist.flat"
+            coreTable="students"
+            flattened="true"
+            tags="learning, standards, class">
+        <summary>UCSD LR Pro - Classlist</summary>
+        <description></description>
+        <args>
+            <arg name="curstudid" required="true" description="current studentid" type="primitive" default="" />
+            <arg name="curyearid" required="true" description="current yearid" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="courses.course_name">course_name</column>
+            <column column="terms.abbreviation">term</column>
+            <column column="termbins.suppressltrgrd">suppress</column>
+            <column column="termbins.storecode">storecode</column>
+            <column column="pgfinalgrades.grade">class_grade</column>
+            <column column="courses.sched_department">department</column>
+            <column column="cc.dateenrolled">iscurrent</column>
+            <column column="sections.external_expression">period</column>
+            <column column="sections.teacherdescr">section_description</column>
+            <column column="cc.schoolid">class_school</column>
+            <column column="u_lrngreqpro_colors.colorcode">colorcode</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    class_data.course_name              AS course_name,
+                    class_data.term                     AS term,
+                    class_data.suppress                 AS suppress,
+                    class_data.storecode                AS storecode,
+                    class_data.class_grade              AS class_grade,
+                    class_data.sched_department, 
+                    class_data.iscurrent                AS iscurrent,
+                    class_data.period                   AS period,
+                    class_data.section_description      AS section_description,
+                    class_data.class_school             AS class_school,
+                    u_lrngreqpro_colors.colorcode       AS colorcode
+                FROM
+                    (
+                        SELECT UNIQUE
+                            courses.course_name                                                             AS course_name,
+                            terms.abbreviation                                                              AS term,
+                            termbins.suppressltrgrd                                                         AS suppress,
+                            CASE WHEN termbins.suppressltrgrd != 1 
+                                THEN CASE WHEN storedgrades.grade IS NOT NULL THEN storedgrades.storecode
+                                    ELSE termbins.storecode
+                                END
+                            END                                                                             AS storecode,
+                            CASE WHEN termbins.suppressltrgrd != 1 
+                                THEN CASE WHEN storedgrades.grade IS NOT NULL THEN storedgrades.grade
+                                    WHEN storedgrades.grade IS NULL AND pgfinalgrades.grade IS NOT NULL
+                                        THEN pgfinalgrades.grade
+                                END
+                            END                                                                             AS class_grade,
+                            CASE WHEN courses.credittype IS NOT NULL
+                                THEN courses.credittype
+                                ELSE courses.sched_department
+                            END                                                                             AS sched_department,
+                            CASE WHEN courses.credittype IS NOT NULL
+                                THEN 'Credit'
+                                ELSE 'Department'
+                            END                                                                             AS colortype,
+                            CASE WHEN SYSDATE BETWEEN cc.dateenrolled AND cc.dateleft THEN 1
+                                WHEN cc.dateenrolled > SYSDATE THEN -1 
+                            END 																            AS iscurrent,
+                            CASE WHEN SYSDATE BETWEEN cc.dateenrolled AND cc.dateleft 
+                                THEN sections.external_expression 
+                            END 																            AS period,
+                            TO_CHAR(sections.teacherdescr) 										            AS section_description,
+                            schools.abbreviation                                                            AS class_school,
+                            CASE WHEN termbinattrib.isexcludedadmin IS NULL 
+                                THEN 0 
+                                ELSE termbinattrib.isexcludedadmin
+                            END                                                                             AS isExcludedAdmin,
+                            CASE WHEN termbinattrib.isexcludedteacher IS NULL
+                                THEN 0
+                                ELSE termbinattrib.isexcludedteacher
+                            END                                                                             AS isExcludedTeacher,
+                            CASE WHEN lrp_school_pref.credittypes_to_hide IS NOT NULL
+                                    AND courses.credittype IS NOT NULL
+                                THEN CASE WHEN INSTR(lrp_school_pref.credittypes_to_hide, courses.credittype) = 0
+                                    THEN 0 ELSE 1
+                                END
+                                ELSE 0
+                            END                                                                             AS hideCredit,
+                            CASE WHEN lrp_school_pref.departments_to_hide IS NOT NULL
+                                    AND courses.sched_department IS NOT NULL
+                                THEN CASE WHEN INSTR(lrp_school_pref.departments_to_hide, courses.sched_department) = 0
+                                    THEN 0 ELSE 1
+                                END
+                                ELSE 0
+                            END                                                                             AS hideDep
+                        FROM
+                            students students
+                            JOIN cc cc ON cc.studentid = students.id
+                            INNER JOIN sections sections ON sections.id = cc.sectionid
+                            INNER JOIN courses courses ON courses.course_number = sections.course_number
+                            INNER JOIN terms terms ON terms.yearid = :curyearid
+                                AND terms.schoolid = students.schoolid
+                                AND terms.id = cc.termid
+                            INNER JOIN termbins termbins ON termbins.termid = cc.termid
+                                AND termbins.schoolid = cc.schoolid
+                            LEFT JOIN pgfinalgrades pgfinalgrades ON pgfinalgrades.sectionid = sections.id
+                                AND pgfinalgrades.studentid = students.id
+                                AND pgfinalgrades.startdate = terms.firstday
+                                AND pgfinalgrades.enddate = terms.lastday
+                            LEFT JOIN storedgrades storedgrades ON storedgrades.studentid = students.id
+                                AND cc.sectionid = storedgrades.sectionid
+                                AND storedgrades.storecode = termbins.storecode
+                            LEFT JOIN termbinattrib termbinattrib ON termbins.dcid = termbinattrib.termbinsdcid
+                            INNER JOIN schools schools ON cc.schoolid = schools.school_number
+                            LEFT JOIN (
+                                SELECT
+                                    students.dcid AS studentsdcid,
+                                    u_lrngreqpro_pref.credittypes_to_hide AS credittypes_to_hide,
+                                    u_lrngreqpro_pref.departments_to_hide AS departments_to_hide,
+                                    u_lrngreqpro_pref.force_hide AS force_hide
+                                FROM
+                                    students students
+                                    INNER JOIN schools schools ON schools.school_number = students.schoolid
+                                    LEFT JOIN u_lrngreqpro_pref u_lrngreqpro_pref ON u_lrngreqpro_pref.schoolsdcid = schools.dcid
+                            ) lrp_school_pref ON lrp_school_pref.studentsdcid = students.dcid
+                            
+                        WHERE
+                            students.id = :curstudid
+                            AND (lrp_school_pref.force_hide != 1 OR lrp_school_pref.force_hide IS NULL)
+                        ORDER BY
+                            8
+                    ) class_data
+                    LEFT JOIN u_lrngreqpro_colors u_lrngreqpro_colors ON u_lrngreqpro_colors.credittype = class_data.sched_department
+                        AND u_lrngreqpro_colors.typename = class_data.colortype
+                WHERE
+                    class_data.isexcludedadmin != 1
+                    AND class_data.isexcludedteacher != 1
+                    AND class_data.hideCredit != 1
+                    AND class_data.hideDep != 1
+                    AND class_data.sched_department IS NOT NULL
+                ORDER BY
+                    8
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.stdList.flat"
+            coreTable="students"
+            flattened="true"
+            tags="standards">
+        <summary>UCSD LR Pro - Standard List</summary>
+        <description>Pulls list of standards for given student for the given year.</description>
+        <args>
+            <arg name="curstudid" required="true" description="current student id" type="primitive" default="" />
+            <arg name="curyearid" required="true" description="current year id" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="courses.course_name">course_name</column>
+            <column column="standard.standardid">standardid</column>
+            <column column="standard.identifier">standardIdentifier</column>
+            <column column="standard.name">standardName</column>
+            <column column="termbins.storecode">storecode</column>
+            <column column="standardgradesection.standardgrade">score</column>
+            <column column="standard.description">description</column>
+            <column column="u_lrp_standard_categories.name">category</column>
+            <column column="u_lrp_standard_categories.style">catstyle</column>
+            <column column="termbins.date1">startdate</column>
+            <column column="termbins.date2">enddate</column>
+            <column column="u_lrp_standard_categories.academic">avg</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT UNIQUE
+                    courses.course_name                                 AS course_name,
+                    standard.standardid                                 AS standardid,
+                    standard.identifier                                 AS standardIdentifier,
+                    standard.name                                       AS standardName,
+                    termbins.storecode                                  AS storecode,
+                    standardgradesection.standardgrade                  AS score,
+                    TO_CHAR(standard.description)                       AS description,
+                    CASE WHEN u_lrp_standard_categories.name IS NULL 
+                        THEN 'Academic Standards'
+                        ELSE u_lrp_standard_categories.name
+                    END                                                 AS category,
+                    u_lrp_standard_categories.style                     AS catstyle,
+                    termbins.date1                                      AS startdate,
+                    termbins.date2                                      AS enddate,
+                    CASE u_lrp_standard_categories.academic 
+                        WHEN 0 THEN 0
+                        ELSE 1
+                    END                                                 AS avg
+                FROM
+                    students students
+                    INNER JOIN cc cc ON cc.studentid = students.id
+                    INNER JOIN sections sections ON sections.id = cc.sectionid
+                    INNER JOIN courses courses ON courses.course_number = sections.course_number
+                    INNER JOIN standardcourseassoc standardcourseassoc ON standardcourseassoc.coursesdcid = courses.dcid
+                    INNER JOIN standard standard ON standardcourseassoc.standardid = standard.standardid
+                    INNER JOIN termbins termbins ON termbins.termid = cc.termid AND termbins.schoolid = cc.schoolid
+                    LEFT JOIN standardgradesection standardgradesection ON students.dcid = standardgradesection.studentsdcid
+                        AND standardgradesection.standardid = standard.standardid
+                        AND standardgradesection.storecode = termbins.storecode
+                    LEFT JOIN u_lrngreqpro_stdCat u_lrngreqpro_stdCat ON u_lrngreqpro_stdCat.standardstandardid = standard.standardid
+                    LEFT JOIN u_lrp_standard_categories u_lrp_standard_categories 
+                        ON u_lrp_standard_categories.id = u_lrngreqpro_stdCat.category
+                WHERE
+                    students.id = :curstudid
+                    AND termbins.yearid = :curyearid
+                    AND standard.isassignmentallowed = 1
+                    AND standard.isactive = 1
+                    AND standardcourseassoc.isactive = 1
+                    AND standard.yearid = :curyearid
+                ORDER BY
+                    1,3,5
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.asmtList.flat"
+            coreTable="students"
+            flattened="true"
+            tags="assignment">
+        <summary>UCSD LR Pro - Assignment List</summary>
+        <description>Pulls list of assignments for specific student for a given year.</description>
+        <args>
+            <arg name="curstudid" required="true" description="current studentid" type="primitive" default="" />
+            <arg name="curyearid" required="true" description="current yearid" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="students.dcid">course_name</column>
+            <column column="students.dcid">standardIdentifier</column>
+            <column column="students.dcid">due_date</column>
+            <column column="students.dcid">asmt</column>
+            <column column="students.dcid">score</column>
+            <column column="students.dcid">late</column>
+            <column column="students.dcid">collected</column>
+            <column column="students.dcid">exempt</column>
+            <column column="students.dcid">missing</column>
+            <column column="students.dcid">absent</column>
+            <column column="students.dcid">incomplete</column>
+            <column column="students.dcid">excluded</column>
+            <column column="students.dcid">description</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+					courses.course_name																				AS course_name,
+					standard.identifier																				AS standardIdentifier,
+					assignmentsection.duedate 																		AS due_date,
+					assignmentsection.name 																			AS asmt,
+					COALESCE(standardscore.actualscoreentered, '--')												AS score,
+					MAX(CASE WHEN standardscore.islate = 1 OR assignmentscore.islate = 1 THEN 1 END) 				AS late,
+					MAX(CASE WHEN standardscore.iscollected = 1 OR assignmentscore.iscollected = 1 THEN 1 END) 		AS collected,
+					MAX(CASE WHEN standardscore.isexempt = 1 OR assignmentscore.isexempt = 1 THEN 1 END) 			AS exempt,
+					MAX(CASE WHEN standardscore.ismissing = 1 OR assignmentscore.ismissing = 1 THEN 1 END) 			AS missing,
+					MAX(CASE WHEN standardscore.isabsent = 1 OR assignmentscore.isabsent = 1 THEN 1 END) 			AS absent,
+					MAX(CASE WHEN standardscore.isincomplete = 1 OR assignmentscore.isincomplete = 1 THEN 1 END) 	AS incomplete,
+					MAX(CASE WHEN assignmentsection.iscountedinfinalgrade = 0 THEN 1 END) 							AS excluded,
+					TO_CHAR(assignmentsection.description) 															AS description			
+				FROM
+					students students
+                    INNER JOIN standardscore standardscore ON students.dcid = standardscore.studentsdcid
+					INNER JOIN assignmentsection assignmentsection ON assignmentsection.assignmentsectionid = standardscore.assignmentsectionid
+					INNER JOIN assignmentstandardassoc assignmentstandardassoc
+						ON assignmentstandardassoc.assignmentstandardassocid = standardscore.assignmentstandardassocid
+					INNER JOIN standard standard ON standard.standardid = assignmentstandardassoc.standardid
+					INNER JOIN assignment assignment ON assignment.assignmentid = assignmentsection.assignmentid
+					INNER JOIN sections sections ON sections.dcid = assignmentsection.sectionsdcid
+					INNER JOIN cc cc ON cc.sectionid = sections.id
+						AND cc.studentid = students.id
+						AND cc.course_number = sections.course_number
+					INNER JOIN courses courses ON courses.course_number = cc.course_number
+					LEFT JOIN assignmentscore assignmentscore ON assignmentscore.assignmentsectionid = assignmentsection.assignmentsectionid
+						AND assignmentscore.studentsdcid = students.dcid
+					INNER JOIN termbins termbins ON termbins.termid = cc.termid 
+                        AND termbins.yearid = :curyearid
+				WHERE
+					assignmentsection.duedate >= termbins.date1
+					AND students.id = :curstudid
+				GROUP BY
+					courses.course_name,
+					standard.identifier,
+					assignmentsection.duedate,
+					assignmentsection.name,
+					CASE WHEN standardscore.actualscoreentered IS NULL 
+						THEN '--'
+						ELSE standardscore.actualscoreentered 
+					END,
+					TO_CHAR(assignmentsection.description)
+                ORDER BY
+                    1, 2, 3
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.comments.flat" 
+			coreTable="students" 
+			flattened="true" 
+			tags="standards">
+		<summary>UCSD LR Pro - CommentList</summary>
+		<description>Query for comments for a specific class</description>
+		<args>
+			<arg name="curstudid" required="true" description="current student id" default="~(curstudid)" />
+			<arg name="curyearid" required="true" description="current year" default="~(curyearid)" />
+		</args>
+		<columns>
+			<column column="termbins.date2">date2</column>
+			<column column="courses.course_name">course_name</column>
+			<column column="standard.identifier">standardIdentifier</column>
+			<column column="standard.name">standardName</column>
+			<column column="standardgradesection.storecode">storecode</column>
+			<column column="standardgradesection.storecode">comment_value</column>
+		</columns>
+		<sql>
+			<![CDATA[  
+				SELECT
+					termbins.date2 AS date2,
+					courses.course_name AS course_name,
+					standard.identifier AS standardIdentifier,
+					standard.name AS standardName,
+					termbins.storecode AS storecode,
+					comment_table.commentvalue AS comment_value
+				FROM
+					standard standard
+					JOIN standardcourseassoc standardcourseassoc ON standardcourseassoc.standardid = standard.standardid
+					JOIN courses courses ON standardcourseassoc.coursesdcid = courses.dcid
+					JOIN sections sections ON sections.course_number = courses.course_number
+					JOIN terms terms ON terms.id = sections.termid 
+						AND terms.yearid = standard.yearid 
+						AND terms.schoolid = sections.schoolid
+						AND sysdate >= terms.firstday
+					JOIN cc cc ON cc.sectionid = sections.id	
+					JOIN students students ON cc.studentid = students.id
+					JOIN termbins termbins ON termbins.yearid = terms.yearid
+						AND termbins.schoolid = students.schoolid
+						AND termbins.termid = terms.id
+					LEFT JOIN (
+						SELECT
+							standardgradesection.studentsdcid AS studentsdcid,
+							standardgradesection.standardid AS standardid,
+							standardgradesection.sectionsdcid AS sectionsdcid,
+							standardgradesection.storecode AS storecode,
+							standardgradesectioncomment.commentvalue AS commentvalue
+						FROM
+							standardgradesection standardgradesection
+							INNER JOIN standardgradesectioncomment standardgradesectioncomment
+								ON standardgradesectioncomment.standardgradesectionid = standardgradesection.standardgradesectionid
+					) comment_table ON comment_table.studentsdcid = students.dcid
+						AND comment_table.standardid = standardcourseassoc.standardid
+						AND comment_Table.storecode = termbins.storecode
+                        AND comment_table.sectionsdcid = sections.dcid
+				WHERE
+					terms.yearid = :curyearid
+					AND standard.isassignmentallowed = 0
+					AND students.id = :curstudid
+					AND standard.isactive = 1
+					AND standardcourseassoc.isactive = 1
+					AND standard.iscommentincluded = 1
+					AND comment_table.commentvalue IS NOT NULL
+				ORDER BY
+					2 desc
+			]]>
+		</sql>
+	</query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.student_test_scores.flat"
+			flattened="true"
+			tags="test, test_scores">
+		<summary>UCSD LR Pro - Test Scores</summary>
+		<description>Query to pull test scores for given student</description>
+		<args>
+			<arg name="curstudid" required="true" description="current studentid" type="primitive" default="~(curstudentid)" />
+		</args>
+		<columns>
+			<column column="test.name">testname</column>
+            <column column="test.id">testid</column>
+            <column column="test.dcid">testdcid</column>
+            <column column="testscore.id">testscoreid</column>
+            <column column="testscore.dcid">testscoredcid</column>
+            <column column="testscore.name">testscorename</column>
+            <column column="testscore.description">testscoredesc</column>
+            <column column="ps_enrollment_all.grade_level">test_grade</column>
+            <column column="ps_enrollment_all.schoolid">schoolid</column>
+            <column column="studenttest.id">studenttestid</column>
+            <column column="studenttest.dcid">studenttestdcid</column>
+            <column column="studenttest.studentid">studentid</column>
+            <column column="studenttest.test_date">test_date</column>
+            <column column="ps_enrollment_all.yearid">yearid</column>
+            <column column="u_lrp_testwindow.windowname">windowname</column>
+            <column column="studenttestscore.numscore">numscore</column>
+            <column column="studenttestscore.percentscore">percentscore</column>
+            <column column="studenttestscore.alphascore">alphascore</column>
+            <column column="u_lrp_testband.name">testbandname</column>
+            <column column="u_lrp_performance_bands.below_benchmark">below_benchmark</column>
+            <column column="u_lrp_color_list.colorcode">colorcode</column>
+            <column column="u_lrp_performance_bands.top_band">benchmark_marker</column>
+            <column column="u_lrp_performance_group.split_at_year">split_at_year</column>
+		</columns>
+		<sql>
+			<![CDATA[
+				SELECT
+					test."NAME"                     				AS testname,
+					test.id                         				AS testid,
+					test.dcid                       				AS testdcid,
+					testscore.id                    				AS testscoreid,
+					testscore.dcid                  				AS testscoredcid,
+					testscore."NAME"                				AS testscorename,
+					testscore.description           				AS testscoredesc,
+					ps_enrollment_all.grade_level   				AS test_grade,
+					ps_enrollment_all.schoolid      				AS schoolid,
+					studenttest.id                  				AS studenttestid,
+					studenttest.dcid                				AS studenttestdcid,
+					studenttest.studentid           				As studentid,
+					studenttest.test_date							AS test_date,
+					ps_enrollment_all.yearid						AS yearid,
+					lrp_performance_bands.windowname				AS windowname,
+					CASE WHEN u_lrp_testscore_ext.shownum = 1 
+                        THEN studenttestscore.numscore
+                    END                                             AS numscore,
+                    CASE WHEN u_lrp_testscore_ext.showpercent = 1 
+                        THEN studenttestscore.percentscore
+                    END                                             AS percentscore,
+                    CASE WHEN u_lrp_testscore_ext.showalpha = 1 
+                        THEN studenttestscore.alphascore
+                    END                                             AS alphascore,
+					lrp_performance_bands.testbandname				AS testbandname,
+					lrp_performance_bands.below_benchmark			AS below_benchmark,
+					lrp_performance_bands.colorcode					AS colorcode,
+                    below_benchmark_marker.top_band              	AS benchmark_marker,
+					lrp_performance_bands.split_at_year				AS split_at_year
+				FROM
+					ps_enrollment_all ps_enrollment_all
+					INNER JOIN studenttest studenttest ON studenttest.studentid = ps_enrollment_all.studentid
+						AND studenttest.test_date BETWEEN ps_enrollment_all.entrydate AND ps_enrollment_all.exitdate
+					INNER JOIN studenttestscore studenttestscore ON studenttestscore.studentid = ps_enrollment_all.studentid
+						AND studenttestscore.studenttestid = studenttest.id
+					INNER JOIN test test ON studenttest.testid = test.id
+					INNER JOIN testscore testscore ON testscore.testid = test.id
+						AND studenttestscore.testscoreid = testscore.id
+						AND studenttestscore.studenttestid = studenttest.id
+					INNER JOIN u_lrp_testscore_ext 
+                        ON u_lrp_testscore_ext.testscoredcid = testscore.dcid
+                        AND ',' || u_lrp_testscore_ext.grade_list || ',' LIKE '%,' || ps_enrollment_all.grade_level || ',%'
+					
+					LEFT JOIN (
+						SELECT
+							u_lrp_performance_group.testdcid 		AS testdcid,
+							u_lrp_performance_bands.testscoredcid 	AS testscoredcid,
+							u_lrp_performance_bands.grade_level		AS grade_level,
+							u_lrp_testband."NAME"					AS testbandname,
+							u_lrp_color_list.colorcode				AS colorcode,
+							u_lrp_testwindow.windowname				AS windowname,
+							u_lrp_testwindow.window_start			AS window_start,
+							u_lrp_testwindow.window_end				AS window_end,
+							CASE WHEN TO_DATE(u_lrp_testwindow.window_end, 'MM-DD') > TO_DATE(u_lrp_testwindow.window_start, 'MM-DD')
+								THEN 0
+								ELSE 1
+							END 									AS crossyear,
+							u_lrp_performance_bands.below_benchmark	AS below_benchmark,
+							u_lrp_performance_bands.bottom_band		AS bottom_band,
+							u_lrp_performance_bands.top_band		AS top_band,
+							u_lrp_performance_group.split_at_year	AS split_at_year
+						FROM
+							u_lrp_performance_group u_lrp_performance_group
+							INNER JOIN u_lrp_testband u_lrp_testband 
+								ON u_lrp_testband.groupid = u_lrp_performance_group.id
+								AND u_lrp_testband.bandtype = 'Performance Band'
+							INNER JOIN u_lrp_testwindow u_lrp_testwindow
+								ON u_lrp_testwindow.groupid = u_lrp_performance_group.id
+							INNER JOIN u_lrp_performance_bands u_lrp_performance_bands
+								ON u_lrp_performance_bands.groupid = u_lrp_performance_group.id
+								AND u_lrp_performance_bands.testbandid = u_lrp_testband.id
+								AND u_lrp_performance_bands.testwindowid = u_lrp_testwindow.id
+							INNER JOIN u_lrp_color_list u_lrp_color_list
+								ON u_lrp_color_list.id = u_lrp_testband.lrp_color_list_id
+						WHERE
+							u_lrp_performance_group.isdefault = 1
+					) lrp_performance_bands
+						ON lrp_performance_bands.testdcid = test.dcid
+						AND lrp_performance_bands.testscoredcid = testscore.dcid
+						AND lrp_performance_bands.grade_level = ps_enrollment_all.grade_level
+						AND (
+                			(
+                				TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND lrp_performance_bands.window_end
+                				AND lrp_performance_bands.crossyear = 0
+                				AND NOT (
+                					(
+                						TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND '12-30'
+                						OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND lrp_performance_bands.window_end
+                					)
+                					AND lrp_performance_bands.crossyear = 1
+                				)
+                			)
+                			OR
+                			(
+                				(
+                					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND '12-30'
+                					OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND lrp_performance_bands.window_end
+                				)
+                				AND lrp_performance_bands.crossyear = 1
+                				AND NOT (
+                					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND lrp_performance_bands.window_end
+                					AND lrp_performance_bands.crossyear = 0
+                				)
+                			)
+                		)
+						AND (
+							round(studenttestscore.numscore, 0) BETWEEN lrp_performance_bands.bottom_band AND lrp_performance_bands.top_band - 1
+							OR
+							(
+								round(studenttestscore.numscore, 0) = lrp_performance_bands.bottom_band
+								AND
+								round(studenttestscore.numscore, 0) = lrp_performance_bands.top_band	
+							)
+						)
+                    LEFT JOIN (
+                        SELECT
+							u_lrp_performance_group.testdcid 		AS testdcid,
+							u_lrp_performance_bands.testscoredcid 	AS testscoredcid,
+							u_lrp_performance_bands.grade_level		AS grade_level,
+							u_lrp_testband."NAME"					AS testbandname,
+							u_lrp_color_list.colorcode				AS colorcode,
+							u_lrp_testwindow.windowname				AS windowname,
+							u_lrp_testwindow.window_start			AS window_start,
+							u_lrp_testwindow.window_end				AS window_end,
+							CASE WHEN TO_DATE(u_lrp_testwindow.window_end, 'MM-DD') > TO_DATE(u_lrp_testwindow.window_start, 'MM-DD')
+								THEN 0
+								ELSE 1
+							END 									AS crossyear,
+							u_lrp_performance_bands.below_benchmark	AS below_benchmark,
+							u_lrp_performance_bands.top_band		AS top_band
+						FROM
+							u_lrp_performance_group u_lrp_performance_group
+							INNER JOIN u_lrp_testband u_lrp_testband 
+								ON u_lrp_testband.groupid = u_lrp_performance_group.id
+								AND u_lrp_testband.bandtype != 'Performance Band'
+                                AND u_lrp_testband.name = 'Below Benchmark'
+							INNER JOIN u_lrp_testwindow u_lrp_testwindow
+								ON u_lrp_testwindow.groupid = u_lrp_performance_group.id
+							INNER JOIN u_lrp_performance_bands u_lrp_performance_bands
+								ON u_lrp_performance_bands.groupid = u_lrp_performance_group.id
+								AND u_lrp_performance_bands.testbandid = u_lrp_testband.id
+								AND u_lrp_performance_bands.testwindowid = u_lrp_testwindow.id
+							INNER JOIN u_lrp_color_list u_lrp_color_list
+								ON u_lrp_color_list.id = u_lrp_testband.lrp_color_list_id
+						WHERE
+							u_lrp_performance_group.isdefault = 1
+                    ) below_benchmark_marker
+                        ON below_benchmark_marker.testdcid = test.dcid
+						AND below_benchmark_marker.testscoredcid = testscore.dcid
+						AND below_benchmark_marker.grade_level = ps_enrollment_all.grade_level
+						AND (
+                			(
+                				TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND below_benchmark_marker.window_end
+                				AND below_benchmark_marker.crossyear = 0
+                				AND NOT (
+                					(
+                						TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND '12-30'
+                						OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND below_benchmark_marker.window_end
+                					)
+                					AND below_benchmark_marker.crossyear = 1
+                				)
+                			)
+                			OR
+                			(
+                				(
+                					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND '12-30'
+                					OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND below_benchmark_marker.window_end
+                				)
+                				AND below_benchmark_marker.crossyear = 1
+                				AND NOT (
+                					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND below_benchmark_marker.window_end
+                					AND below_benchmark_marker.crossyear = 0
+                				)
+                			)
+                		)
+				WHERE
+					ps_enrollment_all.studentid = :curstudid
+					AND studenttestscore.numscore != 0
+				ORDER BY
+					1, 5, 13 desc
+			]]>
+		</sql>
+	</query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.test_rules.flat"
+            flattened="true"
+            tags="test, testscore">
+        <summary>UCSD LR Pro - Test Rules</summary>
+        <description>Assign rules to testscores for display</description>
+        <columns>
+            <column column="test.dcid">testdcid</column>
+            <column column="test.name">test_name</column>
+            <column column="testscore.name">testscore_name</column>
+            <column column="testscore.dcid">testscore_dcid</column>
+            <column column="u_lrp_testscore_ext.grade_list">grade_list</column>
+            <column column="u_lrp_testscore_ext.shownum">shownum</column>
+            <column column="u_lrp_testscore_ext.showpercent">showpercent</column>
+            <column column="u_lrp_testscore_ext.showalpha">showalpha</column>
+            <column column="u_lrp_testscore_ext.testscoredcid">existing</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    test.dcid                                                       AS testdcid,
+                    test.name                                                       AS test_name,
+                    testscore.name                                                  AS testscore_name,
+                    testscore.dcid                                                  AS testscore_dcid,
+                    u_lrp_testscore_ext.grade_list                                  AS grade_list,
+                    u_lrp_testscore_ext.shownum                                     AS shownum,
+                    u_lrp_testscore_ext.showpercent                                 AS showpercent,
+                    u_lrp_testscore_ext.showalpha                                   AS showalpha,
+                    CASE WHEN u_lrp_testscore_ext.testscoredcid = testscore.dcid 
+                        THEN 'Existing' 
+                    END                                                             AS existing
+                FROM
+                    testscore testscore
+                    INNER JOIN test test ON test.id = testscore.testid
+                    LEFT JOIN u_lrp_testscore_ext u_lrp_testscore_ext ON u_lrp_testscore_ext.testscoredcid = testscore.dcid
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.color_list.flat"
+            flattened="true"
+            tags="colors">
+        <summary>UCSD LR Pro - Color List</summary>
+        <description>Pulls list of credittypes and department types and associated colors.</description>
+        <columns>
+            <column column="courses.credittype">type</column>
+            <column column="courses.credittype">code</column>
+            <column column="u_lrngreqpro_colors.colorcode">colorcode</column>
+            <column column="u_lrngreqpro_colors.id">id</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                WITH color_union AS (
+                    SELECT UNIQUE
+                        'Credit'                        AS type,
+                        courses.credittype              AS code,
+                        u_lrngreqpro_colors.colorcode   AS colorcode,
+                        u_lrngreqpro_colors.id          AS id
+                    FROM
+                        courses courses
+                        LEFT JOIN u_lrngreqpro_colors u_lrngreqpro_colors ON u_lrngreqpro_colors.credittype = courses.credittype
+                            AND u_lrngreqpro_colors.typename = 'Credit'
+                    WHERE
+                        courses.credittype IS NOT NULL
+                    UNION
+                    SELECT UNIQUE
+                        'Department'                    AS type,
+                        courses.sched_department        AS code,
+                        u_lrngreqpro_colors.colorcode   AS colorcode,
+                        u_lrngreqpro_colors.id          AS id
+                    FROM
+                        courses courses
+                        LEFT JOIN u_lrngreqpro_colors u_lrngreqpro_colors ON u_lrngreqpro_colors.credittype = courses.sched_department
+                            AND u_lrngreqpro_colors.typename = 'Department'
+                    WHERE
+                        courses.sched_department IS NOT NULL
+                )
+                SELECT UNIQUE
+                    color_union.type,
+                    color_union.code,
+                    color_union.colorcode,
+                    color_union.id
+                FROM
+                    color_union color_union
+                ORDER BY
+                    1, 2
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.stdAssocCat.flat"
+            flattened="true"
+            tags="standard">
+        <summary>UCSD LR Pro - Standards with Cat</summary>
+        <description>Pulls list of all active standards and their associated categories</description>
+        <args>
+            <arg name="curyearid" required="true" description="current yearid" type="primitive" default="~(curyearid)" />
+        </args>
+        <columns>
+            <column column="standard.standardid">standardid</column>
+            <column column="standard.identifier">identifier</column>
+            <column column="standard.name">stdname</column>
+            <column column="u_lrngreqpro_stdcat.standardstandardid">stdcatid</column>
+            <column column="u_lrp_standard_categories.id">catid</column>
+            <column column="u_lrp_standard_categories.name">stdcatname</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    standard.standardid                         AS standardid,
+                    standard.identifier                         AS identifier,
+                    standard.name                               AS stdname,
+                    u_lrngreqpro_stdcat.standardstandardid      AS stdcatid,
+                    u_lrp_standard_categories.id                AS catid,
+                    u_lrp_standard_categories.name              AS stdcatname
+                FROM
+                    standard standard
+                    LEFT JOIN u_lrngreqpro_stdcat u_lrngreqpro_stdcat 
+                        ON u_lrngreqpro_stdcat.standardstandardid = standard.standardid
+                    LEFT JOIN u_lrp_standard_categories u_lrp_standard_categories
+                        ON u_lrp_standard_categories.id = u_lrngreqpro_stdcat.category
+                WHERE
+                    standard.yearid = :curyearid
+                    AND standard.isactive = 1
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.allStdCats.flat"
+            flattened="true"
+            tags="standards">
+        <summary>UCSD LR Pro - Category List</summary>
+        <description>Pulls list of all categories</description>
+        <columns>
+            <column column="u_lrp_standard_categories.id">id</column>
+            <column column="u_lrp_standard_categories.name">catname</column>
+            <column column="u_lrp_standard_categories.academic">academic</column>
+            <column column="u_lrp_standard_categories.details">details</column>
+            <column column="u_lrp_standard_categories.sortorder">sortorder</column>
+            <column column="u_lrp_standard_categories.style">catstyle</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    u_lrp_standard_categories.id            AS id,
+                    u_lrp_standard_categories.name          AS catname,
+                    u_lrp_standard_categories.academic      AS academic,
+                    u_lrp_standard_categories.details       AS details,
+                    u_lrp_standard_categories.sortorder     AS sortorder,
+                    u_lrp_standard_categories.style         AS catstyle
+                FROM
+                    u_lrp_standard_categories u_lrp_standard_categories
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.scoreColorList.flat"
+            flattened="true"
+            tags="colorList">
+        <summary>UCSD LR Pro - Score Color List</summary>
+        <description>Get List of score colors</description>
+        <columns>
+            <column column="u_lrp_color_list.id">id</column>
+            <column column="u_lrp_color_list.colorcode">colorcode</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    u_lrp_color_list.id         AS id,
+                    u_lrp_color_list.colorcode  AS colorcode
+                FROM
+                    u_lrp_color_list u_lrp_color_list
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.gradeScaleList.flat"
+            flattened="true"
+            tags="gradescaleitem, gradescale">
+        <summary>UCSD LR Pro - GradeScale List</summary>
+        <description>Get list of grade scales.</description>
+        <columns>
+            <column column="gradescaleitem.id">gradescaleitemid</column>
+            <column column="gradescaleitem.name">gradescalename</column>
+            <column column="gradescaleitem.description">gradescaledesc</column>
+            <column column="u_lrp_assign_gradescale.id">lrpid</column>
+            <column column="u_lrp_assign_gradescale.schoolids">schools</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    gradescaleitem.id                   AS gradescaleitemid,
+                    gradescaleitem.name                 AS gradescalename,
+                    gradescaleitem.description          AS gradescaledesc,
+                    u_lrp_assign_gradescale.id          AS lrpid,
+                    u_lrp_assign_gradescale.schoolids   AS schools
+                FROM
+                    gradescaleitem gradescaleitem
+                    LEFT JOIN u_lrp_assign_gradescale u_lrp_assign_gradescale ON u_lrp_assign_gradescale.gradescaleid = gradescaleitem.id
+                WHERE
+                    gradescaleitem.gradescaleid = -1
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.schoolist.flat"
+            flattened="true"
+            tags="schools">
+        <summary>UCSD LR Pro - SchoolList</summary>
+        <description>Get list of all schools</description>
+        <columns>
+            <column column="schools.school_number">school_number</column>
+            <column column="schools.abbreviation">abbreviation</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    schools.school_number   AS school_number,
+                    schools.abbreviation    AS abbreviation
+                FROM
+                    schools schools
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.gradescaleitems.flat"
+            flattened="true"
+            tags="gradescaleitem, colors">
+        <summary>UCSD LR Pro - GradeScaleItems</summary>
+        <description>Gets list of gradescaleitems for specific gradescale.</description>
+        <args>
+            <arg name="gradescaleid" required="true" description="id of gradescale" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="gradescaleitem.dcid">gsidcid</column>
+            <column column="gradescaleitem.gradescaleid">gsigradescaleid</column>
+            <column column="gradescaleitem.name">gsiname</column>
+            <column column="gradescaleitem.description">gsidescription</column>
+            <column column="gradescaleitem.dcid">existing</column>
+            <column column="u_lrp_gs_descriptions.detailed_description">ulrpdesc</column>
+            <column column="u_lrp_gs_descriptions.lrp_color_list_id">colorlistid</column>
+            <column column="u_lrp_color_list.colorcode">colorcode</column>
+            <column column="gradescaleitem.value">gsivalue</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    gradescaleitem.dcid                         AS gsidcid,
+                    gradescaleitem.gradescaleid                 AS gsigradescaleid,
+                    gradescaleitem.name                         AS gsiname,
+                    gradescaleitem.description                  AS gsidescription,
+                    CASE WHEN gradescaleitem.dcid = u_lrp_gs_descriptions.gradescaleitemdcid 
+                        THEN 'Existing' 
+                    END                                         AS existing,
+                    u_lrp_gs_descriptions.detailed_description  AS ulrpdesc,
+                    u_lrp_gs_descriptions.LRP_COLOR_LIST_ID     AS colorlistid,
+                    u_lrp_color_list.colorcode                  AS colorcode,
+                    gradescaleitem.value                        AS gsivalue
+                FROM
+                    gradescaleitem gradescaleitem
+                    LEFT JOIN u_lrp_gs_descriptions u_lrp_gs_descriptions
+                        ON u_lrp_gs_descriptions.GRADESCALEITEMDCID = gradescaleitem.dcid
+                    LEFT JOIN u_lrp_color_list  u_lrp_color_list 
+                        ON u_lrp_color_list.id = u_lrp_gs_descriptions.lrp_color_list_id
+                WHERE
+                    gradescaleitem.gradescaleid != -1
+                    AND gradescaleitem.gradescaleid = :gradescaleid
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.uniqueGrades.flat"
+            flattened="true"
+            tags="grade_level">
+        <summary>UCSD LR Pro - UniqueGrades</summary>
+        <description>Gets list of unique grades for active students.</description>
+        <columns>
+            <column column="students.grade_level">grade_level</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT UNIQUE
+                    students.grade_level AS grade_level
+                FROM
+                    students students
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.findGSIColorMatch.flat"
+            flattened="true"
+            tags="gradescaleitem">
+        <summary>UCSD LR Pro - Find GSI Color Match</summary>
+        <description>Gets list of gsi records with matching colors for deletion.</description>
+        <args>
+            <arg name="colorlistid" required="true" description="color list id" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="u_lrp_gs_descriptions.gradescaleitemdcid">id</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    u_lrp_gs_descriptions.gradescaleitemdcid AS id
+                FROM
+                    u_lrp_gs_descriptions u_lrp_gs_descriptions
+                WHERE
+                    u_lrp_gs_descriptions.lrp_color_list_id = :colorlistid
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.sortScaleItems.flat"
+            flattened="true"
+            tags="gradescaleitem">
+        <summary>UCSD LR Pro - Sort GradeScaleItems</summary>
+        <description>Sorts gradescaleitems for given schoolid</description>
+        <args>
+            <arg name="schoolid" required="true" description="school_number" type="primitive" default="~(curschoolid)" />
+        </args>
+        <columns>
+            <column column="u_lrp_gs_order.id">orderid</column>
+            <column column="gradescaleitem.dcid">gsidcid</column>
+            <column column="gradescaleitem.name">gsiname</column>
+            <column column="gradescaleitem.value">gsivalue</column>
+            <column column="gradescaleitem.description">gsidesc</column>
+            <column column="u_lrp_gs_descriptions.detailed_description">detailed_description</column>
+            <column column="u_lrp_color_list.colorcode">colorcode</column>
+            <column column="u_lrp_gs_order.hide">hide</column>
+            <column column="u_lrp_gs_order.sortorder">sortOrder</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    u_lrp_gs_order.id                           AS orderid,
+                    gradescaleitem.dcid                         AS gsidcid,
+                    gradescaleitem.name                         AS gsiname,
+                    gradescaleitem.value                        AS gsivalue,
+                    gradescaleitem.description                  AS gsidesc,
+                    u_lrp_gs_descriptions.detailed_description  AS detailed_description,
+                    u_lrp_color_list.colorcode                  AS colorcode,
+                    u_lrp_gs_order.hide                         AS hide,
+                    u_lrp_gs_order.sortorder                    AS sortOrder
+                FROM
+                    gradescaleitem gradescaleitem
+                    INNER JOIN (
+                        SELECT
+                            gradescaleitem.id AS gradescaleitemid
+                        FROM
+                            gradescaleitem gradescaleitem
+                            INNER JOIN u_lrp_assign_gradescale u_lrp_assign_gradescale 
+                                ON u_lrp_assign_gradescale.gradescaleid = gradescaleitem.id
+                                AND INSTR(u_lrp_assign_gradescale.schoolids, to_char(:schoolid)) != 0
+                        WHERE
+                            gradescaleitem.gradescaleid = -1
+                    ) school_gsis ON school_gsis.gradescaleitemid = gradescaleitem.gradescaleid
+                    INNER JOIN u_lrp_gs_descriptions u_lrp_gs_descriptions
+                        ON u_lrp_gs_descriptions.GRADESCALEITEMDCID = gradescaleitem.dcid
+                    LEFT JOIN u_lrp_color_list  u_lrp_color_list 
+                        ON u_lrp_color_list.id = u_lrp_gs_descriptions.lrp_color_list_id
+                    LEFT JOIN u_lrp_gs_order u_lrp_gs_order 
+                        ON u_lrp_gs_order.gradescaleitemdcid = gradescaleitem.dcid
+                        AND u_lrp_gs_order.school_number = :schoolid
+                WHERE
+                    gradescaleitem.teacherscale = 1
+                ORDER BY
+                    u_lrp_gs_order.sortorder
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.testBandsAll.flat"
+            flattened="true"
+            tags="test, testband, performance">
+        <summary>UCSD LR Pro - testBandsALL</summary>
+        <description>Gets list of all test bands with associated test dcids.</description>
+        <args>
+            <arg name="curgroupid" required="true" description="Current group id" type="primitive" default="~(gpv.curgroupid)" />
+            <arg name="curtestdcid" required="true" description="Current test dcid" type="primitive" default="~(gpv.curtestdcid)" />
+        </args>
+        <columns>
+            <column column="u_lrp_testband.id">id</column>
+            <column column="u_lrp_testband.testdcid">testdcid</column>
+            <column column="u_lrp_testband.groupid">groupid</column>
+            <column column="u_lrp_testband.name">testbandname</column>
+            <column column="u_lrp_testband.bandtype">bandtype</column>
+            <column column="u_lrp_testband.lrp_color_list_id">colorlistid</column>
+            <column column="u_lrp_color_list.colorcode">colorcode</column>
+            <column column="u_lrp_testband.sortorder">sortorder</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    u_lrp_testband.id                   AS id,
+                    u_lrp_testband.testdcid             AS testdcid,
+                    u_lrp_testband.groupid              AS groupid,
+                    u_lrp_testband.name                 AS testbandname,
+                    u_lrp_testband.bandtype             AS bandtype,
+                    u_lrp_testband.lrp_color_list_id    AS colorlistid,
+                    u_lrp_color_list.colorcode          AS colorcode,
+                    u_lrp_testband.sortorder            AS sortorder
+                FROM
+                    u_lrp_testband u_lrp_testband
+                    LEFT JOIN u_lrp_color_list u_lrp_color_list 
+                        ON u_lrp_color_list.id = u_lrp_testband.lrp_color_list_id
+                WHERE
+                    u_lrp_testband.groupid = :curgroupid          
+                    AND u_lrp_testband.testdcid = :curtestdcid
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.testWindowsAll.flat"
+            flattened="true"
+            tags="window, test">
+        <summary>UCSD LR Pro - testWindowsAll</summary>
+        <description>Gets list of all test windows with associated test dcids.</description>
+        <args>
+            <arg name="curgroupid" required="true" description="Current group id" type="primitive" default="~(gpv.curgroupid)" />
+            <arg name="curtestdcid" required="true" description="Current test dcid" type="primitive" default="~(gpv.curtestdcid)" />
+        </args>
+        <columns>
+            <column column="u_lrp_testwindow.id">id</column>
+            <column column="u_lrp_testwindow.testdcid">testdcid</column>
+            <column column="u_lrp_testwindow.windowname">windowname</column>
+            <column column="u_lrp_testwindow.window_start">window_start</column>
+            <column column="u_lrp_testwindow.window_end">window_end</column>
+            <column column="u_lrp_testwindow.sortorder">sortorder</column>
+            <column column="u_lrp_testwindow.groupid">groupid</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    u_lrp_testwindow.id             AS id,
+                    u_lrp_testwindow.testdcid       AS testdcid,
+                    u_lrp_testwindow.windowname     AS windowname,
+                    u_lrp_testwindow.window_start   AS window_start,
+                    u_lrp_testwindow.window_end     AS window_end,
+                    u_lrp_testwindow.sortorder      AS sortorder,
+                    u_lrp_testwindow.groupid        AS groupid
+                FROM
+                    u_lrp_testwindow u_lrp_testwindow
+                WHERE
+                    u_lrp_testwindow.groupid = :curgroupid
+                    AND u_lrp_testwindow.testdcid = :curtestdcid
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.performanceBands.flat"
+            flattened="true"
+            tags="testscore, performance">
+        <summary>UCSD LR Pro - performanceBands</summary>
+        <description>Gets list of all performance bands for given testscore</description>
+        <args>
+            <arg name="curgroupid" required="true" description="Current group id" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="test.dcid">testdcid</column>
+            <column column="test.name">testname</column>
+            <column column="testscore.dcid">testscoredcid</column>
+            <column column="testscore.name">testscorename</column>
+            <column column="u_lrp_testWindow.id">testwindowid</column>
+            <column column="u_lrp_testWindow.windowname">testwindowname</column>
+            <column column="u_lrp_testband.id">testbandid</column>
+            <column column="u_lrp_testband.bandtype">testbandtype</column>
+            <column column="u_lrp_testband.name">testbandname</column>
+            <column column="u_lrp_color_list.colorcode">colorcode</column>
+            <column column="u_lrp_performance_bands.id">performance_bandid</column>
+            <column column="u_lrp_performance_bands.groupid">groupid</column>
+            <column column="u_lrp_performance_bands.grade_level">grade_level</column>
+            <column column="u_lrp_performance_bands.description">description</column>
+            <column column="u_lrp_performance_bands.bottom_band">bottom_band</column>
+            <column column="u_lrp_performance_bands.top_band">top_band</column>
+            <column column="u_lrp_performance_bands.below_benchmark">below_benchmark</column>
+            <column column="u_lrp_testband.sortorder">sortorder</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    test.dcid                                   AS testdcid,
+                    test.name                                   AS testname,
+                    testscore.dcid                              AS testscoredcid,
+                    testscore.name                              AS testscorename,
+                    u_lrp_testwindow.id                         AS testwindowid,
+                    u_lrp_testwindow.windowname                 AS testwindowname,
+                    u_lrp_testband.id                           AS testbandid,
+                    u_lrp_testband.bandtype                     AS testbandtype,
+                    u_lrp_testband.name                         AS testbandname,
+                    u_lrp_color_list.colorcode                  AS colorcode,
+                    u_lrp_performance_bands.id                  AS performance_bandid,
+                    u_lrp_performance_bands.groupid             AS groupid,
+                    GradeLevels.grade_level                     AS grade_level,
+                    u_lrp_performance_bands.description         AS description,
+                    u_lrp_performance_bands.bottom_band         AS bottom_band,
+                    u_lrp_performance_bands.top_band            AS top_band,
+                    u_lrp_performance_bands.below_benchmark     AS below_benchmark,
+                    u_lrp_testband.sortorder                    AS sortorder
+                FROM
+                    test test
+                    INNER JOIN u_lrp_performance_group u_lrp_performance_group ON u_lrp_performance_group.testdcid = test.dcid
+                        AND u_lrp_performance_group.id = :curgroupid
+                    INNER JOIN u_lrp_testband u_lrp_testband ON u_lrp_testband.testdcid = test.dcid
+                        AND u_lrp_testband.groupid = u_lrp_performance_group.id
+                    INNER JOIN u_lrp_testwindow u_lrp_testwindow ON u_lrp_testwindow.testdcid = test.dcid
+                        AND u_lrp_testwindow.groupid = u_lrp_performance_group.id
+                    INNER JOIN testscore testscore ON testscore.testid = test.dcid
+                    CROSS JOIN (
+                        SELECT LEVEL - 3 AS grade_level  -- Generates grades -2 through 12
+                        FROM dual
+                        CONNECT BY LEVEL <= 16
+                    ) GradeLevels
+                    LEFT JOIN u_lrp_performance_bands u_lrp_performance_bands ON u_lrp_performance_bands.testscoredcid = testscore.dcid
+                        AND u_lrp_performance_bands.testwindowid = u_lrp_testwindow.id
+                        AND u_lrp_performance_bands.testbandid = u_lrp_testband.id
+                        AND u_lrp_performance_bands.groupid = u_lrp_performance_group.id
+                        AND u_lrp_performance_bands.grade_level = GradeLevels.grade_level
+                    LEFT JOIN u_lrp_color_list u_lrp_color_list ON u_lrp_color_list.id = u_lrp_testband.lrp_color_list_id
+                ORDER BY
+                    testname, testscorename, testwindowname, grade_level, sortorder
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.performanceGroups.flat"
+            flattened="true"
+            tags="test">
+        <summary>UCSD LR Pro - performanceGroups</summary>
+        <description>Gets list of available performance groups for given test.</description>
+        <args>
+            <arg name="curtestdcid" required="true" description="current test dcid" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="u_lrp_performance_group.testdcid">testdcid</column>
+            <column column="u_lrp_performance_group.id">id</column>
+            <column column="u_lrp_performance_group.name">groupname</column>
+            <column column="u_lrp_performance_group.isdefault">isdefault</column>
+            <column column="u_lrp_performance_group.split_at_year">split_at_year</column>
+            <column column="u_lrp_testband.id">testbandcount</column>
+            <column column="u_lrp_testwindow.id">testwindowcount</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+					u_lrp_performance_group.testdcid 	    AS testdcid,
+					u_lrp_performance_group.id 			    AS id,
+					u_lrp_performance_group.name 		    AS groupname,
+					u_lrp_performance_group.isdefault 	    AS isdefault,
+                    u_lrp_performance_group.split_at_year   AS split_at_year,
+					testbandcount.testbandcount			    AS testbandcount,
+					testwindowcount.testwindowcount		    AS testwindowcount
+				FROM
+					u_lrp_performance_group u_lrp_performance_group
+                    LEFT JOIN (
+						SELECT
+							u_lrp_testband.groupid AS groupid,
+							COUNT(u_lrp_testband.id) AS testbandcount
+						FROM
+							u_lrp_testband u_lrp_testband
+						GROUP BY
+							u_lrp_testband.groupid
+					) testbandcount ON testbandcount.groupid = u_lrp_performance_group.id
+					LEFT JOIN (
+						SELECT
+							u_lrp_testwindow.groupid	AS groupid,
+							COUNT(u_lrp_testwindow.id)	AS testwindowcount
+						FROM
+							u_lrp_testwindow u_lrp_testwindow
+						GROUP BY
+							u_lrp_testwindow.groupid
+					) testwindowcount ON testwindowcount.groupid = u_lrp_performance_group.id
+				WHERE
+					u_lrp_performance_group.testdcid = :curtestdcid
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.getMainPageGradeScales.flat"
+            flattened="true"
+            tags="gradescaleitem">
+        <summary>UCSD LR Pro - Main Page Gradescales</summary>
+        <description>Gets any applicable gradescales based on current students sections school locations</description>
+        <args>
+            <arg name="curschoolid" required="true" description="entered schoolid" type="primitive" default="~(curschoolid)" />
+        </args>
+        <columns>
+            <column column="schools.abbreviation">school</column>
+            <column column="u_lrp_gs_order.sortorder">sortorder</column>
+            <column column="gradescaleitem.name">gsname</column>
+            <column column="gradescaleitem.description">lok</column>
+            <column column="u_lrp_gs_descriptions.detailed_description">description</column>
+            <column column="gradescaleitem.value">gsvalue</column>
+            <column column="u_lrp_color_list.colorcode">colorcode</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT
+                    schools.abbreviation                        AS school,
+                    u_lrp_gs_order.sortorder                    AS sortorder,
+                    gradescaleitem.name                         AS gsname,
+                    gradescaleitem.description                  AS lok,
+                    u_lrp_gs_descriptions.detailed_description  AS description,
+                    gradescaleitem."VALUE"                      AS gsvalue,
+                    u_lrp_color_list.colorcode                  AS colorcode
+                FROM
+                    gradescaleitem gradescaleitem
+                    INNER JOIN u_lrp_assign_gradescale u_lrp_assign_gradescale
+                        ON u_lrp_assign_gradescale.gradescaleid = gradescaleitem.gradescaleid
+                        AND ',' || u_lrp_assign_gradescale.schoolids || ',' LIKE '%,' || :curschoolid || ',%'
+                    INNER JOIN u_lrp_gs_descriptions u_lrp_gs_descriptions
+                        ON u_lrp_gs_descriptions.gradescaleitemdcid = gradescaleitem.dcid
+                    INNER JOIN u_lrp_gs_order u_lrp_gs_order
+                        ON u_lrp_gs_order.gradescaleitemdcid = gradescaleitem.dcid
+                        AND u_lrp_gs_order.hide != 1
+                        AND u_lrp_gs_order.school_number = :curschoolid
+                    LEFT JOIN u_lrp_color_list u_lrp_color_list
+                        ON u_lrp_color_list.id = u_lrp_gs_descriptions.lrp_color_list_id
+                    INNER JOIN schools schools ON schools.school_number = :curschoolid
+                ORDER BY
+                    2
+            ]]>
+        </sql>
+    </query>
+    <query name="us.ia.k12.urbandale.powerschool.lrngReqPro.getStuAltSchools.flat"
+            flattened="true"
+            tags="schools, students">
+        <summary>UCSD LR Pro - Main Page school list</summary>
+        <description>Gets any applicable schools based on a students enrollments.</description>
+        <args>
+            <arg name="curstudid" required="true" description="Current student ID" type="primitive" default="" />
+        </args>
+        <columns>
+            <column column="cc.schoolid">schoolid</column>
+        </columns>
+        <sql>
+            <![CDATA[
+                SELECT UNIQUE
+                    cc.schoolid AS schoolid
+                FROM
+                    cc cc
+                    INNER JOIN terms terms ON terms.schoolid = cc.schoolid 
+                        AND cc.termid = terms.id
+                        AND terms.yearid = :curyearid 
+                WHERE
+                    cc.studentid = :curstudid
+            ]]>
+        </sql>
+    </query>
+</queries>

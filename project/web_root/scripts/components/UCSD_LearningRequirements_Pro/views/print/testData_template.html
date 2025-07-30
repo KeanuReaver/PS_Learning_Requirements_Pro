@@ -1,0 +1,113 @@
+<div    class="box-round test-data-view opened"
+        data-ng-style="{'max-height': contentMaxHeight}">
+    <div    class="test-content-wrapper">
+        <h4>
+            {{ tranTags.student_test_data || ' Student Test Data ' }}
+        </h4>
+        <div class="testviews">
+            <!-- Left Column -->
+            <div class="leftColumn">
+                <div    class="test-record" 
+                        data-ng-repeat="test in leftColumn">
+                    <div class="test-cell">
+                        <h4>{{ test.testname }}</h4>
+                        <div    class="test-scores" 
+                                data-ng-repeat="record in test.scorerecords">
+                            <table class="grid">
+                                <thead class="lrp-test-labels">
+                                    <tr>
+                                        <th>{{ tranTags.area || 'Area' }}</th>
+                                        <th>{{ tranTags.grade || 'Grade' }}</th>
+                                        <th>{{ tranTags.window || 'Window' }}</th>
+                                        <th     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.accuracy || 'Accuracy' }}
+                                        </th>
+                                        <th     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.score || 'Score' }}
+                                        </th>
+                                        
+                                        <th style="width: 25%">{{ tranTags.proficiency || 'Proficiency' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-ng-bind="record.testscorename"></td>
+                                        <td data-ng-bind="record.test_grade"></td>
+                                        <td>{{ record.windowname }} - {{ record.test_date }}</td>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div>{{ record.percentscore }}%</div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div data-ng-style="previewColor(record.colorcode, '100%')" data-ng-bind="record.numscore" class="bubble-text"></div>
+                                        </td>
+                                        
+                                        <td style="width: 25%">
+                                            <div data-ng-style="previewColor(record.colorcode, '100%')" data-ng-bind="record.testbandname" class="bubble-text"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+            <!-- Right Column -->
+            <div class="rightColumn">
+                <div class="test-record" data-ng-repeat="test in rightColumn">
+                    <div class="test-cell">
+                        <h4>{{ test.testname }}</h4>
+                        <div class="test-scores" data-ng-repeat="record in test.scorerecords">
+                            <table class="grid">
+                                <thead class="lrp-test-labels">
+                                    <tr>
+                                        <th>{{ tranTags.area || 'Area' }}</th>
+                                        <th>{{ tranTags.grade || 'Grade' }}</th>
+                                        <th>{{ tranTags.window || 'Window' }}</th>
+                                        <th     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.accuracy || 'Accuracy' }}
+                                        </th>
+                                        <th     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.score || 'Score' }}
+                                        </th>
+                                        
+                                        <th style="width: 25%">{{ tranTags.proficiency || 'Proficiency' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-ng-bind="record.testscorename"></td>
+                                        <td data-ng-bind="record.test_grade"></td>
+                                        <td>{{ record.windowname }} - {{ record.test_date }}</td>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div>{{ record.percentscore }}%</div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div    data-ng-style="previewColor(record.colorcode, '100%')" 
+                                                    data-ng-bind="record.numscore" 
+                                                    class="bubble-text"></div>
+                                        </td>
+                                        
+                                        <td style="width: 25%">
+                                            <div    data-ng-style="previewColor(record.colorcode, '100%')" 
+                                                    data-ng-bind="record.testbandname" 
+                                                    class="bubble-text"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

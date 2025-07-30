@@ -1,0 +1,142 @@
+<div id="lrp-asmt-drawer" class="drawer">
+    <div id="lrp-drawer-header">
+        <div class="drawer-grabber" 
+            data-ng-mousedown="startDrag($event)"
+            data-ng-touchstart="startDrag($event)"
+            data-ng-swipe-right="closeDrawer()">
+        </div>
+        <div    class="button-row lrp-drawer-button-panel" 
+                data-ng-mousedown="startDrag($event)"
+                data-ng-touchstart="startDrag($event)"
+                data-ng-swipe-right="closeDrawer()">
+            <h2 data-ng-bind-html="trustedHtml(asmtDisplay.standardName)"></h2>
+            <button type="button" data-ng-click="closeDrawer()"><strong>X</strong></button>
+        </div>
+        <div    class="lrp-comments"
+                data-ng-show="asmtDisplay.description.length > 0"
+                data-ng-mousedown="startDrag($event)"
+                data-ng-touchstart="startDrag($event)"
+                data-ng-swipe-right="closeDrawer()">
+            <div>
+                <div    class="lrp-comment-button"
+                        data-ng-click="asmtDisplay.desexpanded = !asmtDisplay.desexpanded"
+                        data-ng-class="{'expanded': asmtDisplay.desexpanded}">
+                    {{ tranTags.description || 'Description' }}
+                </div>
+                <div    class="lrp-comment-details"
+                        data-ng-class="{'expanded': asmtDisplay.desexpanded}">
+                    <div    class="lrp-table-row"
+                            data-ng-show="asmtDisplay.desexpanded">
+                        <div class="lrp-table-cell lrp-table-cell-left">
+                            <ul data-ng-bind-html="fixDesc(asmtDisplay.description)"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div    class="lrp-comments"
+                data-ng-show="asmtDisplay.assignments.length > 0">
+            <div class="">
+                <div    class="lrp-comment-button"
+                        data-ng-click="openStdGraph(asmtDisplay)"
+                        data-ng-class="{'expanded': asmtDisplay.graphExpand}">
+                    {{ tranTags.assignment_graph || 'Assignment Graph' }}
+                </div>
+                <div    class="lrp-comment-details"
+                        data-ng-class="{'expanded': asmtDisplay.graphExpand}">
+                    <div    class="lrp-table-row"
+                            data-ng-show="asmtDisplay.graphExpand">
+                        <div class="chart-scroll-container">
+                            <div    fusioncharts 
+                                    id="lrp-std-hist-chart" 
+                                    style="display: inline-block;"
+                                    width="1000"
+                                    height="400"
+                                    type="MSCombi2D" 
+                                    dataSource="{{stdHistGraph}}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="lrp-drawer-content">
+        <div    class="lrp-table-row lrp-assignment-data lrp-table-assignment-row"
+                data-ng-repeat-start="asmt in asmtDisplay.assignments">
+            <div class="lrp-mobile-row">
+                <div class="lrp-mobile-row">
+                    <div class="lrp-mobile-cell lrp-table-cell-icons" data-ng-bind="'Name: ' + asmt.asmt"></div>
+                </div>
+                <div class="lrp-mobile-row">
+                    <div class="lrp-mobile-cell lrp-table-cell-icons" data-ng-bind="'Due: ' + asmt.due_date"></div>
+                </div>
+                <div class="lrp-mobile-row">
+                    <div class="lrp-table-cell">
+                        <div class="lrp-table-cell-icons">
+                            <span   tooltip-follow
+                                    data-tooltip-title="{{tranTags.collected || 'collected'}}"
+                                    class="bubble-text keyIcon collected lrp-table-cell-content"
+                                    data-ng-show="asmt.collected == '1'"
+                                    data-title="tranTags.collected || 'collected">
+                            </span>
+                            <span   tooltip-follow
+                                    data-tooltip-title="{{tranTags.late || 'Late'}}"
+                                    class="bubble-text keyIcon late lrp-table-cell-content"
+                                    data-ng-show="asmt.late == '1'"
+                                    data-title="tranTags.late || 'Late'">
+                            </span>
+                            <span   tooltip-follow
+                                    data-tooltip-title="{{tranTags.exempt || 'Exempt'}}"
+                                    class="bubble-text keyIcon exempt lrp-table-cell-content"
+                                    data-ng-show="asmt.exempt== '1'"
+                                    data-title="tranTags.exempt || 'Exempt'">
+                            </span>
+                            <span   tooltip-follow
+                                    data-tooltip-title="{{tranTags.missing || 'Missing'}}"
+                                    class="bubble-text keyIcon missing lrp-table-cell-content"
+                                    data-ng-show="asmt.missing == '1'"
+                                    data-title="tranTags.missing || 'Missing'">
+                            </span>
+                            <span   tooltip-follow
+                                    data-tooltip-title="{{tranTags.absent || 'Absent'}}"
+                                    class="bubble-text keyIcon absent lrp-table-cell-content"
+                                    data-ng-show="asmt.absent == '1'"
+                                    data-title="tranTags.absent || 'Absent'">
+                            </span>
+                            <span   tooltip-follow
+                                    data-tooltip-title="{{tranTags.incomplete || 'Incomplete'}}"
+                                    class="bubble-text keyIcon incomplete lrp-table-cell-content"
+                                    data-ng-show="asmt.incomplete == '1'"
+                                    data-title="tranTags.incomplete || 'Incomplete'">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lrp-mobile-score-row">
+                <div    class="lrp-table-cell lrp-flex-tenth bubble-text lrp-big">
+                    <div    class="bubble-text lrp-big lrp-table-cell-icons"
+                            data-ng-style="getBkgColor(asmt.color)"
+                            data-ng-bind="asmt.score">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div    class="lrp-table-spacer-content lrp-table-collapsible-row expanded"
+                data-ng-repeat-end
+                data-ng-style="selectedStyle(asmt, '#736aa5')">
+            <div class="lrp-table lrp-description">
+                <div class="lrp-table-row">
+                    <div class="lrp-table-cell lrp-flex-quarter">
+                        {{ tranTags.description || 'Description' }}
+                    </div>
+                    <div    class="lrp-table-cell lrp-table-cell-left">
+                        <div>
+                            <div data-ng-bind-html="asmt.description"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

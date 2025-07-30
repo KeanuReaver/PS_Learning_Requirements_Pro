@@ -1,0 +1,159 @@
+<div    id="test-data-header"
+        data-ng-click="showTestData = !showTestData"
+        data-ng-class="{'lrp-test-content-hidden-button': !showTestData, 'lrp-test-content-shown-button': showTestData}">
+    <span data-ng-show="!showTestData"> Student Test Data </span>
+    <span data-ng-show="showTestData"> - </span>
+</div>
+<div    class="box-round test-data-view"
+        data-ng-show="showTestData"
+        data-ng-class="{'animating': isAnimating, 'opened': showTestData}"
+        data-ng-style="{'max-height': contentMaxHeight}">
+    <div    class="test-content-wrapper"
+            data-ng-class="{'content-hidden': isAnimating}">
+        <div class="testviews">
+            <!-- Left Column -->
+            <div class="leftColumn">
+                <div    class="test-record" 
+                        data-ng-repeat="test in leftColumn">
+                    <div class="test-cell">
+                        <h4>{{ test.testname }}</h4>
+                        <div    class="test-scores" 
+                                data-ng-repeat="record in test.scorerecords">
+                            <table class="grid lrp-test-info-table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong data-ng-bind="record.testscorename"></strong>
+                                        </td>
+                                        <td>
+                                            {{ record.windowname }} - {{ record.test_date }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="grid lrp-test-grade-table lrp-test-info-table">
+                                <tbody>
+                                    <tr>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div><strong>Accuracy:</strong></div>
+                                        </td>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div>{{ record.percentscore }}%</div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div><strong>Numscore:</strong></div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div data-ng-style="previewColor(record.colorcode, '100%')" data-ng-bind="record.numscore" class="bubble-text"></div>
+                                        </td>
+                                        
+                                        <td style="width: 25%">
+                                            <div data-ng-style="previewColor(record.colorcode, '100%')" data-ng-bind="record.testbandname" class="bubble-text"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="lrp-mobile-test-graph-data">
+                                <div    class="lrp-comment-button"
+                                        data-ng-click="openTestGraph(record)"
+                                        data-ng-class="{'expanded': record.graphExpand}">
+                                    Graph
+                                </div>
+                                <div    class="lrp-comment-details"
+                                        data-ng-class="{'expanded': record.graphExpand}">
+                                    <div    class="lrp-table-row"
+                                            data-ng-show="record.graphExpand">
+                                        <div class="chart-scroll-container">
+                                            <div    fusioncharts 
+                                                    data-ng-if="record.testGraphData"
+                                                    style="display: inline-block;"
+                                                    width="1000"
+                                                    height="400"
+                                                    type="MSCombi2D" 
+                                                    dataSource="{{record.testGraphData}}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+            <!-- Right Column -->
+            <div class="rightColumn">
+                <div class="test-record" data-ng-repeat="test in rightColumn">
+                    <div class="test-cell">
+                        <h4>{{ test.testname }}</h4>
+                        <div class="test-scores" data-ng-repeat="record in test.scorerecords">
+                            <table class="grid lrp-test-info-table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong data-ng-bind="record.testscorename"></strong>
+                                        </td>
+                                        <td>
+                                            {{ record.windowname }} - {{ record.test_date }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="grid lrp-test-grade-table lrp-test-info-table">
+                                <tbody>
+                                    <tr>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div><strong>Accuracy:</strong></div>
+                                        </td>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div>{{ record.percentscore }}%</div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div><strong>Numscore:</strong></div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div data-ng-style="previewColor(record.colorcode, '100%')" data-ng-bind="record.numscore" class="bubble-text"></div>
+                                        </td>
+                                        
+                                        <td style="width: 25%">
+                                            <div data-ng-style="previewColor(record.colorcode, '100%')" data-ng-bind="record.testbandname" class="bubble-text"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="lrp-mobile-test-graph-data">
+                                <div    class="lrp-comment-button"
+                                        data-ng-click="openTestGraph(record)"
+                                        data-ng-class="{'expanded': record.graphExpand}">
+                                    Graph
+                                </div>
+                                <div    class="lrp-comment-details"
+                                        data-ng-class="{'expanded': record.graphExpand}">
+                                    <div    class="lrp-table-row"
+                                            data-ng-show="record.graphExpand">
+                                        <div class="chart-scroll-container">
+                                            <div    fusioncharts 
+                                                    data-ng-if="record.testGraphData"
+                                                    style="display: inline-block;"
+                                                    width="1000"
+                                                    height="400"
+                                                    type="MSCombi2D" 
+                                                    dataSource="{{record.testGraphData}}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,142 @@
+<permission_mappings>
+    <permission name="/admin/home.html">
+        <implies allow="post">/ws/schema/table/u_lrngreqpro_colors</implies>
+        <implies allow="put">/ws/schema/table/u_lrngreqpro_colors/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrngreqpro_colors/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_colors/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_colors/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_colors</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrngreqpro_pref</implies>
+        <implies allow="put">/ws/schema/table/u_lrngreqpro_pref/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrngreqpro_pref/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_pref/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_pref/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_pref</implies>
+        
+        <implies allow="post">/ws/schema/table/u_lrngreqpro_stdcat</implies>
+        <implies allow="put">/ws/schema/table/u_lrngreqpro_stdcat/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrngreqpro_stdcat/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_stdcat/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_stdcat/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrngreqpro_stdcat</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_assign_gradescale</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_assign_gradescale/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_assign_gradescale/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_assign_gradescale/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_assign_gradescale/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_assign_gradescale</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_color_list</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_color_list/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_color_list/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_color_list/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_color_list/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_color_list</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_gs_descriptions</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_gs_descriptions/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_gs_descriptions/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_gs_descriptions/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_gs_descriptions/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_gs_descriptions</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_standard_categories</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_standard_categories/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_standard_categories/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_standard_categories/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_standard_categories/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_standard_categories</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_testscore_ext</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_testscore_ext/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_testscore_ext/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testscore_ext/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testscore_ext/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testscore_ext</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_gs_order</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_gs_order/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_gs_order/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_gs_order/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_gs_order/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_gs_order</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_testband</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_testband/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_testband/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testband/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testband/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testband</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_performance_bands</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_performance_bands/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_performance_bands/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_performance_bands/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_performance_bands/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_performance_bands</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_testwindow</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_testwindow/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_testwindow/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testwindow/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testwindow/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_testwindow</implies>
+
+        <implies allow="post">/ws/schema/table/u_lrp_performance_group</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_performance_group/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_performance_group/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_performance_group/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_performance_group/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_performance_group</implies>
+
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.proLrngReq.classlist.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.stdList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.asmtList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.comments.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.student_test_scores.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.test_rules.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.color_list.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.stdAssocCat.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.allStdCats.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.scoreColorList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.gradeScaleList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.schoolist.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.gradescaleitems.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.uniqueGrades.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.findGSIColorMatch.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.sortScaleItems.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.testBandsAll.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.testWindowsAll.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.performanceBands.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.performanceGroups.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.getMainPageGradeScales.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.getStuAltSchools.flat</implies>
+    </permission>
+
+    <permission name="/admin/students/home.html">
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.proLrngReq.classlist.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.stdList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.asmtList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.comments.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.student_test_scores.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.test_rules.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.color_list.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.stdAssocCat.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.allStdCats.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.scoreColorList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.gradeScaleList.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.schoolist.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.gradescaleitems.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.uniqueGrades.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.findGSIColorMatch.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.sortScaleItems.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.testBandsAll.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.testWindowsAll.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.performanceBands.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.performanceGroups.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.getMainPageGradeScales.flat</implies>
+        <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.getStuAltSchools.flat</implies>
+    </permission>
+</permission_mappings>

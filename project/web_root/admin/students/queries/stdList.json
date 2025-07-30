@@ -1,0 +1,56 @@
+[~[tlist_sql;
+SELECT UNIQUE
+courses.course_name                                 AS course_name,
+standard.identifier                                 AS standardIdentifier,
+standard.name                                       AS standardName,
+termbins.storecode                                  AS storecode,
+standardgradesection.standardgrade                  AS score,
+TO_CHAR(standard.description)                       AS description,
+CASE WHEN u_lrp_standard_categories.name IS NULL 
+    THEN 'Academic Standards'
+    ELSE u_lrp_standard_categories.name
+END                                                 AS category,
+u_lrp_standard_categories.style                     AS catstyle,
+termbins.date1                                      AS startdate,
+termbins.date2                                      AS enddate,
+CASE u_lrp_standard_categories.academic 
+    WHEN 0 THEN 0
+    ELSE 1
+END                                                 AS avg
+FROM
+students students
+INNER JOIN cc cc ON cc.studentid = students.id
+INNER JOIN sections sections ON sections.id = cc.sectionid
+INNER JOIN courses courses ON courses.course_number = sections.course_number
+INNER JOIN standardcourseassoc standardcourseassoc ON standardcourseassoc.coursesdcid = courses.dcid
+INNER JOIN standard standard ON standardcourseassoc.standardid = standard.standardid
+INNER JOIN termbins termbins ON termbins.termid = cc.termid AND termbins.schoolid = cc.schoolid
+LEFT JOIN standardgradesection standardgradesection ON students.dcid = standardgradesection.studentsdcid
+    AND standardgradesection.standardid = standard.standardid
+    AND standardgradesection.storecode = termbins.storecode
+    AND sections.dcid = standardgradesection.sectionsdcid
+LEFT JOIN u_lrngreqpro_stdCat u_lrngreqpro_stdCat ON u_lrngreqpro_stdCat.standardstandardid = standard.standardid
+LEFT JOIN u_lrp_standard_categories u_lrp_standard_categories 
+    ON u_lrp_standard_categories.id = u_lrngreqpro_stdCat.category
+WHERE
+students.id = ~(gpv.curstudid)
+AND termbins.yearid = ~(gpv.curyearid)
+AND standard.isassignmentallowed = 1
+AND standard.isactive = 1
+AND standardcourseassoc.isactive = 1
+AND standard.yearid = ~(gpv.curyearid)
+ORDER BY
+7, termbins.date1, termbins.date2
+]{
+   "course_name": "~(course_name;Json)",
+   "standardIdentifier": "~(standardIdentifier)",
+   "standardName": "~(standardName)",
+   "storecode": "~(storecode)",
+   "score": "~(score)",
+   "description": "~(description;json)",
+   "category": "~(category)",
+   "catstyle": "~(catstyle;json)",
+   "startdate": "~(startdate)",
+   "enddate": "~(enddate)",
+   "avg": "~(avg)"
+},[/tlist_sql]{}]

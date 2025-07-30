@@ -1,0 +1,201 @@
+<div    lrp-std-drawer
+        data-std-display="stdDisplay"
+        data-dark-mode="darkMode"
+        data-show-ungraded="showUngraded"
+        data-tran-tags="tranTags">
+</div>
+<div class="mobile-tableKey">
+    <span><strong>{{ tranTags.key || 'Key' }}:  </strong></span>
+    <div class="mobile-keyItems">
+        <span   tooltip-follow
+                data-tooltip-title="{{tranTags.collected || 'collected'}}"
+                class="keyIcon keyItem collected"
+                data-title="tranTags.collected || 'collected'">- {{ tranTags.collected || 'collected' }} </span>
+        <span   tooltip-follow
+                data-tooltip-title="{{tranTags.late || 'Late'}}"
+                class="keyIcon keyItem late"
+                data-title="tranTags.late || 'late'">- {{ tranTags.late || 'late' }} </span>      
+        <span   tooltip-follow
+                data-tooltip-title="{{tranTags.exempt || 'Exempt'}}"
+                class="keyIcon keyItem exempt"
+                data-title="tranTags.exempt || 'exempt'">- {{ tranTags.exempt || 'exempt' }} </span>      
+        <span   tooltip-follow
+                data-tooltip-title="{{tranTags.missing || 'Missing'}}"
+                class="keyIcon keyItem missing"
+                data-title="tranTags.missing || 'missing'">- {{ tranTags.missing || 'missing' }} </span>      
+        <span   tooltip-follow
+                data-tooltip-title="{{tranTags.absent || 'Absent'}}"
+                class="keyIcon keyItem absent"
+                data-title="tranTags.absent || 'absent'">- {{ tranTags.absent || 'absent' }} </span>  
+        <span   tooltip-follow
+                data-tooltip-title="{{tranTags.incomplete || 'Incomplete'}}"
+                class="keyIcon keyItem incomplete"
+                data-title="tranTags.incomplete || 'incomplete'">- {{ tranTags.incomplete || 'incomplete' }} </span>
+    </div>
+</div>
+<div    class="lrp-table"
+        data-ng-show="shouldShow(classList, 'current')">
+    <div class="lrp-table-header">
+        <div class="lrp-table-header-cell">{{ tranTags.current_courses || 'Current Courses' }}</div>
+    </div>
+    <div    class="lrp-table-row"
+            data-ng-repeat="class in classList | filter: filterCurrent | orderBy:'period'"
+            data-ng-style="getBkgColor(class.colorcode)">
+        <div class="lrp-table-cell-left">
+            <div class="lrp-mobile-row">
+                <div class="lrp-mobile-cell">
+                    <div    class="bubble-text">
+                        <button class="lrp-mobile-button"
+                                type="button"
+                                data-ng-click="openStdDrawer(class)">
+                            +
+                        </button>
+                    </div>
+                </div>
+                <div class="lrp-table-cell">
+                    <div class="lrp-mobile-row">
+                        <div class="lrp-mobile-cell">
+                            <div    class="lrp-table-cell-content bubble-text"
+                                    data-ng-bind="class.period">
+                            </div>
+                        </div>
+                        <div class="lrp-mobile-cell">
+                            <div    class="lrp-table-cell-content bubble-text lrp-table-cell-left" 
+                                    data-ng-bind-html="trustedHtml(class.course_name)">
+                            </div>
+                        </div>
+                        <div class="lrp-mobile-cell">
+                            <div    class="lrp-table-cell-icons"
+                                    data-ng-show="class.lateCount > 0 || class.missingCount > 0 || class.incompCount > 0">
+                                <span   tooltip-follow
+                                        data-tooltip-title="{{tranTags.late_assignment_count_details || 'late assignment count: click to expand'}}"
+                                        class="bubble-text keyIcon late lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                                        data-ng-show="class.lateCount > 0"
+                                        data-title="tranTags.late_assignment_count_details || 'late assignment count: click to expand'">
+                                    - {{ class.lateCount }}
+                                </span>
+                                <span   tooltip-follow
+                                        data-tooltip-title="{{tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'}}"
+                                        class="bubble-text keyIcon missing lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                                        data-ng-show="class.missingCount > 0"
+                                        data-title="tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'">
+                                    - {{ class.missingCount }}
+                                </span>
+                                <span   tooltip-follow
+                                        data-tooltip-title="{{tranTags.incomplete_assignment_count_details || 'incomplete assignment count: click to expand'}}"
+                                        class="bubble-text keyIcon incomplete lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                                        data-ng-show="class.incompCount > 0"
+                                        data-title="tranTags.incomplete_assignment_count_details || incomplete assignment count: click to expand">
+                                    - {{ class.incompCount }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lrp-mobile-score-row">
+                <div class="lrp-table lrp-score-table" data-ng-show="class.grades.length > 0">
+                    <!-- Table Header -->
+                    <div class="lrp-table-header">
+                        <div class="lrp-table-header-cell lrp-score-header-cell bubble-text" 
+                             data-ng-repeat="grade in class.grades">
+                            {{ grade.storecode }}
+                        </div>
+                    </div>
+                    <!-- Table Row -->
+                    <div class="lrp-table-row">
+                        <div class="lrp-table-cell lrp-score-cell bubble-text" 
+                             data-ng-repeat="grade in class.grades">
+                            {{ grade.grade || '--' }}
+                        </div>
+                    </div>
+                </div>
+                <div    class="lrp-circle" 
+                        data-ng-style="getBkgColor(class.avgColor)"
+                        data-ng-show="!(class.grades.length > 0) && class.avg == '1'">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div    class="lrp-table"
+        data-ng-show="shouldShow(classList)">
+    <div class="lrp-table-header">
+        <div class="lrp-table-header-cell">{{ tranTags.prev_courses_this_year || 'Previous Courses This Year' }}</div>
+    </div>
+    <div    class="lrp-table-row"
+            data-ng-repeat="class in classList | filter: filterPrev"
+            data-ng-style="getBkgColor(class.colorcode)">
+        <div class="lrp-table-cell-left">
+            <div class="lrp-mobile-row">
+                <div class="lrp-mobile-cell">
+                    <div    class="bubble-text">
+                        <button class="lrp-mobile-button"
+                                type="button"
+                                data-ng-click="openStdDrawer(class)">
+                            +
+                        </button>
+                    </div>
+                </div>
+                <div class="lrp-table-cell">
+                    <div class="lrp-mobile-row">
+                        <div class="lrp-mobile-cell">
+                            <div    class="lrp-table-cell-content bubble-text lrp-table-cell-left" 
+                                    data-ng-bind-html="trustedHtml(class.course_name)">
+                            </div>
+                        </div>
+                        <div class="lrp-mobile-cell">
+                            <div    class="lrp-table-cell-icons"
+                                    data-ng-show="class.lateCount > 0 || class.missingCount > 0 || class.incompCount > 0">
+                                <span   tooltip-follow
+                                        data-tooltip-title="{{tranTags.late_assignment_count_details || 'late assignment count: click to expand'}}"
+                                        class="bubble-text keyIcon late lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                                        data-ng-show="class.lateCount > 0"
+                                        data-title="tranTags.late_assignment_count_details || 'late assignment count: click to expand'">
+                                    - {{ class.lateCount }}
+                                </span>
+                                <span   tooltip-follow
+                                        data-tooltip-title="{{tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'}}"
+                                        class="bubble-text keyIcon missing lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                                        data-ng-show="class.missingCount > 0"
+                                        data-title="tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'">
+                                    - {{ class.missingCount }}
+                                </span>
+                                <span   tooltip-follow
+                                        data-tooltip-title="{{tranTags.incomplete_assignment_count_details || 'incomplete assignment count: click to expand'}}"
+                                        class="bubble-text keyIcon incomplete lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                                        data-ng-show="class.incompCount > 0"
+                                        data-title="tranTags.incomplete_assignment_count_details || incomplete assignment count: click to expand">
+                                    - {{ class.incompCount }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lrp-mobile-score-row">
+                <div class="lrp-table lrp-score-table" data-ng-show="class.grades.length > 0">
+                    <!-- Table Header -->
+                    <div class="lrp-table-header">
+                        <div class="lrp-table-header-cell lrp-score-header-cell bubble-text" 
+                             data-ng-repeat="grade in class.grades">
+                            {{ grade.storecode }}
+                        </div>
+                    </div>
+                    <!-- Table Row -->
+                    <div class="lrp-table-row">
+                        <div class="lrp-table-cell lrp-score-cell bubble-text" 
+                             data-ng-repeat="grade in class.grades">
+                            {{ grade.grade || '--' }}
+                        </div>
+                    </div>
+                </div>
+                <div    class="lrp-circle" 
+                        data-ng-style="getBkgColor(class.avgColor)"
+                        data-ng-show="!(class.grades.length > 0) && class.avg == '1'">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+<script id="learning-requirements-site-map-link">
+    <h2>~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</h2>
+    <ul>
+        <li><a href="/guardian/learning_requirements_pro.html">~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</a></li>
+    </ul>
+</script>
+
+<script>
+    $j(document).ready( function() {
+        //turns above script's html content into a variable
+        let learning_requirement_link = $j($j('#learning-requirements-site-map-link').html());
+		$j('#smContainer').prepend(learning_requirement_link);
+	});
+</script>

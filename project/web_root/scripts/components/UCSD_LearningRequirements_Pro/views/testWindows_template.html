@@ -1,0 +1,150 @@
+<form   name="testWindowForm"
+        data-ng-show="showTestWindowView">
+    <div class="box-round">
+        <h2>
+            {{ curgroupname }} - Test Windows
+            <div class="button-row">
+                <button type="button" data-ng-click="showTestWindowView = false">Close</button>
+            </div>
+        </h2>
+        <table class="deletable-rows">
+            <thead>
+                <tr>
+                    <th class="sort-handle-column"></th>
+                    <th>Order</th>
+                    <th>Name</th>
+                    <th colspan="2">Window Start</th>
+                    <th colspan="2">Window End</th>
+                    <th class="delete-button-column"></th>
+                </tr>
+            </thead>
+            <tbody  ui-sortable="sortableWindowOptions"
+                    data-ng-model="testWindows">
+                <tr     data-ng-repeat="item in testWindows | orderBy: 'sortorder'"
+                        data-ng-class="{'selected-delete': item.deleteRecord == 1}">
+                    <td>
+                        <div class="lrpHandle"></div>
+                    </td>
+                    <td data-ng-bind="item.sortorder"></td>
+                    <td>
+                        <input  type="text"
+                                data-ng-model="item.windowname" 
+                                length="20"
+                                name="windowName{{$index}}"
+                                placeholder="Window Name" 
+                                data-ng-change="item.isdirty = '1'"
+                                required>
+                        <div    class="error-message" 
+                                data-ng-show="testWindowForm['windowName' + $index].$touched && testWindowForm['windowName' + $index].$invalid">
+                            Must give window a name!
+                        </div>
+                    </td>
+                    <td>
+                        <label>
+                            Month*
+                            <select data-ng-model="item.window_start_month" 
+                                    data-ng-change="item.isdirty = '1'"
+                                    name="testWindowStartMonth{{$index}}"
+                                    required>
+                                <option value="">Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </label>
+                        <div    class="error-message"
+                                data-ng-show="testWindowForm['testWindowStartMonth' + $index].$touched && testWindowForm['testWindowStartMonth' + $index].$invalid">
+                            Must choose a month!
+                        </div>
+                    </td>
+                    <td>
+                        <label>
+                            Day*
+                            <input  type="text"
+                                    data-ng-model="item.window_start_day"
+                                    name="windowStartDay{{$index}}"
+                                    size="2"
+                                    maxlength="2" 
+                                    placeholder="01"
+                                    data-ng-pattern="/^(0[1-9]|[12][0-9]|3[01])$/"
+                                    data-ng-change="item.isdirty = '1'"
+                                    required>
+                        </label>
+                        <div    class="error-message"
+                                data-ng-show="testWindowForm['windowStartDay' + $index].$touched && testWindowForm['windowStartDay' + $index].$invalid">
+                            Day must follow formatting 01-31!
+                        </div>
+                    </td>
+                    <td>
+                        <label>
+                            Month*
+                            <select data-ng-model="item.window_end_month"
+                                    name="testWindowEndMonth{{$index}}"
+                                    data-ng-change="item.isdirty = '1'"
+                                    required>
+                                <option value="">Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </label>
+                        <div    class="error-message"
+                                data-ng-show="testWindowForm['testWindowEndMonth' + $index].$touched && testWindowForm['testWindowEndMonth' + $index].$invalid">
+                            Must choose a month!
+                        </div>
+                    </td>
+                    <td>
+                        <label>
+                            Day*
+                            <input  type="text"
+                                    data-ng-model="item.window_end_day"
+                                    name="windowEndDay{{$index}}"
+                                    size="2"
+                                    maxlength="2"
+                                    placeholder="01"
+                                    data-ng-pattern="/^(0[1-9]|[12][0-9]|3[01])$/"
+                                    data-ng-change="item.isdirty = '1'"
+                                    required>
+                        </label>
+                        <div    class="error-message"
+                                data-ng-show="testWindowForm['windowEndDay' + $index].$touched && testWindowForm['windowEndDay' + $index].$invalid">
+                            Day must follow formatting 01-31!
+                        </div>
+                    </td>
+                    <td class="center-cell-content">
+                        <button type="button" data-ng-click="markWindowForDelete(item)">
+                            <span data-ng-show="item.deleteRecord != 1">X</span>
+                            <span data-ng-show="item.deleteRecord == 1">Undo</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        <button type="button" data-ng-click="addTestWindow()">Add Window</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="button-row">
+            <button type="button" data-ng-click="updateWindows()" data-ng-disabled="testWindowForm.$invalid">Submit</button>
+        </div>
+    </div>
+</form>

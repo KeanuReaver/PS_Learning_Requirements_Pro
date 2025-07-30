@@ -1,0 +1,186 @@
+<div    id="test-data-header"
+        role="button"
+        tabindex="0"
+        aria-expanded="{{showTestData}}"
+        aria-controls="test-data-container"
+        aria-label="Toggle to show or hide student test data"
+        data-ng-keypress="($event.key === 'Enter' || $event.key === ' ') && (showTestData = !showTestData)"
+        data-ng-click="showTestData = !showTestData"
+        data-ng-class="{'lrp-test-content-hidden-button': !showTestData, 'lrp-test-content-shown-button': showTestData}">
+    <span ng-show="!showTestData">{{ tranTags.student_test_data || 'Student Test Data' }}</span>
+    <span ng-show="showTestData">{{ tranTags.collapse || 'Collapse' }}</span>
+</div>
+<div    id="test-data-container"
+        class="box-round test-data-view"
+        role="region"
+        aria-labelledby="test-data-header"
+        data-ng-show="showTestData"
+        data-ng-class="{'animating': isAnimating, 'opened': showTestData}"
+        data-ng-style="{'max-height': contentMaxHeight}">
+    <div    class="test-content-wrapper"
+            data-ng-class="{'content-hidden': isAnimating}">
+        <h4>
+            {{ tranTags.student_test_data || 'Student Test Data' }}
+            <div    class="button-row" 
+                    role="group" 
+                    aria-labelledby="colorToggleLabel"
+                    style="display: inline-flex">
+                <span id="colorToggleLabel" class="toggle-label bold">
+                    Labels:
+                </span>
+            
+                <span aria-hidden="true" class="toggle-option bold">Off</span>
+            
+                <label class="lrp-switch">
+                    <input  type="checkbox"
+                            id="showColorsToggle"
+                            data-ng-model="showLabels"
+                            aria-label="Toggle to show or hide labels"
+                            data-ng-keypress="showLabels = !showLabels"
+                            role="switch">
+                    <span class="lrp-slider"></span>
+                </label>
+            
+                <span aria-hidden="true" class="toggle-option bold">On</span>
+            </div>
+        </h4>
+        <div    graph-popout 
+                data-graph-data="testHistGraph"
+                data-is-popup-open="isPopupOpen"
+                data-popup-title="popupTitle"
+                data-close-popup="closePopup()"
+                data-graph-type="'stackedcolumn2dline'"
+                data-tran-tags="tranTags"></div>   
+        <div class="testviews">
+            <!-- Left Column -->
+            <div class="leftColumn">
+                <div    class="test-record" 
+                        data-ng-repeat="test in leftColumn">
+                    <div class="test-cell">
+                        <h4>{{ test.testname }}</h4>
+                        <div    class="test-scores" 
+                                data-ng-repeat="record in test.scorerecords">
+                            <table class="grid" aria-label="{{ test.testname }} test results">
+                                <caption class="sr-only">{{ test.testname }} test results</caption>
+                                <thead data-ng-show="showLabels" class="lrp-test-labels">
+                                    <tr>
+                                        <th style="width: 10%"></th>
+                                        <th>{{ tranTags.area || 'Area' }}</th>
+                                        <th>{{ tranTags.grade || 'Grade' }}</th>
+                                        <th>{{ tranTags.window || 'Window' }}</th>
+                                        <th     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.accuracy || 'Accuracy' }}
+                                        </th>
+                                        <th     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.score || 'Score' }}
+                                        </th>
+                                        
+                                        <th style="width: 25%">{{ tranTags.proficiency || 'Proficiency' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr     tabindex="0" 
+                                            aria-label="Test name: {{ test.testname }}, grade: {{ record.test_grade }}, test date: {{ record.accessibleDate }}, score: {{ record.numscore }}, proficiency: {{ record.testbandname }}.">
+                                        <td style="width: 10%">
+                                            <button type="button" 
+                                                    data-ng-click="openPopup(record)"
+                                                    aria-label="View historical details for {{ test.testname }}.">
+                                                {{ tranTags.details || 'Details' }}
+                                            </button>
+                                        </td>
+                                        <td data-ng-bind="record.testscorename"></td>
+                                        <td data-ng-bind="record.test_grade"></td>
+                                        <td>
+                                            <span aria-hidden="true">{{ record.windowname }} - </span>
+                                            <time datetime="{{ record.isoDate }}">{{ record.accessibleDate }}</time>
+                                        </td>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div>{{ record.percentscore }}%</div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div    data-ng-style="previewColor(record.colorcode, '2em', 'auto')" 
+                                                    data-ng-bind="record.numscore" 
+                                                    class="bubble-text lrp-table-cell-icons"></div>
+                                        </td>
+                                        <td style="width: 25%">
+                                            <div    data-ng-style="previewColor(record.colorcode, '2em', 'auto')" 
+                                                    data-ng-bind="record.testbandname" 
+                                                    class="bubble-text lrp-table-cell-icons"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+            <!-- Right Column -->
+            <div class="rightColumn">
+                <div class="test-record" data-ng-repeat="test in rightColumn">
+                    <div class="test-cell">
+                        <h4>{{ test.testname }}</h4>
+                        <div class="test-scores" data-ng-repeat="record in test.scorerecords">
+                            <table class="grid" aria-label="{{ test.testname }} test results">
+                                <caption class="sr-only">{{ test.testname }} test results</caption>
+                                <thead data-ng-show="showLabels" class="lrp-test-labels">
+                                    <tr>
+                                        <th style="width: 10%"></th>
+                                        <th>{{ tranTags.area || 'Area' }}</th>
+                                        <th>{{ tranTags.grade || 'Grade' }}</th>
+                                        <th>{{ tranTags.window || 'Window' }}</th>
+                                        <th     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.accuracy || 'Accuracy' }}
+                                        </th>
+                                        <th     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            {{ tranTags.score || 'Score' }}
+                                        </th>
+                                        <th style="width: 25%">{{ tranTags.proficiency || 'Proficiency' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr     tabindex="0"
+                                            aria-label="Test name: {{ test.testname }}, grade: {{ record.test_grade }}, test date: {{ record.accessibleDate }}, score: {{ record.numscore }}, proficiency: {{ record.testbandname }}.">
+                                        <td style="width: 10%">
+                                            <button type="button" 
+                                                    data-ng-click="openPopup(record)"
+                                                    aria-label="View historical details for {{ test.testname }}.">
+                                                {{ tranTags.details || 'Details' }}
+                                            </button>
+                                        </td>
+                                        <td data-ng-bind="record.testscorename"></td>
+                                        <td data-ng-bind="record.test_grade"></td>
+                                        <td>
+                                            <span aria-hidden="true">{{ record.windowname }} - </span>
+                                            <time datetime="{{ record.isoDate }}">{{ record.accessibleDate }}</time>
+                                        </td>
+                                        <td     data-ng-show="record.percentscore !== '' && record.percentscore !== '0'"
+                                                style="width: 10%">
+                                            <div>{{ record.percentscore }}%</div>
+                                        </td>
+                                        <td     data-ng-show="record.numscore !== '' && record.numscore !== '0'"
+                                                style="width: 10%">
+                                            <div    data-ng-style="previewColor(record.colorcode, '2em', 'auto')" 
+                                                    data-ng-bind="record.numscore" 
+                                                    class="bubble-text lrp-table-cell-icons"></div>
+                                        </td>
+                                        <td style="width: 25%">
+                                            <div    data-ng-style="previewColor(record.colorcode, '2em', 'auto')" 
+                                                    data-ng-bind="record.testbandname" 
+                                                    class="bubble-text lrp-table-cell-icons"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

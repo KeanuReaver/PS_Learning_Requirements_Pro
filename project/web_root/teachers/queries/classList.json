@@ -1,0 +1,130 @@
+[~[tlist_sql;
+    SELECT
+        class_data.course_name              AS course_name,
+        class_data.term                     AS term,
+        class_data.suppress                 AS suppress,
+        class_data.storecode                AS storecode,
+        class_data.class_grade              AS class_grade,
+        class_data.sched_department         AS sched_department, 
+        class_data.iscurrent                AS iscurrent,
+        class_data.period                   AS period,
+        class_data.section_description      AS section_description,
+        class_data.class_school             AS class_school,
+        class_data.termid                   AS cstermid,
+        u_lrngreqpro_colors.colorcode       AS colorcode
+    FROM
+    (
+        SELECT UNIQUE
+            courses.course_name                                                             AS course_name,
+            terms.abbreviation                                                              AS term,
+            termbins.suppressltrgrd                                                         AS suppress,
+            CASE WHEN termbins.suppressltrgrd != 1 
+                THEN CASE WHEN storedgrades.grade IS NOT NULL THEN storedgrades.storecode
+                    ELSE termbins.storecode
+                END
+            END                                                                             AS storecode,
+            CASE WHEN termbins.suppressltrgrd != 1 
+                THEN CASE WHEN storedgrades.grade IS NOT NULL THEN storedgrades.grade
+                    WHEN storedgrades.grade IS NULL AND pgfinalgrades.grade IS NOT NULL
+                        THEN pgfinalgrades.grade
+                END
+            END                                                                             AS class_grade,
+            CASE WHEN courses.credittype IS NOT NULL
+                THEN courses.credittype
+                ELSE courses.sched_department
+            END                                                                             AS sched_department,
+            CASE WHEN courses.credittype IS NOT NULL
+                THEN 'Credit'
+                ELSE 'Department'
+            END                                                                             AS colortype,
+            CASE WHEN SYSDATE BETWEEN cc.dateenrolled AND cc.dateleft THEN 1
+                WHEN cc.dateenrolled > SYSDATE THEN -1 
+                ELSE 0
+            END 																            AS iscurrent,
+            CASE WHEN SYSDATE BETWEEN cc.dateenrolled AND cc.dateleft 
+                THEN sections.external_expression 
+            END 																            AS period,
+            TO_CHAR(sections.teacherdescr) 										            AS section_description,
+            schools.abbreviation                                                            AS class_school,
+            CASE WHEN termbinattrib.isexcludedadmin IS NULL 
+                THEN 0 
+                ELSE termbinattrib.isexcludedadmin
+            END                                                                             AS isExcludedAdmin,
+            CASE WHEN termbinattrib.isexcludedteacher IS NULL
+                THEN 0
+                ELSE termbinattrib.isexcludedteacher
+            END                                                                             AS isExcludedTeacher,
+            CASE WHEN lrp_school_pref.credittypes_to_hide IS NOT NULL
+                    AND courses.credittype IS NOT NULL
+                THEN CASE WHEN INSTR(lrp_school_pref.credittypes_to_hide, courses.credittype) = 0
+                    THEN 0 ELSE 1
+                END
+                ELSE 0
+            END                                                                             AS hideCredit,
+            CASE WHEN lrp_school_pref.departments_to_hide IS NOT NULL
+                    AND courses.sched_department IS NOT NULL
+                THEN CASE WHEN INSTR(lrp_school_pref.departments_to_hide, courses.sched_department) = 0
+                    THEN 0 ELSE 1
+                END
+                ELSE 0
+            END                                                                             AS hideDep,
+            sections.termid                                                                 AS termid
+        FROM
+            students students
+            JOIN cc cc ON cc.studentid = students.id
+            INNER JOIN sections sections ON sections.id = cc.sectionid
+            INNER JOIN courses courses ON courses.course_number = sections.course_number
+            INNER JOIN terms terms ON terms.yearid = ~(gpv.curyearid)
+                AND terms.schoolid = students.schoolid
+                AND terms.id = cc.termid
+            INNER JOIN termbins termbins ON termbins.termid = cc.termid
+                AND termbins.schoolid = cc.schoolid
+            LEFT JOIN pgfinalgrades pgfinalgrades ON pgfinalgrades.sectionid = sections.id
+                AND pgfinalgrades.studentid = students.id
+                AND pgfinalgrades.startdate = terms.firstday
+                AND pgfinalgrades.enddate = terms.lastday
+            LEFT JOIN storedgrades storedgrades ON storedgrades.studentid = students.id
+                AND cc.sectionid = storedgrades.sectionid
+                AND storedgrades.storecode = termbins.storecode
+            LEFT JOIN termbinattrib termbinattrib ON termbins.dcid = termbinattrib.termbinsdcid
+            INNER JOIN schools schools ON cc.schoolid = schools.school_number
+            LEFT JOIN (
+                SELECT
+                    students.dcid AS studentsdcid,
+                    u_lrngreqpro_pref.credittypes_to_hide AS credittypes_to_hide,
+                    u_lrngreqpro_pref.departments_to_hide AS departments_to_hide,
+                    u_lrngreqpro_pref.force_hide AS force_hide
+                FROM
+                    students students
+                    INNER JOIN schools schools ON schools.school_number = students.schoolid
+                    LEFT JOIN u_lrngreqpro_pref u_lrngreqpro_pref ON u_lrngreqpro_pref.schoolsdcid = schools.dcid
+            ) lrp_school_pref ON lrp_school_pref.studentsdcid = students.dcid
+            
+        WHERE
+            students.id = ~(gpv.curstudid)
+            AND (lrp_school_pref.force_hide != 1 OR lrp_school_pref.force_hide IS NULL)
+    ) class_data
+    LEFT JOIN u_lrngreqpro_colors u_lrngreqpro_colors ON u_lrngreqpro_colors.credittype = class_data.sched_department
+        AND u_lrngreqpro_colors.typename = class_data.colortype
+    WHERE
+        class_data.isexcludedadmin != 1
+        AND class_data.isexcludedteacher != 1
+        AND class_data.hideCredit != 1
+        AND class_data.hideDep != 1
+        AND class_data.sched_department IS NOT NULL
+    ORDER BY
+        11
+]{
+    "course_name": "~(course_name;Json)",
+    "term": "~(term)",
+    "suppress": "~(suppress)",
+    "storecode": "~(storecode)",
+    "class_grade": "~(class_grade)",
+    "sched_department": "~(sched_department)",
+    "iscurrent": "~(iscurrent)",
+    "period": "~(period)",
+    "section_description": "~(section_description)",
+    "class_school": "~(class_school)",
+    "cstermid": "~(cstermid)",
+    "colorcode": "~(colorcode)"
+},[/tlist_sql]{}]

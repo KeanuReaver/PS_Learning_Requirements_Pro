@@ -1,0 +1,39 @@
+[~[tlist_sql;
+SELECT
+    schools.abbreviation                        AS school,
+    schools.school_number                       AS schoolid,
+    u_lrp_gs_order.sortorder                    AS sortorder,
+    gradescaleitem.name                         AS gsname,
+    gradescaleitem.description                  AS lok,
+    u_lrp_gs_descriptions.detailed_description  AS description,
+    gradescaleitem.VALUE                        AS gsvalue,
+    u_lrp_color_list.colorcode                  AS colorcode
+FROM
+    gradescaleitem gradescaleitem
+    INNER JOIN u_lrp_assign_gradescale u_lrp_assign_gradescale
+        ON u_lrp_assign_gradescale.gradescaleid = gradescaleitem.gradescaleid
+        AND ',' || u_lrp_assign_gradescale.schoolids || ',' LIKE '%,' || ~(gpv.studschoolid) || ',%'
+    INNER JOIN u_lrp_gs_descriptions u_lrp_gs_descriptions
+        ON u_lrp_gs_descriptions.gradescaleitemdcid = gradescaleitem.dcid
+    INNER JOIN u_lrp_gs_order u_lrp_gs_order
+        ON u_lrp_gs_order.gradescaleitemdcid = gradescaleitem.dcid
+        AND (
+            u_lrp_gs_order.hide != 1 
+            OR u_lrp_gs_order.hide IS NULL
+        )
+        AND u_lrp_gs_order.school_number = ~(gpv.studschoolid)
+    LEFT JOIN u_lrp_color_list u_lrp_color_list
+        ON u_lrp_color_list.id = u_lrp_gs_descriptions.lrp_color_list_id
+    INNER JOIN schools schools ON schools.school_number = ~(gpv.studschoolid)
+ORDER BY
+    3
+]{
+    "school": "~(school)",
+    "schoolid": "~(schoolid)",
+    "sortorder": "~(sortorder)",
+    "gsname": "~(gsname)",
+    "lok": "~(lok)",
+    "description": "~(description;json)",
+    "gsvalue": "~(gsvalue)",
+    "colorcode": "~(colorcode)"
+},[/tlist_sql]{}]

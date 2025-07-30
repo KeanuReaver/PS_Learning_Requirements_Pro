@@ -1,0 +1,13 @@
+[~[tlist_sql;
+SELECT UNIQUE
+cc.schoolid AS schoolid
+FROM
+cc cc
+INNER JOIN terms terms ON terms.schoolid = cc.schoolid 
+    AND cc.termid = terms.id
+    AND terms.yearid = ~(gpv.curyearid)
+WHERE
+cc.studentid = ~(gpv.curstudid)
+]{
+    "schoolid": "~(schoolid)"
+},[/tlist_sql]{}]

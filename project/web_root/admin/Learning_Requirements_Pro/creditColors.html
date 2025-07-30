@@ -1,0 +1,68 @@
+<!-- UCSD Learning Requirements Po -->
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Learning Requirements Pro - Credit/Deparment Colors</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <link href="/images/css/learning_requirements_pro/learning_requirements_styles.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start --><a href="/admin/Learning_Requirements_Pro/home.html" target="_top">Home</a> &gt; Learning Requirements Pro - Credit/Deparment Colors<!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>Learning Requirements Pro - Credit/Deparment Colors</h1>
+    <!-- start of content area -->
+    <div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+            data-module-name="lrpmodule"
+            data-ng-controller="CourseColorList"
+            data-ng-cloak>
+        <div class="button-row">
+            <button type="button" data-ng-click="submitChanges()">Submit</button>
+            <button type="button" data-ng-click="deleteAllColors()">Delete All</button>
+        </div> 
+        <div class="box-round">
+            <div style="color: red" class="box-round">
+                <ul>
+                    <li>You can either use hexadecimal (#000000) or rgb format (rgb(31, 41, 51)) for colors. CreditType colors will override Department colors</li>
+                    <li>Credit colors overwrite department colors.</li>
+                </ul>
+            </div>
+            <table  class="grid" 
+                    data-pstablefilter='{"hide":"true","cols":"1","focus":"true","hidebox":"false","timer":500}'>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Code</th>
+                        <th>Colorcode</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="record in colorList">
+                        <td data-ng-bind="record.type"></td>
+                        <td data-ng-bind="record.code"></td>
+                        <td>
+                            <input type="text" data-ng-model="record.colorcode" data-ng-change="markDirty(record)">
+                            <input type="color" data-ng-model="record.colorcode" class="color-picker" data-ng-change="markDirty(record)">
+                        </td>
+                        <td>
+                            <div data-ng-style="previewColor(record.colorcode)" class="bubble-text" data-ng-show="record.colorcode">Preview</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-row">
+                <button type="button" data-ng-click="submitChanges()">Submit</button>
+            </div> 
+        </div>   
+    </div>
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

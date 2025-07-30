@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UCSD Learning Requirements Pro - Performance Bands - ~(gpv.testname)</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start <a href="first_link" target="_top">first</a> &gt; <a href="second_link" target="_top">Second</a> &gt; here-->UCSD Learning Requirements Pro - Performance Bands - ~(gpv.testname)<!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>UCSD Learning Requirements Pro - Performance Bands - ~(gpv.testname)</h1>
+    <!-- start of content area -->
+    <div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+            data-module-name="lrpmodule"
+            data-ng-controller="PerformanceBandsController"
+            data-ng-cloak>
+        
+        <div class="box-round">
+            <div class="button-row">
+                <div class="lrp-custom-dropdown">
+                    <div class="lrp-dropdown-header" data-ng-click="toggleDropdown('score')">
+                        <div>Select Color</div>
+                    </div>
+                    <div class="lrp-dropdown-list" data-ng-show="isScoreDropdownOpen">
+                        <div class="lrp-dropdown-item">
+                            <label>
+                                <input  type="checkbox"
+                                        data-ng-checked="allScores"
+                                        data-ng-click="toggleAll(possibleScores, allScores)">
+                                Select All
+                            </label>
+                        </div>
+                        <div    class="lrp-dropdown-item" 
+                                data-ng-repeat="score in possibleScores">
+                            <label>
+                                <input  type="checkbox"
+                                        data-ng-model="score.selected"
+                                        data-ng-click="checkAllSelected()">
+                                {{ score.testscorename }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lrp-custom-dropdown">
+                    <div class="lrp-dropdown-header" data-ng-click="toggleDropdown('window')">
+                        <div>Select Color</div>
+                    </div>
+                    <div class="lrp-dropdown-list" data-ng-show="isWindowDropdownOpen">
+                        <div class="lrp-dropdown-item">
+                            <label>
+                                <input  type="checkbox"
+                                        data-ng-checked="allWindows"
+                                        data-ng-click="toggleAll(possibleWindows, allWindows)">
+                                Select All
+                            </label>
+                        </div>
+                        <div    class="lrp-dropdown-item" 
+                                data-ng-repeat="window in possibleWindows">
+                            <label>
+                                <input  type="checkbox"
+                                        data-ng-model="window.selected"
+                                        data-ng-click="checkAllSelected()">
+                                {{ window.testwindowname }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lrp-custom-dropdown">
+                    <div class="lrp-dropdown-header" data-ng-click="toggleDropdown('grade)">
+                        <div>Select Color</div>
+                    </div>
+                    <div class="lrp-dropdown-list" data-ng-show="isGradeDropdownOpen">
+                        <div class="lrp-dropdown-item">
+                            <label>
+                                <input  type="checkbox"
+                                        data-ng-checked="allGrades"
+                                        data-ng-click="toggleAll(possibleGrades, allGrades)">
+                                Select All
+                            </label>
+                        </div>
+                        <div    class="lrp-dropdown-item" 
+                                data-ng-repeat="grade in possibleGrades">
+                            <label>
+                                <input  type="checkbox"
+                                        data-ng-model="grade.selected"
+                                        data-ng-click="checkAllSelected()">
+                                {{ grade.grade_level }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-repeat="record in performanceBands | filter:filterPerformanceBands">
+                <h3 id="$index" pss-expand-collapse-item="performance-band-header" class="performance-band-header collapsed">
+                    {{ record.testscorename }}, {{ record.grade_level }}, {{ record.testwindowname }}
+                </h3>
+                <table class="grid">
+                    <tbody>
+                        <tr data-ng-repeat="bench in record.benchmarks">
+                            <td data-ng-bind="bench.testbandtype"></td>
+                            <td>
+                                <div class="bubble-text" data-ng-style="previewColor(bench.colorcode)"></div>
+                            </td>
+                            <td data-ng-bind="bench.testbandname"></td>
+                            <td>From</td>
+                            <td data-ng-bind="bench.bottom_band"></td>
+                            <td data-ng-bind="bench.top_band"></td>
+                            <td></td>
+                        </tr>
+                        <tr></tr>
+                        <tr data-ng-repeat="band in record.bands">
+                            <td data-ng-bind="band.testbandtype | orderBy: 'sortorder'"></td>
+                            <td>
+                                <div class="bubble-text" data-ng-style="previewColor(band.colorcode)"></div>
+                            </td>
+                            <td>From</td>
+                            <td>
+                                <input type="number" min="0" max="9999" data-ng-model="band.bottom_band">
+                            </td>
+                            <td>
+                                <input type="number" min="0" max="9999" data-ng-model="band.top_band" data-ng-change="updateBandRanges(record)">
+                            </td>
+                            <td>
+                                <label>
+                                    <input  type="checkbox" 
+                                            data-ng-bind="band.below_benchmark"
+                                            data-ng-true-value="'1'"
+                                            data-ng-false-value="'0'">
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+        
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

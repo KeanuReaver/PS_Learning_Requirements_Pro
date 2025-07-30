@@ -1,0 +1,25 @@
+<!-- UCSD Learning Requirements Pro - Custom Dropdown for Colors -->
+<div class="lrp-custom-dropdown">
+    <div class="lrp-dropdown-header" data-ng-click="toggleDropdown(item)">
+        <div data-ng-show="!item.colorlistid">Select Color</div>
+        <div    data-ng-show="item.colorcode" 
+                class="bubble-text" 
+                data-ng-style="previewColor(item.colorcode)"></div>
+    </div>
+    <div class="lrp-dropdown-list" data-ng-show="item.isDropdownOpen">
+        <div class="lrp-dropdown-item" data-ng-click="selectColor(item)">
+            <div    class="bubble-text" 
+                    data-ng-style="previewColor()">
+                {{ label }}
+            </div>
+        </div>
+        <div    class="lrp-dropdown-item" 
+                data-ng-repeat="color in scoreColorList" 
+                data-ng-click="selectColor(item, color)">
+            <div    class="bubble-text" 
+                    data-ng-style="previewColor(color.colorcode)">
+                {{ label }}
+            </div>
+        </div>
+    </div>
+</div>

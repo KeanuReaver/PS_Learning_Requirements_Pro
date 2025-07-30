@@ -1,0 +1,5 @@
+<script>
+    if (document.referrer.startsWith(`${window.location.origin}/public/`)) {
+        window.location.replace(`${window.location.origin}/guardian/learning_requirements_pro.html`)
+    }
+</script>

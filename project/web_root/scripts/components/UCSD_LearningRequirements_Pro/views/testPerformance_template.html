@@ -1,0 +1,188 @@
+<form   name="testPerformanceForm"
+        data-ng-show="showTestPerformanceView">
+    <div    lrp-perf-upload-drawer
+            data-performance-bands="performanceBands"
+            data-curgroupid="curgroupid"
+            data-curgroupname="curgroupname"></div>
+    <div class="box-round">
+        <h2>
+            {{ curgroupname }} - Performance Bands
+            <div class="button-row">  
+                <button type="button" data-ng-click="showTestPerformanceView = false">Close</button>
+                <button type="button" data-ng-click="openUploaderDrawer()">Upload Changes</button>
+                <button type="button" data-ng-click="submitPerformanceBands()">Submit</button>
+            </div>
+        </h2>    
+        <div class="button-row" style="display: flex">
+            <div class="lrp-custom-dropdown">
+                <div class="lrp-dropdown-header lrp-blue" data-ng-click="toggleDropdown('score')">
+                    <div>Select TestScores</div>
+                </div>
+                <div class="lrp-dropdown-list" data-ng-show="isScoreDropdownOpen">
+                    <div class="lrp-dropdown-item">
+                        <label>
+                            <input  type="checkbox"
+                                    data-ng-checked="allScores"
+                                    data-ng-click="toggleAll(possibleScores, allScores)">
+                            Select All
+                        </label>
+                    </div>
+                    <div    class="lrp-dropdown-item" 
+                            data-ng-repeat="score in possibleScores">
+                        <label>
+                            <input  type="checkbox"
+                                    data-ng-model="score.selected"
+                                    data-ng-click="checkAllSelected()">
+                            {{ score.testscorename }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lrp-custom-dropdown">
+                <div class="lrp-dropdown-header lrp-blue" data-ng-click="toggleDropdown('window')">
+                    <div>Select Windows</div>
+                </div>
+                <div class="lrp-dropdown-list" data-ng-show="isWindowDropdownOpen">
+                    <div class="lrp-dropdown-item">
+                        <label>
+                            <input  type="checkbox"
+                                    data-ng-checked="allWindows"
+                                    data-ng-click="toggleAll(possibleWindows, allWindows)">
+                            Select All
+                        </label>
+                    </div>
+                    <div    class="lrp-dropdown-item" 
+                            data-ng-repeat="window in possibleWindows">
+                        <label>
+                            <input  type="checkbox"
+                                    data-ng-model="window.selected"
+                                    data-ng-click="checkAllSelected()">
+                            {{ window.testwindowname }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lrp-custom-dropdown">
+                <div class="lrp-dropdown-header lrp-blue" data-ng-click="toggleDropdown('grade')">
+                    <div>Select Grade Levels</div>
+                </div>
+                <div class="lrp-dropdown-list" data-ng-show="isGradeDropdownOpen">
+                    <div class="lrp-dropdown-item">
+                        <label>
+                            <input  type="checkbox"
+                                    data-ng-checked="allGrades"
+                                    data-ng-click="toggleAll(possibleGrades, allGrades)">
+                            Select All
+                        </label>
+                    </div>
+                    <div    class="lrp-dropdown-item" 
+                            data-ng-repeat="grade in possibleGrades">
+                        <label>
+                            <input  type="checkbox"
+                                    data-ng-model="grade.selected"
+                                    data-ng-click="checkAllSelected()">
+                            {{ grade.grade_level }}
+                        </label>
+                    </div>
+                </div>
+            </div>    
+        </div>
+        <div data-ng-repeat="record in performanceBands | filter:filterPerformanceBands">
+            <h3     id="$index" 
+                    pss-expand-collapse-item="performance-band-header" 
+                    class="performance-band-header collapsed"
+                    style="display: flex">
+                {{ record.testscorename }}: Grade Level: ({{ record.grade_level }}), Test Window: {{ record.testwindowname }}
+                <div style="display: inline-flex;
+                        justify-items: right; 
+                        justify-content: right; 
+                        flex: 1;">
+                    <div    data-ng-show="record.has_value"
+                            style="padding: 4px 2px 0 2px;
+                                margin: 1px;
+                                font-size: .8rem;
+                                border: 1px solid;
+                                border-radius: 10px;
+                                line-height: .8;">
+                        Data Entered
+                    </div>
+                </div>
+            </h3>
+            <div>
+                <div class="button-row">
+                    <button type="button" data-ng-click="copyCurrentToVisible(record)">Copy Paste to All Visible Records</button>
+                </div>
+                <table class="grid">
+                    <thead>
+                        <tr>
+                            <th class="lrp-testband-column">Type</th>
+                            <th class="lrp-testband-column">Color</th>
+                            <th colspan="2">Name</th>
+                            <th class="lrp-band-column">Bottom Value (>=)</th>
+                            <th class="lrp-band-column">Top Value (&lt;)</th>
+                            <th class="lrp-testband-column">Below Benchmark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="bench in record.benchmarks">
+                            <td     data-ng-bind="bench.testbandtype"
+                                    class="lrp-testband-column">
+                            </td>
+                            <td class="lrp-testband-column">
+                                <div class="bubble-text" data-ng-style="previewColor(bench.colorcode)"></div>
+                            </td>
+                            <td data-ng-bind="bench.testbandname"></td>
+                            <td>From</td>
+                            <td class="lrp-band-column" data-ng-bind="bench.bottom_band"></td>
+                            <td class="lrp-band-column" data-ng-bind="bench.top_band"></td>
+                            <!--<td class="lrp-testband-column"></td>-->
+                        </tr>
+                        <tr><th colspan="8"></th></tr>
+                        <tr data-ng-repeat="band in record.bands | orderBy: 'sortorder'">
+                            <td     data-ng-bind="band.testbandtype"
+                                    class="lrp-testband-column">
+                            </td>
+                            <td class="lrp-testband-column">
+                                <div class="bubble-text" data-ng-style="previewColor(band.colorcode)"></div>
+                            </td>
+                            <td data-ng-bind="band.testbandname"></td>
+                            <td>From</td>
+                            <td class="lrp-band-column">
+                                <input 
+                                    type="text" 
+                                    pattern="\d*" 
+                                    data-ng-model="band.bottom_band" 
+                                    data-ng-change="band.bottom_band = enforceString(band.bottom_band); band.isdirty = 1" 
+                                    title="Enter a valid number between 0 and 9999">
+                            </td>
+                            <td class="lrp-band-column"> 
+                                <input 
+                                    type="text" 
+                                    pattern="\d*" 
+                                    data-ng-model="band.top_band" 
+                                    data-ng-change="band.top_band = enforceString(band.top_band); updateBandRanges(record); band.isdirty = 1" 
+                                    title="Enter a valid number between 0 and 9999">
+                            </td>
+                            <td class="center-content lrp-testband-column">
+                                <label>
+                                    <input  
+                                        type="checkbox" 
+                                        data-ng-model="band.below_benchmark" 
+                                        data-ng-true-value="'1'" 
+                                        data-ng-false-value="'0'" 
+                                        data-ng-change="updateBandRanges(record); band.isdirty = 1">
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="button-row">
+            <button type="button" data-ng-click="showTestPerformanceView = false">Close</button>
+            <button type="button" data-ng-click="submitPerformanceBands()">Submit</button>
+        </div>
+    </div>
+</form>

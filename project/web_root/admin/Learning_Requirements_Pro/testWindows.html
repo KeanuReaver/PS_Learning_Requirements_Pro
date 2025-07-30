@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Learning Requirements Pro - Performance Bands - ~(gpv.curgroupname)</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start <a href="first_link" target="_top">first</a> &gt; <a href="second_link" target="_top">Second</a> &gt; here-->Learning Requirements Pro - Performance Bands - ~(gpv.curgroupname)<!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>Learning Requirements Pro - Performance Bands - ~(gpv.curgroupname)</h1>
+    <!-- start of content area -->
+    <div>
+        <form name="testWindowForm">
+            <div class="button-row">
+                <button type="button" data-ng-click="submitChanges()" data-ng-disabled="testWindowForm.$invalid">Submit</button>
+            </div>
+            <div class="box-round">
+                <table class="deletable-rows">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Order</th>
+                            <th>Name</th>
+                            <th>window_start</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr     data-ng-repeat="item in testWindows"
+                                data-ng-class="{'selected-delete': color.deleteRecord == 1}"
+                                ui-sortable="sortableOptions"
+                                data-ng-model="testWindows">
+                            <td>
+                                <div class="lrpHandle"></div>
+                            </td>
+                            <td data-ng-bind="item.sortorder"></td>
+                            <td>
+                                <input data-ng-model="item.windowname" length="20" placeholder="Window Name" required>
+                            </td>
+                            <td>
+                                <label>
+                                    Month*
+                                    <select data-ng-model="item.window_start_month" required>
+                                        <option value="">Month</option>
+                                        <option value="01">January</option>
+                                        <option value="02">February</option>
+                                        <option value="03">March</option>
+                                        <option value="04">April</option>
+                                        <option value="05">May</option>
+                                        <option value="06">June</option>
+                                        <option value="07">July</option>
+                                        <option value="08">August</option>
+                                        <option value="09">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </label>
+                                -
+                                <label>
+                                    Day*
+                                    <input type="text" data-ng-model="item.window_start_day" length="2" maxlength="2" placeholder="01" required>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    Month*
+                                    <select data-ng-model="item.window_end_month" required>
+                                        <option value="">Month</option>
+                                        <option value="01">January</option>
+                                        <option value="02">February</option>
+                                        <option value="03">March</option>
+                                        <option value="04">April</option>
+                                        <option value="05">May</option>
+                                        <option value="06">June</option>
+                                        <option value="07">July</option>
+                                        <option value="08">August</option>
+                                        <option value="09">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </label>
+                                -
+                                <label>
+                                    Day*
+                                    <input type="text" data-ng-model="item.window_end_day" length="2" maxlength="2" placeholder="01" required>
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="button-row">
+                    <button type="button" data-ng-click="submitChanges()" data-ng-disabled="testWindowForm.$invalid">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

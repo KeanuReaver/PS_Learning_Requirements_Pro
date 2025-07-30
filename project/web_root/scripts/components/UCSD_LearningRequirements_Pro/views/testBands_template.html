@@ -1,0 +1,89 @@
+<form   name="testBandForm"
+        data-ng-show="showTestBandView">
+    <div class="box-round">
+        <h2>
+            {{ curgroupname }} - Test Bands
+            <div class="button-row">
+                
+                <button type="button" data-ng-click="showTestBandView = false">Close</button>
+            </div>
+        </h2>
+        <table class="grid">
+            <thead>
+                <tr>
+                    <th>Band Type</th>
+                    <th>Band Name</th>
+                    <th class="color-column">Color</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="item in testBenchmarks | orderBy: 'sortorder'">
+                    <td data-ng-bind="item.bandtype"></td>
+                    <td data-ng-bind="item.testbandname"></td>
+                    <td>
+                        <div    lrp-cust-color-dropdown 
+                                data-label=""
+                                data-item="item"
+                                data-score-color-list="scoreColorList"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="deletable-rows">
+            <thead>
+                <tr>
+                    <th class="sort-handle-column"></th>
+                    <th>Band Type</th>
+                    <th>Name</th>
+                    <th class="color-column">Color</th>
+                    <th class="delete-button-column"></th>
+                </tr>
+            </thead>
+            <tbody  ui-sortable="sortableOptions"
+                    data-ng-model="testBands">
+                <tr     data-ng-repeat="item in testBands | orderBy: 'sortorder'"
+                        data-ng-class="{'selected-delete': item.deleteRecord == 1}">
+                    <td>
+                        <div class="lrpHandle"></div>
+                    </td>
+                    <td data-ng-bind="item.bandtype"></td>
+                    <td>
+                        <input  type="text"
+                                name="testBandName{{$index}}"
+                                data-ng-model="item.testbandname"
+                                size="20"
+                                placeholder="Input a name here"
+                                data-ng-change="item.isdirty = '1'"
+                                required>
+                        <div    class="error-message" 
+                                data-ng-show="testBandForm['testBandName' + $index].$touched && testBandForm['testBandName' + $index].$invalid">
+                            Must give band a name!
+                        </div>
+                    </td>
+                    <td>
+                        <div    lrp-cust-color-dropdown 
+                                data-label=""
+                                data-item="item"
+                                data-score-color-list="scoreColorList"></div>
+                    </td>
+                    <td class="center-cell-content">
+                        <button type="button" data-ng-click="markForDelete(item)">
+                            <span data-ng-show="item.deleteRecord != 1">X</span>
+                            <span data-ng-show="item.deleteRecord == 1">Undo</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <button type="button" data-ng-click="addTestBand()">Add Band</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="button-row">
+            <button type="button" 
+                    data-ng-disabled="testBandForm.$invalid"
+                    data-ng-click="updateBands()">Submit</button>
+        </div>
+    </div>
+</form>

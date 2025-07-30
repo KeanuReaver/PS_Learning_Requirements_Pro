@@ -1,0 +1,207 @@
+[~[tlist_sql;
+SELECT
+	test."NAME"                     				AS testname,
+	test.id                         				AS testid,
+	test.dcid                       				AS testdcid,
+	testscore.id                    				AS testscoreid,
+	testscore.dcid                  				AS testscoredcid,
+	testscore."NAME"                				AS testscorename,
+	testscore.description           				AS testscoredesc,
+	ps_enrollment_all.grade_level   				AS test_grade,
+	ps_enrollment_all.schoolid      				AS schoolid,
+	studenttest.id                  				AS studenttestid,
+	studenttest.dcid                				AS studenttestdcid,
+	studenttest.studentid           				As studentid,
+	studenttest.test_date							AS test_date,
+	ps_enrollment_all.yearid						AS yearid,
+	lrp_performance_bands.windowname				AS windowname,
+	CASE WHEN u_lrp_testscore_ext.shownum = 1 
+        THEN studenttestscore.numscore
+    END                                             AS numscore,
+    CASE WHEN u_lrp_testscore_ext.showpercent = 1 
+        THEN studenttestscore.percentscore
+    END                                             AS percentscore,
+    CASE WHEN u_lrp_testscore_ext.showalpha = 1 
+        THEN studenttestscore.alphascore
+    END                                             AS alphascore,
+	lrp_performance_bands.testbandname				AS testbandname,
+	lrp_performance_bands.below_benchmark			AS below_benchmark,
+	lrp_performance_bands.colorcode					AS colorcode,
+    below_benchmark_marker.top_band              	AS benchmark_marker,
+	lrp_performance_bands.split_at_year				AS split_at_year
+FROM
+	ps_enrollment_all ps_enrollment_all
+	INNER JOIN studenttest studenttest ON studenttest.studentid = ps_enrollment_all.studentid
+		AND studenttest.test_date BETWEEN ps_enrollment_all.entrydate AND ps_enrollment_all.exitdate - 1
+	INNER JOIN studenttestscore studenttestscore ON studenttestscore.studentid = ps_enrollment_all.studentid
+		AND studenttestscore.studenttestid = studenttest.id
+	INNER JOIN test test ON studenttest.testid = test.id
+	INNER JOIN testscore testscore ON testscore.testid = test.id
+		AND studenttestscore.testscoreid = testscore.id
+		AND studenttestscore.studenttestid = studenttest.id
+	INNER JOIN u_lrp_testscore_ext 
+        ON u_lrp_testscore_ext.testscoredcid = testscore.dcid
+        AND ',' || u_lrp_testscore_ext.grade_list || ',' LIKE '%,' || ps_enrollment_all.grade_level || ',%'
+	
+	LEFT JOIN (
+		SELECT
+			u_lrp_performance_group.testdcid 		AS testdcid,
+			u_lrp_performance_bands.testscoredcid 	AS testscoredcid,
+			u_lrp_performance_bands.grade_level		AS grade_level,
+			u_lrp_testband."NAME"					AS testbandname,
+			u_lrp_color_list.colorcode				AS colorcode,
+			u_lrp_testwindow.windowname				AS windowname,
+			u_lrp_testwindow.window_start			AS window_start,
+			u_lrp_testwindow.window_end				AS window_end,
+			CASE WHEN TO_DATE(u_lrp_testwindow.window_end, 'MM-DD') > TO_DATE(u_lrp_testwindow.window_start, 'MM-DD')
+				THEN 0
+				ELSE 1
+			END 									AS crossyear,
+			u_lrp_performance_bands.below_benchmark	AS below_benchmark,
+			u_lrp_performance_bands.bottom_band		AS bottom_band,
+			u_lrp_performance_bands.top_band		AS top_band,
+			u_lrp_performance_group.split_at_year	AS split_at_year
+		FROM
+			u_lrp_performance_group u_lrp_performance_group
+			INNER JOIN u_lrp_testband u_lrp_testband 
+				ON u_lrp_testband.groupid = u_lrp_performance_group.id
+				AND u_lrp_testband.bandtype = 'Performance Band'
+			INNER JOIN u_lrp_testwindow u_lrp_testwindow
+				ON u_lrp_testwindow.groupid = u_lrp_performance_group.id
+			INNER JOIN u_lrp_performance_bands u_lrp_performance_bands
+				ON u_lrp_performance_bands.groupid = u_lrp_performance_group.id
+				AND u_lrp_performance_bands.testbandid = u_lrp_testband.id
+				AND u_lrp_performance_bands.testwindowid = u_lrp_testwindow.id
+			INNER JOIN u_lrp_color_list u_lrp_color_list
+				ON u_lrp_color_list.id = u_lrp_testband.lrp_color_list_id
+		WHERE
+			u_lrp_performance_group.isdefault = 1
+	) lrp_performance_bands
+		ON lrp_performance_bands.testdcid = test.dcid
+		AND lrp_performance_bands.testscoredcid = testscore.dcid
+		AND lrp_performance_bands.grade_level = ps_enrollment_all.grade_level
+		AND (
+			(
+				TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND lrp_performance_bands.window_end
+				AND lrp_performance_bands.crossyear = 0
+				AND NOT (
+					(
+						TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND '12-30'
+						OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND lrp_performance_bands.window_end
+					)
+					AND lrp_performance_bands.crossyear = 1
+				)
+			)
+			OR
+			(
+				(
+					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND '12-30'
+					OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND lrp_performance_bands.window_end
+				)
+				AND lrp_performance_bands.crossyear = 1
+				AND NOT (
+					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN lrp_performance_bands.window_start AND lrp_performance_bands.window_end
+					AND lrp_performance_bands.crossyear = 0
+				)
+			)
+		)
+		AND (
+			round(studenttestscore.numscore, 0) BETWEEN lrp_performance_bands.bottom_band AND lrp_performance_bands.top_band - 1
+			OR
+			(
+				round(studenttestscore.numscore, 0) = lrp_performance_bands.bottom_band
+				AND
+				round(studenttestscore.numscore, 0) = lrp_performance_bands.top_band	
+			)
+		)
+    LEFT JOIN (
+        SELECT
+			u_lrp_performance_group.testdcid 		AS testdcid,
+			u_lrp_performance_bands.testscoredcid 	AS testscoredcid,
+			u_lrp_performance_bands.grade_level		AS grade_level,
+			u_lrp_testband."NAME"					AS testbandname,
+			u_lrp_color_list.colorcode				AS colorcode,
+			u_lrp_testwindow.windowname				AS windowname,
+			u_lrp_testwindow.window_start			AS window_start,
+			u_lrp_testwindow.window_end				AS window_end,
+			CASE WHEN TO_DATE(u_lrp_testwindow.window_end, 'MM-DD') > TO_DATE(u_lrp_testwindow.window_start, 'MM-DD')
+				THEN 0
+				ELSE 1
+			END 									AS crossyear,
+			u_lrp_performance_bands.below_benchmark	AS below_benchmark,
+			u_lrp_performance_bands.top_band		AS top_band
+		FROM
+			u_lrp_performance_group u_lrp_performance_group
+			INNER JOIN u_lrp_testband u_lrp_testband 
+				ON u_lrp_testband.groupid = u_lrp_performance_group.id
+				AND u_lrp_testband.bandtype != 'Performance Band'
+                AND u_lrp_testband.name = 'Below Benchmark'
+			INNER JOIN u_lrp_testwindow u_lrp_testwindow
+				ON u_lrp_testwindow.groupid = u_lrp_performance_group.id
+			INNER JOIN u_lrp_performance_bands u_lrp_performance_bands
+				ON u_lrp_performance_bands.groupid = u_lrp_performance_group.id
+				AND u_lrp_performance_bands.testbandid = u_lrp_testband.id
+				AND u_lrp_performance_bands.testwindowid = u_lrp_testwindow.id
+			INNER JOIN u_lrp_color_list u_lrp_color_list
+				ON u_lrp_color_list.id = u_lrp_testband.lrp_color_list_id
+		WHERE
+			u_lrp_performance_group.isdefault = 1
+    ) below_benchmark_marker
+        ON below_benchmark_marker.testdcid = test.dcid
+		AND below_benchmark_marker.testscoredcid = testscore.dcid
+		AND below_benchmark_marker.grade_level = ps_enrollment_all.grade_level
+		AND (
+			(
+				TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND below_benchmark_marker.window_end
+				AND below_benchmark_marker.crossyear = 0
+				AND NOT (
+					(
+						TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND '12-30'
+						OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND below_benchmark_marker.window_end
+					)
+					AND below_benchmark_marker.crossyear = 1
+				)
+			)
+			OR
+			(
+				(
+					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND '12-30'
+					OR TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN '01-01' AND below_benchmark_marker.window_end
+				)
+				AND below_benchmark_marker.crossyear = 1
+				AND NOT (
+					TO_CHAR(studenttest.test_date, 'MM-DD') BETWEEN below_benchmark_marker.window_start AND below_benchmark_marker.window_end
+					AND below_benchmark_marker.crossyear = 0
+				)
+			)
+		)
+WHERE
+    ps_enrollment_all.studentid = ~(gpv.curstudid)
+    AND studenttestscore.numscore != 0
+ORDER BY
+    1, 5, 13 desc
+]{
+    "testname": "~(testname)",
+    "testid": "~(testid)",
+    "testdcid": "~(testdcid)",
+    "testscoreid": "~(testscoreid)",
+    "testscoredcid": "~(testscoredcid)",
+    "testscorename": "~(testscorename)",
+    "testscoredesc": "~(testscoredesc;json)",
+    "test_grade": "~(test_grade)",
+    "schoolid": "~(schoolid)",
+    "studenttestid": "~(studenttestid)",
+    "studenttestdcid": "~(studenttestdcid)",
+    "studentid": "~(studentid)",
+    "test_date": "~(test_date;d)",
+    "yearid": "~(yearid)",
+    "windowname": "~(windowname)",
+    "numscore": "~(numscore)",
+    "percentscore": "~(percentscore)",
+    "alphascore": "~(alphascore)",
+    "testbandname": "~(testbandname)",
+    "below_benchmark": "~(below_benchmark)",
+    "colorcode": "~(colorcode)",
+    "benchmark": "~(benchmark)",
+    "split_at_year": "~(split_at_year)"
+},[/tlist_sql]{}]

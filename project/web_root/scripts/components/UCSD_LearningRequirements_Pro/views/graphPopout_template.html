@@ -1,0 +1,44 @@
+<div    class="lrp-popup" 
+        data-ng-style="popupPosition" 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="popupTitle"
+        data-ng-class="{'open': isPopupOpen}"
+        tabindex="-1">
+    <div    class="lrp-popup-header" 
+            data-ng-mousedown="startDrag($event)">
+        <span class="lrp-popup-title">{{popupTitle}}</span>
+        <button type="button" 
+                class="lrp-popup-close"
+                aria-label="Click to close test details pop up graph."
+                data-ng-click="closePopup()">
+            &#x2715;
+        </button>
+    </div>
+    <div class="lrp-popup-content">
+        <div    class="feedback-error"
+                data-ng-show="graphData.categories.length === 0">
+            {{ tranTags.no_data_to_chart || 'No Data To Chart' }}
+        </div>
+        <div    class="chart-container"
+                tabindex="0"
+                role="img"
+                aria-labelledby="chartDesc"
+                aria-describedby="chartDetails"
+                data-ng-show="graphData.categories.length > 0">
+            <div    fusioncharts
+                    id="lrp-test-hist-chart"
+                    width="700"
+                    height="400"
+                    type="{{graphType}}"
+                    dataSource="{{graphData}}">
+            </div>
+            <div id="chartDesc" class="sr-only">
+                Historical test score chart for {{ record.testname }}
+            </div>
+            <div id="chartDetails" class="sr-only">
+                This chart shows performance over time with colored bars representing scores and a line graph representing benchmarks.
+            </div>
+        </div>
+    </div>
+</div>

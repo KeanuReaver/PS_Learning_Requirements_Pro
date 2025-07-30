@@ -1,0 +1,74 @@
+[~[tlist_sql;
+   SELECT UNIQUE
+    courses.course_name                                                             AS course_name,
+    standard.identifier                                                             AS standardIdentifier,
+    assignmentsection.duedate                                                       AS due_date,
+    assignmentsection.name                                                          AS asmt,
+    COALESCE(standardscore.actualscoreentered, chr(45) || chr(45))                  AS score,
+    standardscore.scorepercent														AS percent,
+    CASE WHEN standardscore.islate = 1 OR assignmentscore.islate = 1 
+        THEN 1 
+        ELSE 0 
+    END                                                                             AS late,
+    CASE WHEN standardscore.iscollected = 1 OR assignmentscore.iscollected = 1 
+        THEN 1 
+        ELSE 0 
+    END                                                                             AS collected,
+    CASE WHEN standardscore.isexempt = 1 OR assignmentscore.isexempt = 1 
+        THEN 1 
+        ELSE 0 
+    END                                                                             AS exempt,
+    CASE WHEN standardscore.ismissing = 1 OR assignmentscore.ismissing = 1 
+        THEN 1 
+        ELSE 0 
+    END                                                                             AS missing,
+    CASE WHEN standardscore.isabsent = 1 OR assignmentscore.isabsent = 1 
+        THEN 1 
+        ELSE 0 
+    END                                                                             AS absent,
+    CASE WHEN standardscore.isincomplete = 1 OR assignmentscore.isincomplete = 1 
+        THEN 1 
+        ELSE 0 
+    END                                                                             AS incomplete,
+    CASE WHEN assignmentsection.iscountedinfinalgrade = 0 THEN 1 ELSE 0 END         AS excluded,
+    TO_CHAR(assignmentsection.description)                                          AS description
+FROM
+    students
+    INNER JOIN standardscore ON students.dcid = standardscore.studentsdcid
+    INNER JOIN assignmentsection ON assignmentsection.assignmentsectionid = standardscore.assignmentsectionid
+    INNER JOIN assignmentstandardassoc ON assignmentstandardassoc.assignmentstandardassocid = standardscore.assignmentstandardassocid
+    INNER JOIN standard ON standard.standardid = assignmentstandardassoc.standardid
+    INNER JOIN assignment ON assignment.assignmentid = assignmentsection.assignmentid
+    INNER JOIN sections ON sections.dcid = assignmentsection.sectionsdcid
+    INNER JOIN cc ON cc.sectionid = sections.id
+        AND cc.studentid = students.id
+        AND cc.course_number = sections.course_number
+    INNER JOIN courses ON courses.course_number = cc.course_number
+    LEFT JOIN assignmentscore ON assignmentscore.assignmentsectionid = assignmentsection.assignmentsectionid
+        AND assignmentscore.studentsdcid = students.dcid
+    INNER JOIN termbins ON termbins.termid = cc.termid
+        AND termbins.yearid = ~(gpv.curyearid)
+WHERE
+    assignmentsection.duedate >= termbins.date1
+    AND students.id = ~(gpv.curstudid)
+ORDER BY
+    courses.course_name,
+    standard.identifier,
+    assignmentsection.duedate
+
+]{
+    "course_name": "~(course_name;Json)",
+    "standardIdentifier": "~(standardIdentifier)",
+    "due_date": "~(due_date;d)",
+    "asmt": "~(asmt;Json)",
+    "score": "~(score)",
+    "percent": "~(percent)",
+    "late": "~(late)",
+    "collected": "~(collected)",
+    "exempt": "~(exempt)",
+    "missing": "~(missing)",
+    "absent": "~(absent)",
+    "incomplete": "~(incomplete)",
+    "excluded": "~(excluded)",
+    "description": "~(description;Json)"
+},[/tlist_sql]{}]

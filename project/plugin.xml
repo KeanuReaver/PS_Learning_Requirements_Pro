@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+        version="25.07.15"
+        xmlns="http://plugin.powerschool.pearson.com"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        description="Learning Requirements interface and options."
+        name="UCSD - Learning Requirements Pro"
+        xsi:schemaLocation="http://plugin.powerschool.pearson.com plugin.xsd">
+    <publisher name="Alec McLeran">
+        <contact email="mclerana@urbandaleschools.com"/>
+    </publisher> 
+</plugin>

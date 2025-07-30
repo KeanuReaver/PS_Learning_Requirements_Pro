@@ -1,0 +1,98 @@
+<!-- UCSD Learning Requirements Pro -->
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Learning Requirements Pro - Test View Setup</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <link href="/images/css/learning_requirements_pro/learning_requirements_styles.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start here--><a href="/admin/Learning_Requirements_Pro/home.html" target="_top">Home</a> &gt; Learning Requirements Pro - Test View Setup<!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>Learning Requirements Pro - Test View Setup</h1>
+    <!-- start of content area -->
+    ~[if#checkDistrict.district.office]
+    <div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+            data-module-name="lrpmodule"
+            data-ng-controller="TestViewController"
+            data-ng-cloak>
+        <div class="button-row">
+            <button data-ng-click="submitChanges()">Submit</button>
+        </div>
+        <div class="box-round">
+            <div class="button-row">
+                <span pss-expand-collapse-button="test-rules-headers"></span>
+            </div>
+            <div data-ng-repeat="test in testScoreList">
+                <h3 id="{{ $index }}" pss-expand-collapse-item="test-rules-headers" class="test-rules-collapsible-header collapsed">{{ test.testname }}</h3>
+                <div>
+                    <button type="button" data-ng-click="openTestParameters(test)">Performance Bands</button>
+                    <table class="grid">
+                        <thead>
+                            <tr>
+                                <th>TestScoreName</th>
+                                <th>shownum</th>
+                                <th>showpercent</th>
+                                <th>showalpha</th>
+                                <th>Grades</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="testscore in test.scores">
+                                <td>{{ testscore.testscore_name }}</td>
+                                <td>
+                                    <input type="checkbox" 
+                                           data-ng-model="testscore.shownum" 
+                                           data-ng-change="markDirty(testscore)"
+                                           data-ng-true-value="'1'" 
+                                           data-ng-false-value="'0'">
+                                </td>
+                                <td>
+                                    <input type="checkbox" 
+                                           data-ng-model="testscore.showpercent" 
+                                           data-ng-change="markDirty(testscore)"
+                                           data-ng-true-value="'1'" 
+                                           data-ng-false-value="'0'">
+                                </td>
+                                <td>
+                                    <input type="checkbox" 
+                                           data-ng-model="testscore.showalpha" 
+                                           data-ng-change="markDirty(testscore)"
+                                           data-ng-true-value="'1'" 
+                                           data-ng-false-value="'0'">
+                                </td>
+                                <td>
+                                    <div class="repeating-checkbox-wrapper">
+                                        <label class="checkbox-label" data-ng-repeat="grade in testscore.possible_grades | orderBy: numericSort">
+                                            <input type="checkbox" 
+                                                    data-ng-model="grade.selected"
+                                                    data-ng-change="updateGradeList(testscore)">
+                                            {{ grade.name }}
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="button-row">
+                <span pss-expand-collapse-button="test-rules-headers"></span>
+                <button data-ng-click="submitChanges()">Submit</button>
+            </div>
+        </div>
+    </div>
+    [else#checkDistrict]
+    <div class="feedback-alert">Must be in district view.</div>
+    [/if#checkDistrict]
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

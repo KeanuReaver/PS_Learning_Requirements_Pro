@@ -1,0 +1,172 @@
+<!--<div class="button-row">-->
+    <button type="button"
+            data-ng-click="openWizard()">
+        {{ tranTags.click_for_help || 'Click for help!'}} 
+    </button>
+<!--</div>-->
+<div    class="lrp-overlay"
+        data-ng-show="isOpen">
+    <div    class="picture-wizard-popout-window"
+            role="dialog"
+            aria-modal="true"
+            aria-label="{{ tranTags.user_guide || 'Learning Requirements Pro - User Guide' }}">
+        <div class="picture-wizard-drawer-header">
+            <div class="button-row">
+                <h2>
+                    <label id="wizard-title">{{ tranTags.user_guide || 'Learning Requirements Pro - User Guide' }}</label>
+                    <button type="button"
+                            class="bold"
+                            data-ng-click="closeWizard()"
+                            aria-label="Close Learning Requirements Pro wizard.">
+                        X
+                    </button>
+                </h2>
+            </div>
+            <div class="picture-wizard-navigation">
+                <button type="button"
+                        class="wizard-nav-btn wizard-prev"
+                        data-ng-disabled="currentStep === 0"
+                        aria-label="{{ tranTags.back || 'Back' }}"
+                        data-ng-click="prevStep()"
+                        tabindex="0">
+                    ← {{ tranTags.back || 'Back' }}
+                </button>
+                <button type="button"
+                        class="wizard-nav-btn wizard-next"
+                        aria-label="{{ tranTags.next || 'Next' }}"
+                        data-ng-disabled="currentStep === steps.length - 1"
+                        data-ng-click="nextStep()"
+                        tabindex="0">
+                    {{ tranTags.next || 'Next' }} →
+                </button>
+            </div>
+        </div>
+        
+        <div class="picture-wizard-content">
+            <div class="wizard-text">
+                <p aria-live="polite" aria-atomic="true" id="wizard-step-text">
+                    {{ steps[currentStep].text }}
+                </p>
+            </div>
+            <div class="wizard-image">
+                <img    data-ng-src="{{ steps[currentStep].image }}" 
+                        alt="Learning Requirements Pro Image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .lrp-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9000; 
+    }
+    
+    .picture-wizard-popout-window {
+        position: fixed; 
+        top: 50%;
+        left: 50%; 
+        transform: translate(-50%, -50%);
+        width: min(80%, 1300px); 
+        height: auto; 
+        max-height: 90vh;
+        background-color: white; 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        border-radius: 8px; 
+        box-sizing: border-box; 
+        overflow-y: auto;
+        z-index:10000
+    }
+
+    .picture-wizard-drawer-header {
+        position: sticky;
+        top: 0;
+        padding:0 0 16px 0;
+        border-bottom: 1px solid black;
+        background-color: #e2e2e2;
+        z-index: 10001;
+    }
+    
+    .lrp-drawer-header h2{
+        text-align: left;
+    }
+    
+    .button-row h2 {
+        text-align: left;
+        padding: 0;
+        margin: 0;
+    }
+
+    .wizard-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .picture-wizard-content {
+        margin-bottom: 20px;
+    }
+
+    .wizard-text {
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    .wizard-image img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid black;
+    }
+    .wizard-image {
+        text-align: center;
+    }
+
+    .picture-wizard-navigation {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid black;
+        padding: 0 10px 0 10px;
+    }
+
+    .wizard-nav-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .wizard-nav-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .picture-wizard-drawer-header {
+            background-color: #195f7d;
+        }
+        
+        .picture-wizard-popout-window {
+            background-color: #1f2933;
+        }
+        
+        .picture-wizard-navigation {
+            background-color: #323F48;
+            border-bottom: 1px solid #7b8794;
+        }
+        
+        .wizard-image img {
+            border-bottom: 1px solid #7b8794;
+        }
+    }
+</style>

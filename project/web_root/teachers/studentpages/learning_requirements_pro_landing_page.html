@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/learning_requirements_pro/learning_requirements_styles.css" rel="stylesheet" media="screen">
+<link href="/images/css/learning_requirements_pro/main_view_styles.css" rel="stylesheet" media="screen">
+<link href="/images/css/learning_requirements_pro/mobile_view_styles.css" rel="stylesheet" media="screen">
+<link href="/images/css/learning_requirements_pro/print_styles.css" rel="stylesheet" media="print">
+
+~[wc:teachers_header_fr_css]
+    ~[SetPostValue:selectedTab=LearningRequirements]
+<form name="navigation">
+<span class="account-photo">~[studenttitlephoto]</span>
+<h1>~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]
+
+</h1>
+    ~[wc:teachers_student_detail_header_line]
+
+    ~[brij_render:common-ps;:TeacherQuickLookupTabs]
+<!--Adds tab while page is selected and marks it as selected-->
+<script>
+    $j(".tabs").append('<li id="learning-requirements"><a href="/teachers/learning_requirements_pro.html?frn=~(studentfrn)">Learning Requirements Pro</a></li>');
+    $j(".tabs li").removeClass();
+    $j("#learning-requirements").addClass('selected');
+</script>
+<!-- start of content -->
+<div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+        data-module-name="lrpmodule"
+        data-ng-controller="LearningRequirementsMainController"
+        data-ng-init="curstudid='~(curstudid)';
+                curyearid='~(curyearid)';
+                studschoolid='~(studentcurrschoolid)';
+                portalAddress='/teachers/queries/';
+                gradeLevel='~([students]grade_level)';
+				langCode='~[locale.lang]';
+				tranTags={
+                    learning_requirements: '~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements]',
+                    learning_requirements_pro: '~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]',
+                    key: '~[text:psx.htmlc.admin.students.learning_requirements_pro.key]',
+                    collected: '~[text:psx.htmlc.admin.students.learning_requirements_pro.collected]',
+                    late: '~[text:psx.htmlc.admin.students.learning_requirements_pro.late]',
+                    exempt: '~[text:psx.htmlc.admin.students.learning_requirements_pro.exempt]',
+                    missing: '~[text:psx.htmlc.admin.students.learning_requirements_pro.missing]',
+                    absent: '~[text:psx.htmlc.admin.students.learning_requirements_pro.absent]',
+                    incomplete: '~[text:psx.htmlc.admin.students.learning_requirements_pro.incomplete]',
+                    current_courses: '~[text:psx.htmlc.admin.students.learning_requirements_pro.current.courses]',
+                    exp: '~[text:psx.htmlc.admin.students.learning_requirements_pro.exp]',
+                    course: '~[text:psx.htmlc.admin.students.learning_requirements_pro.course]',
+                    grades: '~[text:psx.htmlc.admin.students.learning_requirements_pro.grades]',
+                    grade: '~[text:psx.htmlc.admin.students.learning_requirements_pro.grade]',
+                    click_for_class_description: '~[text:psx.htmlc.admin.students.learning_requirements_pro.click.for.class.description]',
+                    class_description: '~[text:psx.htmlc.admin.students.learning_requirements_pro.class.description]',
+                    no_academic_learning_requirements_to_show: '~[text:psx.htmlc.admin.students.learning_requirements_pro.no.academic.learning.requirements.to.show]',
+                    academic_progress: '~[text:psx.htmlc.admin.students.learning_requirements_pro.academic.progress]',
+                    scores: '~[text:psx.htmlc.admin.students.learning_requirements_pro.scores]',
+                    trend: '~[text:psx.htmlc.admin.students.learning_requirements_pro.trend]',
+                    description: '~[text:psx.htmlc.admin.students.learning_requirements_pro.description]',
+                    evidence: '~[text:psx.htmlc.admin.students.learning_requirements_pro.evidence]',
+                    due_date: '~[text:psx.htmlc.admin.students.learning_requirements_pro.due_date]',
+                    tags: '~[text:psx.htmlc.admin.students.learning_requirements_pro.tags]',
+                    assignment_tags: '~[text:psx.htmlc.admin.students.learning_requirements_pro.assignment.tags]',
+                    no_evidence_to_show: '~[text:psx.htmlc.admin.students.learning_requirements_pro.no.evidence.to.show]',
+                    building_a_better_u: '~[text:psx.htmlc.admin.students.learning_requirements_pro.building.a.better.u]',
+                    canvas_phrase: '~[text:psx.htmlc.admin.students.learning_requirements_pro.canvas.phrase]',
+                    canvas_click: '~[text:psx.htmlc.admin.students.learning_requirements_pro.canvas.click]',
+                    prev_courses_this_year: '~[text:psx.htmlc.admin.students.learning_requirements_pro.prev.courses.this.year]',
+                    teacher_comments: '~[text:psx.htmlc.admin.students.learning_requirements_pro.teacher_comments]',
+                    assessment: '~[text:psx.htmlc.admin.students.learning_requirements_pro.assessment]',
+                    tag_shortcuts: '~[text:psx.htmlc.admin.students.learning_requirements_pro.tag_shortcuts]',
+                    score: '~[text:psx.htmlc.admin.students.learning_requirements_pro.score]',
+                    level_of_knowledge: '~[text:psx.htmlc.admin.students.learning_requirements_pro.level_of_knowledge]',
+                    gradescale: '~[text:psx.htmlc.admin.students.learning_requirements_pro.gradescale]',
+                    student_test_data: '~[text:psx.htmlc.admin.students.learning_requirements_pro.student_test_data]',
+                    collapse: '~[text:psx.htmlc.admin.students.learning_requirements_pro.collapse]',
+                    show_labels: '~[text:psx.htmlc.admin.students.learning_requirements_pro.show_labels]',
+                    area: '~[text:psx.htmlc.admin.students.learning_requirements_pro.area]',
+                    window: '~[text:psx.htmlc.admin.students.learning_requirements_pro.window]',
+                    accuracy: '~[text:psx.htmlc.admin.students.learning_requirements_pro.accuracy]',
+                    proficiency: '~[text:psx.htmlc.admin.students.learning_requirements_pro.proficiency]',
+                    details: '~[text:psx.htmlc.admin.students.learning_requirements_pro.details]',
+                    graph: '~[text:psx.htmlc.admin.students.learning_requirements_pro.graph]',
+                    assignment_graph: '~[text:psx.htmlc.admin.students.learning_requirements_pro.assignment_graph]',
+                    no_data_to_chart: '~[text:psx.htmlc.admin.students.learning_requirements_pro.no_data_to_chart]',
+                    late_assignment_count: '~[text:psx.htmlc.admin.students.learning_requirements_pro.late_assignment_count]',
+                    missing_assignment_count: '~[text:psx.htmlc.admin.students.learning_requirements_pro.missing_assignment_count]',
+                    incomplete_assignment_count: '~[text:psx.htmlc.admin.students.learning_requirements_pro.incomplete_assignment_count]',
+                    late_assignment_count_details: '~[text:psx.htmlc.admin.students.learning_requirements_pro.late_assignment_count_details]',
+                    missing_assignment_count_details: '~[text:psx.htmlc.admin.students.learning_requirements_pro.missing_assignment_count_details]',
+                    incomplete_assignment_count_details: '~[text:psx.htmlc.admin.students.learning_requirements_pro.incomplete_assignment_count_details]',
+                    click_for_details: '~[text:psx.htmlc.admin.students.learning_requirements_pro.click_for_details]',
+                    learning_requirement: '~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirement]',
+                    historical_test_records: '~[text:psx.htmlc.admin.students.learning_requirements_pro.historical_test_records]',
+                    test_windows: '~[text:psx.htmlc.admin.students.learning_requirements_pro.test_windows]',
+                    test_score: '~[text:psx.htmlc.admin.students.learning_requirements_pro.test_score]',
+                    benchmark: '~[text:psx.htmlc.admin.students.learning_requirements_pro.benchmark]',
+                    grading_history_for: '~[text:psx.htmlc.admin.students.learning_requirements_pro.grading_history_for]',
+                    assignment_scores_and_trends: '~[text:psx.htmlc.admin.students.learning_requirements_pro.assignment_scores_and_trends]',
+                    click_for_help: '~[text:psx.htmlc.admin.students.learning_requirements_pro.click_for_help]',
+                    user_guide: '~[text:psx.htmlc.admin.students.learning_requirements_pro.user_guide]',
+                    next: '~[text:psx.htmlc.admin.students.learning_requirements_pro.next]',
+                    back: '~[text:psx.htmlc.admin.students.learning_requirements_pro.back]'
+                };"
+        data-ng-cloak>
+    <div    id="wizard-data"
+            data-testHelper1="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper1]"
+            data-testHelper2="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper2]"
+            data-testHelper3="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper3]"
+            data-testHelper4="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper4]"
+            data-testHelper5="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper5]"
+            data-testHelper6="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper6]"
+            data-testHelper7="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper7]"
+            data-testHelper8="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper8]"
+            data-testHelper9="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper9]"
+            data-testHelper10="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper10]"
+            data-testHelper11="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper11]"
+            data-testHelper12="~[text:psx.htmlc.admin.students.learning_requirements_pro.testHelper12]"
+            data-progHelper1="~[text:psx.htmlc.admin.students.learning_requirements_pro.progHelper1]"
+            data-progHelper2="~[text:psx.htmlc.admin.students.learning_requirements_pro.progHelper2]"
+            data-progHelper3="~[text:psx.htmlc.admin.students.learning_requirements_pro.progHelper3]"
+            data-progHelper4="~[text:psx.htmlc.admin.students.learning_requirements_pro.progHelper4]"
+            data-classHelper1="~[text:psx.htmlc.admin.students.learning_requirements_pro.classHelper1]"
+            data-classHelper2="~[text:psx.htmlc.admin.students.learning_requirements_pro.classHelper2]"
+            data-classHelper3="~[text:psx.htmlc.admin.students.learning_requirements_pro.classHelper3]"
+            data-classHelper4="~[text:psx.htmlc.admin.students.learning_requirements_pro.classHelper4]"
+            data-classHelper5="~[text:psx.htmlc.admin.students.learning_requirements_pro.classHelper5]"
+            data-classHelper5_1="~[text:psx.htmlc.admin.students.learning_requirements_pro.classHelper5_1]"
+            data-classHelper6="~[text:psx.htmlc.admin.students.learning_requirements_pro.classHelper6]"
+            data-standardHelper1="~[text:psx.htmlc.admin.students.learning_requirements_pro.standardHelper1]"
+            data-standardHelper2="~[text:psx.htmlc.admin.students.learning_requirements_pro.standardHelper2]"
+            data-standardHelper3="~[text:psx.htmlc.admin.students.learning_requirements_pro.standardHelper3]"
+            data-standardHelper4="~[text:psx.htmlc.admin.students.learning_requirements_pro.standardHelper4]"
+            data-standardHelper5="~[text:psx.htmlc.admin.students.learning_requirements_pro.standardHelper5]"
+            data-standardHelper6="~[text:psx.htmlc.admin.students.learning_requirements_pro.standardHelper6]"
+            data-standardHelper7="~[text:psx.htmlc.admin.students.learning_requirements_pro.standardHelper7]"
+            data-assHelper1="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper1]"
+            data-assHelper2="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper2]"
+            data-assHelper3="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper3]"
+            data-assHelper4="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper4]"
+            data-assHelper5="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper5]"
+            data-assHelper6="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper6]">
+    </div>
+    <!-- Picture Wizard -->
+    <div lrp-wizard-popup
+            data-steps="pictureWizardSteps"
+            data-tran-tags="tranTags">
+    </div>
+    <!-- Helper Buttons -->
+	<div    id="lrp-inserted-content-buttons"
+			class="button-row">
+
+	</div>
+	<!-- Test Data View -->
+	<div id="lrp-page-content-tests">
+		<div    main-view-test-data
+				data-ng-if="!isMobile"
+				data-student-test-scores="studentTestScores"
+				data-tran-tags="tranTags"
+				data-grade-level="gradeLevel">
+		</div>
+		<div    mobile-view-test-data
+				data-ng-if="isMobile"
+				data-student-test-scores="studentTestScores"
+				data-tran-tags="tranTags"
+				data-grade-level="gradeLevel">
+		</div>
+	</div>
+	<!-- Learning Requirements View -->
+	<div id="lrp-page-content-class" class="box-round">
+		<h4>
+			~[text:psx.htmlc.admin.students.learning_requirements_pro.class_progress]
+			<div class="button-row">
+				<label>~[text:psx.htmlc.admin.students.learning_requirements_pro.show_ungraded]</label>
+				<label class="lrp-switch">
+					<input type="checkbox" data-ng-model="showUngraded">
+					<span class="lrp-slider"></span>
+				</label>
+			</div>
+		</h4>
+		<!-- Grade Scale Data View -->
+		<div    main-view-grade-scales
+				data-tran-tags="tranTags"
+				data-grade-scales="gradeScales">
+		</div>
+		<!-- Class Data View -->
+		<div    main-view-class-data
+				data-class-list="classList"
+				data-show-ungraded="showUngraded"
+				data-tran-tags="tranTags"
+				data-ng-if="!isMobile">
+		</div>
+		<!-- Mobile Class Data View -->
+		<div    mobile-view-class-data
+				data-class-list="classList"
+				data-show-ungraded="showUngraded"
+				data-tran-tags="tranTags"
+				data-ng-if="isMobile">
+		</div>
+	</div>
+	<!-- Print Media -->
+	<div id="lrp-print-view">
+		<!-- Test Data -->
+		<div class="box-round">
+			<div    print-view-test-data
+					data-student-test-scores="studentTestScores"
+					data-tran-tags="tranTags"
+					data-grade-level="gradeLevel">
+			</div>
+		</div>
+		<!-- Class Data -->
+		<div class="box-round">
+			<div    print-view-grade-scales
+					data-tran-tags="tranTags"
+					data-grade-scales="gradeScales">
+			</div>
+			<div    print-view-class-data
+					data-tran-tags="tranTags"
+					data-class-list="classList">
+			</div>
+		</div>    
+	</div>
+	<div id="lrp-inserted-content">~[wc:lrp_insert_content]</div>
+</div>
+~[wc:teachers_footer_fr_css]
+</body>
+</html><!-- end right frame -->

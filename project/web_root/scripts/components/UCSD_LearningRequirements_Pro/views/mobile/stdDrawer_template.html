@@ -1,0 +1,123 @@
+<div    id="lrp-std-drawer" 
+        class="drawer">
+    <div id="lrp-drawer-header">
+        <div class="drawer-grabber" 
+            data-ng-mousedown="startDrag($event)"
+            data-ng-touchstart="startDrag($event)"
+            data-ng-swipe-right="closeDrawer()">
+        </div>
+        <div    class="button-row lrp-drawer-button-panel"
+                data-ng-mousedown="startDrag($event)"
+                data-ng-touchstart="startDrag($event)"
+                data-ng-swipe-right="closeDrawer()">
+            <h2 data-ng-bind-html="stdDisplay.period + ' - ' + trustedHtml(stdDisplay.course_name)"></h2>
+            <button type="button" data-ng-click="closeDrawer()"><strong>X</strong></button>
+        </div>
+        <div    class="lrp-table-row"
+                data-ng-mousedown="startDrag($event)"
+                data-ng-touchstart="startDrag($event)"
+                data-ng-swipe-right="closeDrawer()">
+            <div class="lrp-table-cell-left lrp-flex-third">
+                <div    class="lrp-table-cell-icons"
+                        data-ng-show="stdDisplay.lateCount > 0 || stdDisplay.missingCount > 0 || stdDisplay.incompCount > 0">
+                    <span   tooltip-follow
+                            data-tooltip-title="{{tranTags.late_assignment_count_details || 'late assignment count: click to expand'}}"
+                            class="bubble-text keyIcon late lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                            data-ng-show="class.lateCount > 0"
+                            data-title="tranTags.late_assignment_count_details || 'late assignment count: click to expand'">
+                        - {{ class.lateCount }}
+                    </span>
+                    <span   tooltip-follow
+                            data-tooltip-title="{{tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'}}"
+                            class="bubble-text keyIcon missing lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                            data-ng-show="class.missingCount > 0"
+                            data-title="tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'">
+                        - {{ class.missingCount }}
+                    </span>
+                    <span   tooltip-follow
+                            data-tooltip-title="{{tranTags.incomplete_assignment_count_details || 'incomplete assignment count: click to expand'}}"
+                            class="bubble-text keyIcon incomplete lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                            data-ng-show="class.incompCount > 0"
+                            data-title="tranTags.incomplete_assignment_count_details || incomplete assignment count: click to expand">
+                        - {{ class.incompCount }}
+                    </span>
+                </div>
+            </div>
+            <div class="lrp-mobile-score-row">
+                <div class="lrp-table lrp-score-table" data-ng-show="stdDisplay.grades.length > 0 && stdDisplay.standards.length > 0">
+                    <!-- Table Header -->
+                    <div class="lrp-table-header">
+                        <div class="lrp-table-header-cell lrp-score-header-cell bubble-text" 
+                             data-ng-repeat="grade in stdDisplay.grades">
+                            {{ grade.storecode }}
+                        </div>
+                    </div>
+                    <!-- Table Row -->
+                    <div class="lrp-table-row">
+                        <div class="lrp-table-cell lrp-score-cell bubble-text" 
+                             data-ng-repeat="grade in stdDisplay.grades">
+                            {{ grade.grade || '--' }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div    class="lrp-circle" 
+                        data-ng-style="getBkgColor(stdDisplay.avgColor)"
+                        data-ng-show="!(stdDisplay.grades.length > 0) && stdDisplay.avg == '1'">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="lrp-drawer-content">
+        <div class="lrp-table lrp-sub-table" data-ng-repeat="category in stdDisplay.standards">
+            <div    class="lrp-table-header"
+                    data-ng-style="parseStyle(category.catstyle)">
+                <div class="lrp-table-header-cell bubble-text" data-ng-bind="category.category"></div>
+            </div>
+            <div    class="lrp-table-row"
+                    data-ng-repeat="standard in category.standards | filter:standardFilter">
+                <div    class="lrp-mobile-cell lrp-flex-tenth bubble-text">
+                    <button class="lrp-mobile-button"
+                            type="button"
+                            data-ng-click="openAsmtDrawer(standard)">
+                        +
+                    </button>
+                </div>
+                <div class="lrp-table-cell">
+                    <div class="lrp-mobile-row">
+                        <div    class="lrp-mobile-cell bubble-text lrp-big"
+                                data-ng-bind="standard.standardName">
+                        </div>
+                        
+                    </div>
+                    <div class="lrp-mobile-score-row">
+                        <div    class="lrp-mobile-cell bubble-text lrp-big">
+                            <div class="lrp-table lrp-score-table" data-ng-show="standard.grades.length > 0">
+                                <!-- Table Header -->
+                                <div class="lrp-table-header">
+                                    <div class="lrp-table-header-cell lrp-score-header-cell" 
+                                         data-ng-repeat="grade in standard.grades">
+                                        {{ grade.storecode }}
+                                    </div>
+                                </div>
+                                <!-- Table Row -->
+                                <div class="lrp-table-row">
+                                    <div class="lrp-table-cell lrp-score-cell" 
+                                         data-ng-repeat="grade in standard.grades"
+                                            data-ng-style="getBkgColor(grade.color)">
+                                        {{ grade.score || '--' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        
+            </div>
+        </div>
+    </div>
+</div>
+<div    lrp-asmt-drawer 
+        data-asmt-display="asmtDisplay"
+        data-dark-mode="darkMode"
+        data-tran-tags="tranTags"></div>

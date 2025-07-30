@@ -1,0 +1,79 @@
+<!-- UCSD Learning Requirements Pro -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Learning Requirements Pro - School Sort Grade Scales</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <link href="/images/css/learning_requirements_pro/learning_requirements_styles.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start here--><a href="/admin/Learning_Requirements_Pro/home.html" target="_top">Home</a> &gt; Learning Requirements Pro - School Sort Grade Scales - ~(schoolname)<!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>Learning Requirements Pro - School Sort Grade Scales - ~(schoolname)</h1>
+    <!-- start of content area -->
+    ~[if#distCheck.district.office]
+    <div class="feedback-alert">Must be in a school.</div>
+    [else#distCheck]
+    <div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+            data-module-name="lrpmodule"
+            data-ng-init="schoolid='~(curschoolid)'"
+            data-ng-controller="GradeScaleSortController"
+            data-ng-cloak>
+        <div class="button-row">
+            <button type="button" data-ng-click="submitChanges()">Submit</button>
+        </div>
+        <div class="box-round">
+            <table class="grid">
+                <thead>
+                    <tr>
+                        <th colspan="6">~(schoolname)</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>Sort Order</th>
+                        <th>Name</th>
+                        <th>Details</th>
+                        <th>Explanation</th>
+                        <th>value</th>
+                        <th>hide</th>
+                    </tr>
+                </thead>
+                <tbody ui-sortable="sortableOptions" data-ng-model="gradeScaleItems">
+                    <tr data-ng-repeat="record in gradeScaleItems">
+                        <td>
+                            <div class="lrpHandle"></div>
+                        </td>
+                        <td data-ng-bind="record.sortorder || $index"></td>
+                        <td>
+                            <div class="bubble-text" data-ng-bind="record.gsiname" data-ng-style="previewColor(record.colorcode)"></div>
+                        </td>
+                        <td data-ng-bind="record.gsidesc"></td>
+                        <td data-ng-bind="record.detailed_description"></td>
+                        <td data-ng-bind="record.gsivalue"></td>
+                        <td>
+                            <input type="checkbox"
+                                    data-ng-model="record.hide"
+                                    data-ng-true-value="'1'"
+                                    data-ng-false-value="'0'">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-row">
+                <!-- <button type="button" data-ng-click="deleteRecords()">Delete</button> -->
+                <button type="button" data-ng-click="submitChanges()">Submit</button>
+            </div>
+        </div>
+    </div>
+    [/if#distCheck]
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

@@ -647,135 +647,133 @@ table.deletable-rows .selected-delete {
 /************* Dark Mode *************/
 /*************************************/
 
-@media (prefers-color-scheme: dark) {
-    .lrp-accordion {
-        background-color: #1f2933;
-    }
-    
-    .lrp-accordion h3 {
-        border: 1px solid rgb(87, 87, 88);
-        background-color: #1e3548;
-    }
-    
-    .lrp-accordion div {
-        border: 1px solid rgb(87, 87, 88);
-        border-top: none;
-        background-color: #363945;
-    }
-    
-    .learning-requirements-table {
-        border: 1px solid rgb(87, 87, 88);
-        background-color: #363945;
-    }
-
-    .selected-delete {
-        border: 1px rgb(169, 5, 5) solid !important;
-    }
-
-    .lr-button-red {
-        background-color: rgb(169, 5, 5);
-        color: rgb(50, 50, 50);
-        border: 1px solid rgb(50, 50, 50);
-    }
-
-    #lrp-overlay {
-        background: rgba(255, 255, 255, 0.5);
-    }
-
-    #lrp-drawer {
-        background: #1f2933;
-        border-left: 1px solid #898c8f;
-        box-shadow: 0 0 10px rgba(122, 122, 122, 0.2);
-    }
-
-    #lrp-drawer-header {
-        border-bottom: 1px solid #898c8f;
-        background-color: #3E4C59;
-    }
-    
-    table.deletable-rows td, 
-    table.deletable-rows th {
-        border: 1px solid #6a6a76; 
-    }
-
-
-    .lrp-dropdown-header {
-        border: 1px solid #979797;
-    }
-    
-    .lrp-blue {
-        background-color: #131754;
-    }
-
-    .lrp-dropdown-list {
-        border: 1px solid #979797;
-        background-color: #1F2933;
-        box-shadow: 1px 2px 10px #000000;
-    }
-    
-    .button-row.lrp-drawer-button-panel {
-        background-color: #195f7d !important;
-        border-bottom: 1px solid #6a6a76;
-    }
-    
-    .lrp-table, .lrp-table-header-cell, .lrp-table-spacer-content {
-        border: 1px solid black;
-    }
-    
-    .lrp-table-header {
-        background-color: #195f7d;
-    }
-    
-    .lrp-table-spacer-content {
-        background-color: #1f2933;
-    }
-    
-    /*.lrp-table-row {*/
-    /*    border-bottom: 1px solid black;*/
-    /*}*/
-    
-    /*.lrp-table-row:nth-child(odd) {*/
-    /*    background-color: #323F48;*/
-    /*}*/
-    
-    /*.lrp-table-row:nth-child(even) {*/
-    /*    background-color: #242f39;*/
-    /*}*/
-    
-    .lrp-table-row {
-        display: flex;
-        flex-wrap: nowrap;
-        border-bottom: 1px solid black;
-        background-color: #323F48;
-        background-image: linear-gradient(to right, #736aa5 0%, #736aa5 100%);
-        background-repeat: no-repeat;
-        background-size: 0% 100%; /* Start with no fill */
-        transition: all 1s ease; /* Smooth transition */
-    }
-    
-    .lrp-table-row:nth-child(odd) {
-        background-color: #323F48;
-    }
-    
-    .lrp-table-row:nth-child(even) {
-        background-color: #242f39;
-    }
-    
-    .lrp-table-row.selected {
-        background-size: 100% 100%; /* Expand gradient to fill */
-        background-color: #736aa5; /* Fallback for browsers that don't support gradients */
-    }
-    
-    .lrp-table-cell-icons {
-        background-color: #242f39;
-    }
-    
-    .lrp-trend-button {
-        background-color: #242f39;
-    }
-    
-    .lrp-table-assignment-row {
-        background-color: #2c2c3c !important;
-    }
-    
+body.set-to-dark:not(.disable-dark-mode) .lrp-accordion {
+    background-color: #1f2933;
 }
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-accordion h3 {
+    border: 1px solid rgb(87, 87, 88);
+    background-color: #1e3548;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-accordion div {
+    border: 1px solid rgb(87, 87, 88);
+    border-top: none;
+    background-color: #363945;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .learning-requirements-table {
+    border: 1px solid rgb(87, 87, 88);
+    background-color: #363945;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .selected-delete {
+    border: 1px rgb(169, 5, 5) solid !important;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lr-button-red {
+    background-color: rgb(169, 5, 5);
+    color: rgb(50, 50, 50);
+    border: 1px solid rgb(50, 50, 50);
+}
+
+body.set-to-dark:not(.disable-dark-mode) #lrp-overlay {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+body.set-to-dark:not(.disable-dark-mode) #lrp-drawer {
+    background: #1f2933;
+    border-left: 1px solid #898c8f;
+    box-shadow: 0 0 10px rgba(122, 122, 122, 0.2);
+}
+
+body.set-to-dark:not(.disable-dark-mode) #lrp-drawer-header {
+    border-bottom: 1px solid #898c8f;
+    background-color: #3E4C59;
+}
+
+body.set-to-dark:not(.disable-dark-mode) table.deletable-rows td, 
+body.set-to-dark:not(.disable-dark-mode) table.deletable-rows th {
+    border: 1px solid #6a6a76; 
+}
+
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-dropdown-header {
+    border: 1px solid #979797;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-blue {
+    background-color: #131754;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-dropdown-list {
+    border: 1px solid #979797;
+    background-color: #1F2933;
+    box-shadow: 1px 2px 10px #000000;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .button-row.lrp-drawer-button-panel {
+    background-color: #195f7d !important;
+    border-bottom: 1px solid #6a6a76;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table, .lrp-table-header-cell, .lrp-table-spacer-content {
+    border: 1px solid black;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-header {
+    background-color: #195f7d;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-spacer-content {
+    background-color: #1f2933;
+}
+
+/*.lrp-table-row {*/
+/*    border-bottom: 1px solid black;*/
+/*}*/
+
+/*.lrp-table-row:nth-child(odd) {*/
+/*    background-color: #323F48;*/
+/*}*/
+
+/*.lrp-table-row:nth-child(even) {*/
+/*    background-color: #242f39;*/
+/*}*/
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-row {
+    display: flex;
+    flex-wrap: nowrap;
+    border-bottom: 1px solid black;
+    background-color: #323F48;
+    background-image: linear-gradient(to right, #736aa5 0%, #736aa5 100%);
+    background-repeat: no-repeat;
+    background-size: 0% 100%; /* Start with no fill */
+    transition: all 1s ease; /* Smooth transition */
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-row:nth-child(odd) {
+    background-color: #323F48;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-row:nth-child(even) {
+    background-color: #242f39;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-row.selected {
+    background-size: 100% 100%; /* Expand gradient to fill */
+    background-color: #736aa5; /* Fallback for browsers that don't support gradients */
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-cell-icons {
+    background-color: #242f39;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-trend-button {
+    background-color: #242f39;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-table-assignment-row {
+    background-color: #2c2c3c !important;
+}
+    

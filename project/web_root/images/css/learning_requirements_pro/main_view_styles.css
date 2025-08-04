@@ -27,6 +27,10 @@
     width: fill-available;
 }
 
+h4>div.button-row {
+    margin: 0 20px 0 20px !important;
+}
+
 .lrp-test-content-shown-button {
     border: 1px solid #CCCCCC;
     border-bottom: none;
@@ -487,52 +491,51 @@ div:focus {
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    .lrp-popup {
-        background-color: #1f2933;
-    }
-    
-    .test-cell {
-        border: 1px solid #7b8794;
-        background-color: #323F48;
-    }
-    
-    .lrp-test-content-shown-button {
-        border: 1px solid #7b8794;
-        color: #cbd2d9;
-        background-color: #242f39;
-    }
-    
-    .lrp-test-content-hidden-button {
-        border: 1px solid #7b8794;
-        background-color: #589e81;
-        color: black;
-    }
-    
-    #lrp-test-hist-chart {
-        border: 1px solid #7b8794;
-    }
+/* Dark Mode */
+body.set-to-dark:not(.disable-dark-mode) .lrp-popup {
+    background-color: #1f2933;
+}
 
-    .lrp-aps-button {
-        background-color: #195f7d !important;
-        color: white;
-    }
-    
-    .lrp-myth {
-        background-color: #195f7d;
-    }
-    
-    .tableKey {
-        background-color: inherit !important;
-        color: inherit !important;
-        padding-bottom: 1px;
-        margin-bottom: 0px;
-        width: 100%;
-        align-content: center;
-        text-align: center;
-    }
-    
-    .lrp-trend-button {
-        background-color: #242f39;
-    }
+body.set-to-dark:not(.disable-dark-mode) .test-cell {
+    border: 1px solid #7b8794;
+    background-color: #323F48;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-test-content-shown-button {
+    border: 1px solid #7b8794;
+    color: #cbd2d9;
+    background-color: #242f39;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-test-content-hidden-button {
+    border: 1px solid #7b8794;
+    background-color: #589e81;
+    color: black;
+}
+
+body.set-to-dark:not(.disable-dark-mode) #lrp-test-hist-chart {
+    border: 1px solid #7b8794;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-aps-button {
+    background-color: #195f7d !important;
+    color: white;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-myth {
+    background-color: #195f7d;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .tableKey {
+    background-color: inherit !important;
+    color: inherit !important;
+    padding-bottom: 1px;
+    margin-bottom: 0px;
+    width: 100%;
+    align-content: center;
+    text-align: center;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-trend-button {
+    background-color: #242f39;
 }

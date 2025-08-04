@@ -165,18 +165,17 @@
         width: 10rem;
     }
 }
+/* Dark Mode */
 
-@media (prefers-color-scheme: dark) {
-    .mobile-tableKey {
-        background-color: inherit !important;
-        color: inherit !important;
-    }
-    
-    #lrp-drawer-content, #lrp-std-drawer, #lrp-asmt-drawer {
-        background-color: #1f2933;
-    }
-    
-    .lrp-mobile-test-graph-data {
-        border: 1px solid #7b8794;
-    }
+body.set-to-dark:not(.disable-dark-mode) .mobile-tableKey {
+    background-color: inherit !important;
+    color: inherit !important;
+}
+
+body.set-to-dark:not(.disable-dark-mode) #lrp-drawer-content, #lrp-std-drawer, #lrp-asmt-drawer {
+    background-color: #1f2933;
+}
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-test-graph-data {
+    border: 1px solid #7b8794;
 }

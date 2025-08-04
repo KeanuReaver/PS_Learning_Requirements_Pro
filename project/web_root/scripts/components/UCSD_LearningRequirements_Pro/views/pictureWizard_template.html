@@ -151,22 +151,22 @@
         cursor: not-allowed;
     }
 
-    @media (prefers-color-scheme: dark) {
-        .picture-wizard-drawer-header {
-            background-color: #195f7d;
-        }
-        
-        .picture-wizard-popout-window {
-            background-color: #1f2933;
-        }
-        
-        .picture-wizard-navigation {
-            background-color: #323F48;
-            border-bottom: 1px solid #7b8794;
-        }
-        
-        .wizard-image img {
-            border-bottom: 1px solid #7b8794;
-        }
+    /* Dark Mode */
+    body.set-to-dark:not(.disable-dark-mode) .picture-wizard-drawer-header {
+        background-color: #195f7d;
     }
+    
+    body.set-to-dark:not(.disable-dark-mode) .picture-wizard-popout-window {
+        background-color: #1f2933;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .picture-wizard-navigation {
+        background-color: #323F48;
+        border-bottom: 1px solid #7b8794;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .wizard-image img {
+        border-bottom: 1px solid #7b8794;
+    }
+    
 </style>

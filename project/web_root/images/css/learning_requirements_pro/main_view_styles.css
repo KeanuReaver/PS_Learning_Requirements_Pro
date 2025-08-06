@@ -402,6 +402,10 @@ h4>div.button-row {
     display: none;
 }
 
+body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-row {
+    display: none;
+}
+
 .lrp-full-view-row {
     display: inherit;
 }
@@ -421,6 +425,10 @@ div:focus {
 .lrp-mobile-view-block {
     display: none;
 }
+
+body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-block {
+    display: none;
+}
 /* tags end */
 
 .lrp-trend-button {
@@ -435,6 +443,7 @@ div:focus {
         border-radius: 0 0 0 10px;
         margin-top: 0;
     }
+    
     
     .box-round {
         padding-right: 0 !important;
@@ -489,9 +498,84 @@ div:focus {
         float: none;
         line-height: 1rem;
     }
+    
+    #lrp-inserted-content-buttons {
+        display: flex;                /* Use block-level flex for stacking */
+        flex-direction: column;       /* Stack children vertically */
+        align-items: stretch;         /* Make children fill full width if desired */
+        width: 90%;   
+    }
+    /**/
+    body.set-to-dark:not(.disable-dark-mode) .lrp-sub-table {
+        border-radius: 0 0 0 10px;
+        margin-top: 0;
+    }
+    
+    
+    body.set-to-dark:not(.disable-dark-mode) .box-round {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .testviews {
+        display: block !important;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .leftColumn, .rightColumn {
+        width: auto !important;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .test-cell {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .lrp-table {
+        margin: 0 0 0 2px;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .lrp-full-view-row {
+        display: none;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-row {
+        display: inherit;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .lrp-full-view-block {
+        display: none;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-block {
+        display: block;
+    }
+    
+    body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-flex {
+        display: flex;
+    }
+    
+    /*body.set-to-dark:not(.disable-dark-mode) .lrp-table-cell, body.set-to-dark:not(.disable-dark-mode) .lrp-table-header-cell {*/
+    /*    padding: 0;*/
+    /*    line-height: 1rem;*/
+    /*}*/
+    
+    body.set-to-dark:not(.disable-dark-mode) .lrp-table-toggle-button {
+        width: 0;
+        float: none;
+        line-height: 1rem;
+    }
+
+    body.set-to-dark:not(.disable-dark-mode) #lrp-inserted-content-buttons {
+        display: flex;                /* Use block-level flex for stacking */
+        flex-direction: column;       /* Stack children vertically */
+        align-items: stretch;         /* Make children fill full width if desired */
+        width: 90%;   
+    }
 }
 
-/* Dark Mode */
+
 body.set-to-dark:not(.disable-dark-mode) .lrp-popup {
     background-color: #1f2933;
 }

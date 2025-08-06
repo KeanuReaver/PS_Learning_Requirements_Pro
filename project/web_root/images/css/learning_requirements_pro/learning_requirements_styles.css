@@ -347,11 +347,11 @@ table.deletable-rows .selected-delete {
     }
     
     .lrp-table-row:nth-child(odd) {
-        background-color: #a3a3b5;
+        background-color: #ececf4;
     }
     
     .lrp-table-row:nth-child(even) {
-        background-color: #959494;
+        background-color: #d8d8d8;
     }
     
     .lrp-table-row.selected {
@@ -776,4 +776,3 @@ body.set-to-dark:not(.disable-dark-mode) .lrp-trend-button {
 body.set-to-dark:not(.disable-dark-mode) .lrp-table-assignment-row {
     background-color: #2c2c3c !important;
 }
-    

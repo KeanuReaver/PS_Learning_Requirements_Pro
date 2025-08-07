@@ -142,15 +142,33 @@
             data-assHelper5="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper5]"
             data-assHelper6="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper6]">
     </div>
-    <!-- Picture Wizard -->
-    <div lrp-wizard-popup
-            data-steps="pictureWizardSteps"
-            data-tran-tags="tranTags">
+    <!-- Color Toggle -->
+    <div    class="lrp-accessibility-panel"
+            role="group" 
+            aria-labelledby="colorToggleLabel">
+        <span id="colorToggleLabel" class="toggle-label bold">
+            Colors: 
+        </span>
+        <span aria-hidden="true" class="toggle-option bold">Off</span>
+        <label class="lrp-switch">
+            <input  type="checkbox"
+                    id="showColorsToggle"
+                    data-ng-model="showColorsMaster"
+                    aria-label="Toggle to show or hide color-coded score bubbles"
+                    data-ng-keypress="toggleShowColors($event)"
+                    role="switch">
+            <span class="lrp-slider"></span>
+        </label>
+        <span aria-hidden="true" class="toggle-option bold">On</span>
     </div>
     <!-- Helper Buttons -->
 	<div    id="lrp-inserted-content-buttons"
 			class="button-row">
-
+        <!-- Picture Wizard -->
+        <div lrp-wizard-popup
+                data-steps="pictureWizardSteps"
+                data-tran-tags="tranTags">
+        </div>
 	</div>
 	<!-- Test Data View -->
 	<div id="lrp-page-content-tests">
@@ -158,13 +176,15 @@
 				data-ng-if="!isMobile"
 				data-student-test-scores="studentTestScores"
 				data-tran-tags="tranTags"
-				data-grade-level="gradeLevel">
+				data-grade-level="gradeLevel"
+                data-show-colors="showColorsMaster">
 		</div>
 		<div    mobile-view-test-data
 				data-ng-if="isMobile"
 				data-student-test-scores="studentTestScores"
 				data-tran-tags="tranTags"
-				data-grade-level="gradeLevel">
+				data-grade-level="gradeLevel"
+                data-show-colors="showColorsMaster">
 		</div>
 	</div>
 	<!-- Learning Requirements View -->
@@ -182,21 +202,24 @@
 		<!-- Grade Scale Data View -->
 		<div    main-view-grade-scales
 				data-tran-tags="tranTags"
-				data-grade-scales="gradeScales">
+				data-grade-scales="gradeScales"
+                data-show-colors="showColorsMaster">
 		</div>
 		<!-- Class Data View -->
 		<div    main-view-class-data
 				data-class-list="classList"
 				data-show-ungraded="showUngraded"
 				data-tran-tags="tranTags"
-				data-ng-if="!isMobile">
+				data-ng-if="!isMobile"
+				data-show-colors="showColorsMaster">
 		</div>
 		<!-- Mobile Class Data View -->
 		<div    mobile-view-class-data
 				data-class-list="classList"
 				data-show-ungraded="showUngraded"
 				data-tran-tags="tranTags"
-				data-ng-if="isMobile">
+				data-ng-if="isMobile"
+				data-show-colors="showColorsMaster">
 		</div>
 	</div>
 	<!-- Print Media -->

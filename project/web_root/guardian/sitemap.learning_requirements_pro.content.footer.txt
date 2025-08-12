@@ -1,4 +1,4 @@
-<script id="learning-requirements-site-map-link">
+<script id="learning-requirements-site-map-link" type="text/template">
     <h2>~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</h2>
     <ul>
         <li><a href="/guardian/learning_requirements_pro.html">~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</a></li>

@@ -1,7 +1,6 @@
 'use strict';
 define(require => {
     const module = require('components/UCSD_LearningRequirements_Pro/module');
-    const $j = require('jquery');
 
     module.factory('getData', ($http, $q, dataManagement, classListUrl, stdListUrl, asmtListUrl, commentListUrl,
             studentTestScoresUrl, colorListUrl, stdAssocCatUrl, allStdCatsUrl, scoreColorsUrl, gradeScaleListUrl,

@@ -13,18 +13,19 @@
 ~[wc:teachers_header_fr_css]
     ~[SetPostValue:selectedTab=LearningRequirements]
 <form name="navigation">
-<span class="account-photo">~[studenttitlephoto]</span>
-<h1>~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]
-
-</h1>
+~[wc:teachers_title_student_begin_css]~[text]psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro[/text]~[wc:teachers_title_student_end_css]
+</form>
     ~[wc:teachers_student_detail_header_line]
 
     ~[brij_render:common-ps;:TeacherQuickLookupTabs]
 <!--Adds tab while page is selected and marks it as selected-->
 <script>
-    $j(".tabs").append('<li id="learning-requirements"><a href="/teachers/learning_requirements_pro.html?frn=~(studentfrn)">Learning Requirements Pro</a></li>');
+    $j(".tabs").append('<li id="learning-requirements"><a href="/teachers/studentpages/learning_requirements_pro_landing_page.html?frn=~(studentfrn)">Learning Requirements Pro</a></li>');
     $j(".tabs li").removeClass();
     $j("#learning-requirements").addClass('selected');
+    function formHandler(form) {
+        window.location.href = document.navigation.page.options[document.navigation.page.selectedIndex].value;
+    }
 </script>
 <!-- start of content -->
 <div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"

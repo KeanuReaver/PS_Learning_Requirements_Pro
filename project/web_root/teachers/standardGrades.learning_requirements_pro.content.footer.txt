@@ -1,5 +1,5 @@
 <script type="text/template" id="version-template-Learning-Requirements">
-	<li id="customql"><a href="/teachers/learning_requirements_pro.html?frn=~(studentfrn)">~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</a></li>
+	<li id="customql"><a href="/teachers/studentpages/learning_requirements_pro_landing_page.html?frn=~(studentfrn)">~[text:psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro]</a></li>
 </script>
 
 <script>

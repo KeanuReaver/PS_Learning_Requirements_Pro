@@ -9,7 +9,6 @@ define([
     'components/UCSD_LearningRequirements_Pro/factories/lrp_linearRegression_factory',
     'components/UCSD_LearningRequirements_Pro/factories/lrp_writeData_factory',
     'components/UCSD_LearningRequirements_Pro/factories/lrp_mainView_factory',
-    'components/UCSD_LearningRequirements_Pro/factories/lrp_pBand_factory',
     'components/UCSD_LearningRequirements_Pro/factories/lrp_tests_factory',
     'components/UCSD_LearningRequirements_Pro/factories/lrp_transHash_factory'
 ]);

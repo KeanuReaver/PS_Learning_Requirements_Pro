@@ -15,7 +15,7 @@ define(function(require) {
             link: function(scope) {
                 scope.toggleDropdown = function(item) {
                     item.isDropdownOpen = !item.isDropdownOpen;
-                }
+                };
 
                 scope.selectColor = function(item, color = null) {
                     if (color && color.id && color.colorcode) {
@@ -28,11 +28,11 @@ define(function(require) {
                     item.isdirty = 1;
                     item.isDropdownOpen = false;
                     console.log(item);
-                }
+                };
                 
                 scope.previewColor = (color = '') => {
                     return colorLogic.previewColor(color);
-                }
+                };
                 
                 const clickOutsideHandler = function(event) {
                     const target = angular.element(event.target);
@@ -52,5 +52,5 @@ define(function(require) {
                 });
             }
         }
-    })
+    });
 });

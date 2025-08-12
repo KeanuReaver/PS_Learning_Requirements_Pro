@@ -136,7 +136,7 @@ define(function(require) {
 
                 $scope.closeDrawer = () => {
                     dataManagement.closeLRPDrawer();
-                }
+                };
                 
                 $scope.toggleSection = function(section) {
                     // If the clicked section is already open, close it
@@ -146,7 +146,7 @@ define(function(require) {
                         // Otherwise, open the clicked section
                         $scope.openSection = section;
                     }
-                }
+                };
 
                 $scope.downloadTSV = function() {
                     const headers = [
@@ -168,7 +168,7 @@ define(function(require) {
                     const tsvContent = dataManagement.generateTSV(headers, $scope.performanceBands);
                 
                     dataManagement.downloadFile(tsvContent, filename);
-                }
+                };
 
                 $scope.processTSV = function() {
                     loadingDialog('Processing file . . . ');
@@ -186,14 +186,14 @@ define(function(require) {
                             $scope.$apply();
                             closeLoading();
                         });
-                }
+                };
 
                 $scope.applyChanges = function() {
                     let confirmation = $window.confirm('Apply changes from uploaded file?');
                     if (confirmation) {
                         copyUploadedToLive();
                     }
-                }
+                };
             }]
         }
     }]);

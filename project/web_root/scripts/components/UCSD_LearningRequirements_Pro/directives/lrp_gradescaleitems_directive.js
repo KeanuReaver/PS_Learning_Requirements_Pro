@@ -43,11 +43,11 @@ define(function(require) {
                             closeDrawer();
                             closeLoading();
                         });
-                }
+                };
 
                 $scope.closeThisDrawer = () => {
                     closeDrawer();
-                }
+                };
                 
                 $scope.toggleDropdown = function(item) {
                     // Toggle the dropdown for the specific item
@@ -65,7 +65,7 @@ define(function(require) {
                 
                 $scope.previewColor = (color) => {
                     return colorLogic.previewColor(color);
-                }
+                };
                 
                 $j(document).on('click', function(event) {
                     const $target = $j(event.target);

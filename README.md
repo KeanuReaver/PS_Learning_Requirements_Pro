@@ -23,6 +23,12 @@ PowerSchool Plugin that adds an interactive display for learning requirements, s
 ## 🛠️ Development Notes
 
 This plugin is built using AngularJS, RequireJS, PSHTML, HTML, CSS, JQUERY, SQL and XML.
+Requires:
+- PS Better Mobile Libraries: For mobile libraries
+- PS Better Fusion Charts: For FusionCharts css (darkmode/lightmode)
+- PS Better Animations: For angularjs animation library
+- PS Angular Utility Libraries: for cryptojs and sortable.js
+- PS Luxon Module: for the luxon library
 
 ## 🧪 Future Features
 

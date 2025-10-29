@@ -1,0 +1,155 @@
+~[tlist_sql;
+    WITH attendance_detailed AS (
+        SELECT
+            attendance.studentid                                AS studentid,
+            attendance.schoolid                                 AS schoolid,
+            attendance.yearid                                   AS yearid,
+            attendance.calendar_dayid                           AS calendardayid,
+            attendance.attendance_codeid                        AS attendance_codeid,
+            attendance.att_mode_code                            AS att_mode_code,
+            attendance.total_minutes                            AS total_minutes,
+            attendance.periodid                                 AS periodid,
+            attendance.ccid                                     AS ccid,
+            attendance_code.att_code                            AS att_code,
+            attendance_code.presence_status_cd                  AS presence_status_cd,
+            bell_schedule_items.minutes_attended                AS minutes_for_calc,
+            period.abbreviation                                 AS period_abbreviation,
+            cc.sectionid                                        AS sectionid,
+            sections.course_number                              AS course_number,
+            courses.course_name                                 AS course_name
+        FROM
+            attendance
+            JOIN attendance_code ON attendance_code.id = attendance.attendance_codeid
+            JOIN calendar_day ON calendar_day.id = attendance.calendar_dayid
+            JOIN bell_schedule_items ON bell_schedule_items.bell_schedule_id = calendar_day.bell_schedule_id
+                AND bell_schedule_items.period_id = attendance.periodid
+            JOIN period ON period.id = attendance.periodid
+            LEFT JOIN cc ON cc.id = attendance.ccid
+            LEFT JOIN sections ON sections.id = abs(cc.sectionid)
+            LEFT JOIN courses ON courses.course_number = sections.course_number
+        WHERE
+            attendance_code.att_code IS NOT NULL
+            AND attendance.yearid >= ~(gpv.start_year_id)
+            AND attendance.studentid = ~(curstudid)
+    )
+    SELECT
+        COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'studentid' VALUE ps_membership_defaults.studentid,
+                'calendardayid' VALUE calendar_day.id,
+                'date_value' VALUE calendar_day.date_value,
+                'schoolid' VALUE ps_membership_defaults.schoolid,
+                'yearid' VALUE ps_membership_defaults.yearid,
+                'year_abbr' VALUE terms.abbreviation,
+                'fteid' VALUE ps_membership_defaults.fteid,
+                'student_track' VALUE ps_membership_defaults.student_track,
+                'att_mode_code' VALUE ps_membership_defaults.dflt_att_mode_code,
+                'conversion_mode_code' VALUE ps_membership_defaults.dflt_conversion_mode_code,
+                'attendancevalue' VALUE ps_adaadm_defaults_all.attendancevalue,
+                'potential_periods_present' VALUE ps_membership_defaults.potential_periods_present,
+                'potential_minutes_present' VALUE ps_membership_defaults.potential_minutes_present,
+                'periods_absent' VALUE ps_membership_defaults.periods_absent,
+                'minutes_absent' VALUE ps_membership_defaults.minutes_absent,
+                'non_exempt_periods_absent' VALUE NVL(non_exempt_by_day.non_exempt_periods_absent, 0),
+                'non_exempt_minutes_absent' VALUE NVL(non_exempt_by_day.non_exempt_minutes_absent, 0),
+                'membershipvalue' VALUE calendar_day.membershipvalue,
+                'insession' VALUE calendar_day.insession,
+                'week_num' VALUE calendar_day.week_num,
+                'a' VALUE calendar_day.a,
+                'b' VALUE calendar_day.b,
+                'c' VALUE calendar_day.c,
+                'd' VALUE calendar_day.d,
+                'e' VALUE calendar_day.e,
+                'f' VALUE calendar_day.f,
+                'day_codes_json' VALUE COALESCE(codes_json_by_day.day_codes_json, TO_CLOB(chr(91)||chr(93))) FORMAT JSON
+                RETURNING CLOB
+            )
+            RETURNING CLOB
+        ), TO_CLOB(chr(91)||chr(93)) )
+    FROM
+        calendar_day
+        INNER JOIN ps_membership_defaults ON ps_membership_defaults.schoolid = calendar_day.schoolid
+            AND ps_membership_defaults.calendardate = calendar_day.date_value
+        LEFT JOIN (
+            SELECT
+                attendance_detailed.studentid AS studentid,
+                attendance_detailed.calendardayid AS calendardayid, 
+                SUM(
+                    CASE
+                        WHEN attendance_detailed.presence_status_cd = 'Absent' AND NOT EXISTS (
+                            SELECT 1
+                            FROM att_code_code_entity
+                            JOIN code_entity ON code_entity.id = att_code_code_entity.code_entityid
+                            WHERE att_code_code_entity.attendance_codeid = attendance_detailed.attendance_codeid
+                            AND code_entity.external_name = 'Exempt'
+                        )
+                        THEN 1 ELSE 0
+                    END
+                ) AS non_exempt_periods_absent,
+                SUM(
+                    CASE
+                        WHEN attendance_detailed.presence_status_cd = 'Absent' AND NOT EXISTS (
+                            SELECT 1
+                            FROM att_code_code_entity
+                            JOIN code_entity ON code_entity.id = att_code_code_entity.code_entityid
+                            WHERE att_code_code_entity.attendance_codeid = attendance_detailed.attendance_codeid
+                            AND code_entity.external_name = 'Exempt'
+                        )
+                        THEN attendance_detailed.minutes_for_calc ELSE 0
+                    END
+                ) AS non_exempt_minutes_absent
+            FROM
+                attendance_detailed
+            GROUP BY
+                attendance_detailed.studentid,
+                attendance_detailed.calendardayid
+        ) non_exempt_by_day ON non_exempt_by_day.studentid = ps_membership_defaults.studentid
+            AND non_exempt_by_day.calendardayid = calendar_day.id
+        LEFT JOIN (
+            SELECT
+                attendance_detailed.studentid     AS studentid,
+                attendance_detailed.calendardayid AS calendardayid,
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'attendance_codeid' VALUE attendance_detailed.attendance_codeid,
+                        'att_code'          VALUE NVL(attendance_detailed.att_code, ''),
+                        'presence_status'   VALUE attendance_detailed.presence_status_cd,
+                        'categories'        VALUE NVL((
+                            SELECT LISTAGG(code_entity.external_name, ',')
+                            FROM att_code_code_entity
+                            JOIN code_entity ON code_entity.id = att_code_code_entity.code_entityid
+                            WHERE att_code_code_entity.attendance_codeid = attendance_detailed.attendance_codeid
+                        ), ''),
+                        'minutes'           VALUE attendance_detailed.minutes_for_calc,
+                        'period_id'         VALUE attendance_detailed.periodid,
+                        'period'            VALUE attendance_detailed.period_abbreviation,
+                        'sectionid'         VALUE attendance_detailed.sectionid,
+                        'course_number'     VALUE attendance_detailed.course_number,
+                        'course_name'       VALUE attendance_detailed.course_name
+                        RETURNING CLOB
+                    )
+                    RETURNING CLOB 
+                ) AS day_codes_json
+            FROM
+                attendance_detailed
+            GROUP BY
+                attendance_detailed.studentid,
+                attendance_detailed.calendardayid
+        ) codes_json_by_day ON codes_json_by_day.studentid = ps_membership_defaults.studentid
+            AND codes_json_by_day.calendardayid = calendar_day.id
+        INNER JOIN ps_adaadm_defaults_all ON ps_adaadm_defaults_all.calendardate = calendar_day.date_value
+            AND ps_adaadm_defaults_all.schoolid = ps_membership_defaults.schoolid
+            AND ps_adaadm_defaults_all.studentid = ps_membership_defaults.studentid
+        INNER JOIN terms ON terms.yearid = ps_membership_defaults.yearid
+            AND terms.isyearrec = 1
+            AND terms.schoolid = ps_membership_defaults.schoolid
+    WHERE
+        calendar_day.insession = 1
+        AND ps_membership_defaults.studentid = ~(curstudid)
+        AND ps_membership_defaults.yearid >= ~(gpv.start_year_id)
+        AND ps_membership_defaults.ontrack = 1
+    ORDER BY
+        calendar_day.date_value
+;]
+    ~(val)
+[/tlist_sql]

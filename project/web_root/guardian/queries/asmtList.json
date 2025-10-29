@@ -31,6 +31,7 @@
         ELSE 0 
     END                                                                             AS incomplete,
     CASE WHEN assignmentsection.iscountedinfinalgrade = 0 THEN 1 ELSE 0 END         AS excluded,
+    CASE WHEN assignmentstandardassoc.iscountedinstandardgrade = 0 THEN 1 ELSE 0 END AS not_counted,
     TO_CHAR(assignmentsection.description)                                          AS description
 FROM
     students
@@ -70,5 +71,6 @@ ORDER BY
     "absent": "~(absent)",
     "incomplete": "~(incomplete)",
     "excluded": "~(excluded)",
+    "not_counted": "~(not_counted)",
     "description": "~(description;Json)"
 },[/tlist_sql]{}]

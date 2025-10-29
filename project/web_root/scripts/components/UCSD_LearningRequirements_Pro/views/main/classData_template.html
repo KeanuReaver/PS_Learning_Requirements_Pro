@@ -49,6 +49,16 @@
                 data-title="tranTags.incomplete || 'incomplete'">
             - {{ tranTags.incomplete || 'incomplete' }} 
         </span>
+        <span   tooltip-follow
+                role="listitem"
+                aria-label="Score Not Counted in Final Grade"
+                data-tooltip-title="Score Not Counted in Final Grade"
+                class="keyIcon keyItem standard-exclude"
+                style="padding-left: 1px;"
+                data-title="Score Not Counted in Final Grade">
+            <div class="exclude-from-standard-key-image"></div>
+            - Score Not Counted in Final Grade
+        </span>
     </span>
         
 </div>
@@ -64,14 +74,14 @@
 <div    class="lrp-table"
         data-ng-show="shouldShow(classList, 'current')">
     <div class="lrp-table-header">
-        <div class="lrp-table-header-cell bubble-text">{{ tranTags.current_courses || 'Current Courses' }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.current_courses || 'Current Courses' }}</div>
     </div>
     <div class="lrp-table-header">
         <div class="lrp-table-header-cell lrp-flex-tenth"></div>
-        <div class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.exp || 'Exp' }}</div>
-        <div class="lrp-table-header-cell bubble-text">{{ tranTags.course || 'Course' }}</div>
-        <div class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tag_shortcuts || 'Tag Shortcuts' }}</div>
-        <div class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.assessment || 'Assessment' }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.exp || 'Exp' }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.course || 'Course' }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tag_shortcuts || 'Tag Shortcuts' }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.assessment || 'Assessment' }}</div>
     </div>
     <div    class="lrp-table-row"
             data-ng-repeat-start="class in classList | filter: filterCurrent | orderBy:'period'"
@@ -80,19 +90,21 @@
             data-id="$index"
             data-ng-init="class.element = $element"
             data-ng-animate="'standard-animate'">
-        <div    class="lrp-table-cell lrp-flex-tenth bubble-text">
+        <div    bubble-text-auto
+                class="lrp-table-cell lrp-flex-tenth bubble-text">
             <span   class="lrp-table-toggle-button" 
                     style="font-size:2.5rem" 
                     data-ng-click="toggleExpand(class)"
                     data-ng-class="{'expanded': class.expanded}">
             </span>
         </div>
-        <div class="lrp-table-cell lrp-flex-quarter bubble-text lrp-big">
+        <div bubble-text-auto class="lrp-table-cell lrp-flex-quarter bubble-text lrp-big">
             <div    class="lrp-table-cell-content"
                     data-ng-bind="class.period">
             </div>
         </div>
-        <div class="lrp-table-cell-left bubble-text lrp-big lrp-table-cell-left">
+        <div    bubble-text-auto
+                class="lrp-table-cell-left bubble-text lrp-big lrp-table-cell-left">
             <div class="lrp-table-cell-content" 
                 data-ng-bind-html="trustedHtml(class.course_name)">
             </div>
@@ -101,6 +113,7 @@
             <div    class="lrp-table-cell-icons"
                     data-ng-show="class.lateCount > 0 || class.missingCount > 0 || class.incompCount > 0">
                 <span   tooltip-follow
+                        bubble-text-auto
                         data-tooltip-title="{{tranTags.late_assignment_count_details || 'late assignment count: click to expand'}}"
                         class="bubble-text keyIcon late lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
                         data-ng-show="class.lateCount > 0"
@@ -109,6 +122,7 @@
                     - {{ class.lateCount }}
                 </span>
                 <span   tooltip-follow
+                        bubble-text-auto
                         data-tooltip-title="{{tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'}}"
                         class="bubble-text keyIcon missing lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
                         data-ng-show="class.missingCount > 0"
@@ -117,6 +131,7 @@
                     - {{ class.missingCount }}
                 </span>
                 <span   tooltip-follow
+                        bubble-text-auto
                         data-tooltip-title="{{tranTags.incomplete_assignment_count_details || 'incomplete assignment count: click to expand'}}"
                         class="bubble-text keyIcon incomplete lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
                         data-ng-show="class.incompCount > 0"
@@ -126,19 +141,21 @@
                 </span>
             </div>
         </div>
-        <div class="lrp-table-cell-left lrp-flex-quarter bubble-text lrp-big">
+        <div    class="lrp-table-cell-left lrp-flex-quarter lrp-big">
             <div class="lrp-table lrp-score-table" data-ng-show="class.grades.length > 0">
                 <!-- Table Header -->
                 <div class="lrp-table-header">
-                    <div class="lrp-table-header-cell lrp-score-header-cell" 
-                         data-ng-repeat="grade in class.grades">
+                    <div    bubble-text-auto
+                            class="lrp-table-header-cell lrp-score-header-cell bubble-text" 
+                            data-ng-repeat="grade in class.grades">
                         {{ grade.storecode }}
                     </div>
                 </div>
                 <!-- Table Row -->
                 <div class="lrp-table-row">
-                    <div class="lrp-table-cell lrp-score-cell" 
-                         data-ng-repeat="grade in class.grades">
+                    <div    bubble-text-auto
+                            class="lrp-table-cell lrp-score-cell bubble-text" 
+                            data-ng-repeat="grade in class.grades">
                         {{ grade.grade || '--' }}
                     </div>
                 </div>
@@ -157,7 +174,7 @@
         <div    class="lrp-table lrp-sub-table"
                 data-ng-show="class.standards.length === 0">
             <div class="lrp-table-row">
-                <div class="lrp-table-cell bubble-text">
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
                     {{ tranTags.no_academic_learning_requirements_to_show || 'No Academic Learning Requirements To Show' }}
                 </div>
             </div>
@@ -191,40 +208,42 @@
         <div class="lrp-table lrp-sub-table" data-ng-repeat="category in class.standards">
             <div    class="lrp-table-header"
                     data-ng-style="parseStyle(category.catstyle)">
-                <div class="lrp-table-header-cell bubble-text" data-ng-bind="category.category"></div>
+                <div bubble-text-auto class="lrp-table-header-cell bubble-text" data-ng-bind="category.category"></div>
             </div>
             <div class="lrp-table-header">
                 <div class="lrp-table-header-cell lrp-flex-tenth"></div>
-                <div class="lrp-table-header-cell bubble-text">{{ tranTags.learning_requirement || 'Learning Requirement' }}</div>
-                <div class="lrp-table-header-cell lrp-flex-quarter lrp-full-view-block bubble-text">{{ tranTags.scores || 'Scores' }}</div>
-                <div class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.trend || 'Trend' }}</div>
+                <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.learning_requirement || 'Learning Requirement' }}</div>
+                <div bubble-text-auto class="lrp-table-header-cell lrp-flex-quarter lrp-full-view-block bubble-text">{{ tranTags.scores || 'Scores' }}</div>
+                <div bubble-text-auto class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.trend || 'Trend' }}</div>
             </div>
-            <div    class="lrp-table-row"
+            <div    class="lrp-table-row lrp-standard-row"
                     data-ng-repeat-start="standard in category.standards | filter:standardFilter"
                     data-ng-class="{'selected': standard.expanded}"
                     data-ng-animate="'standard-animate'">
-                <div    class="lrp-table-cell lrp-flex-tenth bubble-text lrp-full-view-block">
+                <div    bubble-text-auto
+                        class="lrp-table-cell lrp-flex-tenth bubble-text lrp-full-view-block">
                     <span   class="lrp-table-toggle-button" 
                             style="font-size:2.5rem" 
                             data-ng-click="toggleExpand(standard)"
                             data-ng-class="{'expanded': standard.expanded}">
                     </span>
                 </div>
-                <div    class="lrp-table-cell bubble-text lrp-big"
+                <div    bubble-text-auto
+                        class="lrp-table-cell bubble-text lrp-big"
                         data-ng-bind-html="trustedHtml(standard.standardName)">
                 </div>
-                <div    class="lrp-table-cell lrp-flex-quarter bubble-text lrp-big lrp-full-view-block">
+                <div    class="lrp-table-cell lrp-flex-quarter lrp-big lrp-full-view-block">
                     <div class="lrp-table lrp-score-table" data-ng-show="standard.grades.length > 0">
                         <!-- Table Header -->
                         <div class="lrp-table-header">
-                            <div class="lrp-table-header-cell lrp-score-header-cell" 
+                            <div class="lrp-table-header-cell lrp-score-header-cell bubble-text" 
                                  data-ng-repeat="grade in standard.grades">
                                 {{ grade.storecode }}
                             </div>
                         </div>
                         <!-- Table Row -->
                         <div class="lrp-table-row">
-                            <div class="lrp-table-cell lrp-score-cell" 
+                            <div class="lrp-table-cell lrp-score-cell bubble-text" 
                                  data-ng-repeat="grade in standard.grades"
                                     data-ng-style="getBkgColor(grade.color)">
                                 {{ grade.score || '--' }}
@@ -272,7 +291,7 @@
                 <div    class="lrp-table"
                         data-ng-show="standard.assignments.length === 0">
                     <div class="lrp-table-row">
-                        <div class="lrp-table-cell bubble-text">{{ tranTags.no_evidence_to_show || 'No Evidence To Show' }}</div>
+                        <div bubble-text-auto class="lrp-table-cell bubble-text">{{ tranTags.no_evidence_to_show || 'No Evidence To Show' }}</div>
                     </div>
                 </div>
 <!-- Assignments -->
@@ -280,63 +299,72 @@
                         data-ng-show="standard.assignments.length > 0">
                     <div class="lrp-table-header">
                         <div class="lrp-table-header-cell lrp-flex-tenth"></div>
-                        <div class="lrp-table-header-cell bubble-text">{{ tranTags.evidence || 'Evidence' }}</div>
-                        <div class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.due_date || 'Due Date' }}</div>
-                        <div class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tags || 'Tags' }}</div>
-                        <div class="lrp-table-header-cell lrp-flex-tenth bubble-text">{{ tranTags.score || 'Score' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.evidence || 'Evidence' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.due_date || 'Due Date' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tags || 'Tags' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-tenth bubble-text">{{ tranTags.score || 'Score' }}</div>
                     </div>
                     <div    class="lrp-table-row lrp-assignment-data lrp-table-assignment-row"
                             data-ng-repeat-start="asmt in standard.assignments"
                             data-ng-repeat-index="{{$index}}"
                             data-ng-class="{'selected': asmt.expanded}">
-                        <div class="lrp-table-cell lrp-flex-tenth bubble-text">
+                        <div    bubble-text-auto
+                                class="lrp-table-cell lrp-flex-tenth bubble-text">
                             <span   class="lrp-table-toggle-button" 
                                     style="font-size:2.5rem" 
                                     data-ng-click="toggleExpand(asmt)"
                                     data-ng-class="{'expanded': asmt.expanded}">
                             </span>
                         </div>
-                        <div    class="lrp-table-cell bubble-text"
+                        <div    bubble-text-auto
+                                class="lrp-table-cell bubble-text"
                                 data-ng-bind="asmt.asmt">
                             
                         </div>
-                        <div    class="lrp-table-cell lrp-flex-tenth bubble-text"
+                        <div    bubble-text-auto
+                                class="lrp-table-cell lrp-flex-tenth bubble-text"
                                 data-ng-bind="asmt.due_date">
                             
                         </div>
                         <div class="lrp-table-cell lrp-flex-third lrp-full-view-block">
                             <div class="lrp-table-cell-icons">
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.collected || 'collected'}}"
                                         class="bubble-text keyIcon collected lrp-table-cell-content"
                                         data-ng-show="asmt.collected == '1'"
                                         data-title="tranTags.collected || 'collected">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.late || 'Late'}}"
                                         class="bubble-text keyIcon late lrp-table-cell-content"
                                         data-ng-show="asmt.late == '1'"
                                         data-title="tranTags.late || 'Late'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.exempt || 'Exempt'}}"
                                         class="bubble-text keyIcon exempt lrp-table-cell-content"
                                         data-ng-show="asmt.exempt== '1'"
                                         data-title="tranTags.exempt || 'Exempt'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.missing || 'Missing'}}"
                                         class="bubble-text keyIcon missing lrp-table-cell-content"
                                         data-ng-show="asmt.missing == '1'"
                                         data-title="tranTags.missing || 'Missing'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.absent || 'Absent'}}"
                                         class="bubble-text keyIcon absent lrp-table-cell-content"
                                         data-ng-show="asmt.absent == '1'"
                                         data-title="tranTags.absent || 'Absent'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.incomplete || 'Incomplete'}}"
                                         class="bubble-text keyIcon incomplete lrp-table-cell-content"
                                         data-ng-show="asmt.incomplete == '1'"
@@ -344,8 +372,11 @@
                                 </span>
                             </div>
                         </div>
-                        <div    class="lrp-table-cell lrp-flex-tenth bubble-text lrp-big">
-                            <div    class="bubble-text lrp-big lrp-table-cell-icons"
+                        <div    bubble-text-auto
+                                class="lrp-table-cell lrp-flex-tenth bubble-text lrp-big">
+                            <div    bubble-text-auto
+                                    class="bubble-text lrp-big lrp-table-cell-icons"
+                                    data-ng-class="{'exclude-from-standard': asmt.not_counted == 1 }"
                                     data-ng-style="getBkgColor(asmt.color)"
                                     data-ng-bind="asmt.score">
                             </div>
@@ -377,13 +408,13 @@
 <div    class="lrp-table"
         data-ng-show="shouldShow(classList)">
     <div class="lrp-table-header">
-        <div class="lrp-table-header-cell bubble-text">{{ tranTags.prev_courses_this_year || "Previous Courses This Year" }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.prev_courses_this_year || "Previous Courses This Year" }}</div>
     </div>
     <div class="lrp-table-header">
         <div class="lrp-table-header-cell lrp-flex-tenth"></div>
-        <div class="lrp-table-header-cell bubble-text">{{ tranTags.course || "Course" }}</div>
-        <div class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tag_shortcuts || 'Tag Shortcuts' }}</div>
-        <div class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.assessment || 'Assessment' }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.course || "Course" }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tag_shortcuts || 'Tag Shortcuts' }}</div>
+        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.assessment || 'Assessment' }}</div>
     </div>
     <div    class="lrp-table-row"
             data-ng-repeat-start="class in classList | filter: filterPrev | orderBy:'period'"
@@ -391,14 +422,16 @@
             data-ng-class="{'lrp-selected': class.expanded}"
             data-id="$index"
             data-ng-init="class.element = $element">
-        <div    class="lrp-table-cell lrp-flex-tenth bubble-text">
+        <div    bubble-text-auto
+                class="lrp-table-cell lrp-flex-tenth bubble-text">
             <span   class="lrp-table-toggle-button" 
                     style="font-size:2.5rem" 
                     data-ng-click="toggleExpand(class)"
                     data-ng-class="{'expanded': class.expanded}">
             </span>
         </div>
-        <div class="lrp-table-cell-left bubble-text lrp-big lrp-table-cell-left">
+        <div    bubble-text-auto
+                class="lrp-table-cell-left bubble-text lrp-big lrp-table-cell-left">
             <div class="lrp-table-cell-content" 
                 data-ng-bind-html="trustedHtml(class.course_name)">
             </div>
@@ -407,6 +440,7 @@
             <div    class="lrp-table-cell-icons"
                     data-ng-show="class.lateCount > 0 || class.missingCount > 0 || class.incompCount > 0">
                 <span   tooltip-follow
+                        bubble-text-auto
                         data-tooltip-title="{{tranTags.late_assignment_count_details || 'late assignment count: click to expand'}}"
                         class="bubble-text keyIcon late lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
                         data-ng-show="class.lateCount > 0"
@@ -415,6 +449,7 @@
                     - {{ class.lateCount }}
                 </span>
                 <span   tooltip-follow
+                        bubble-text-auto
                         data-tooltip-title="{{tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'}}"
                         class="bubble-text keyIcon missing lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
                         data-ng-show="class.missingCount > 0"
@@ -423,6 +458,7 @@
                     - {{ class.missingCount }}
                 </span>
                 <span   tooltip-follow
+                        bubble-text-auto
                         data-tooltip-title="{{tranTags.incomplete_assignment_count_details || 'incomplete assignment count: click to expand'}}"
                         class="bubble-text keyIcon incomplete lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
                         data-ng-show="class.incompCount > 0"
@@ -432,7 +468,8 @@
                 </span>
             </div>
         </div>
-        <div class="lrp-table-cell-left lrp-flex-quarter bubble-text lrp-big">
+        <div    bubble-text-auto
+                class="lrp-table-cell-left lrp-flex-quarter bubble-text lrp-big">
             <div class="lrp-table lrp-score-table" data-ng-show="class.grades.length > 0">
                 <!-- Table Header -->
                 <div class="lrp-table-header">
@@ -501,24 +538,27 @@
             </div>
             <div class="lrp-table-header">
                 <div class="lrp-table-header-cell lrp-flex-tenth"></div>
-                <div class="lrp-table-header-cell bubble-text">{{ tranTags.learning_requirement || 'Learning Requirement' }}</div>
-                <div class="lrp-table-header-cell lrp-flex-quarter lrp-full-view-block bubble-text">{{ tranTags.scores || 'Scores' }}</div>
-                <div class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.trend || 'Trend' }}</div>
+                <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.learning_requirement || 'Learning Requirement' }}</div>
+                <div bubble-text-auto class="lrp-table-header-cell lrp-flex-quarter lrp-full-view-block bubble-text">{{ tranTags.scores || 'Scores' }}</div>
+                <div bubble-text-auto class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.trend || 'Trend' }}</div>
             </div>
-            <div    class="lrp-table-row"
+            <div    class="lrp-table-row lrp-standard-row"
                     data-ng-repeat-start="standard in category.standards"
                     data-ng-class="{'selected': standard.expanded}">
-                <div    class="lrp-table-cell lrp-flex-tenth bubble-text lrp-full-view-block">
+                <div    bubble-text-auto
+                        class="lrp-table-cell lrp-flex-tenth bubble-text lrp-full-view-block">
                     <span   class="lrp-table-toggle-button" 
                             style="font-size:2.5rem" 
                             data-ng-click="toggleExpand(standard)"
                             data-ng-class="{'expanded': standard.expanded}">
                     </span>
                 </div>
-                <div    class="lrp-table-cell bubble-text lrp-big"
+                <div    bubble-text-auto
+                        class="lrp-table-cell bubble-text lrp-big"
                         data-ng-bind-html="trustedHtml(standard.standardName)">
                 </div>
-                <div    class="lrp-table-cell lrp-flex-quarter bubble-text lrp-big lrp-full-view-block">
+                <div    bubble-text-auto
+                        class="lrp-table-cell lrp-flex-quarter bubble-text lrp-big lrp-full-view-block">
                     <div class="lrp-table lrp-score-table" data-ng-show="standard.grades.length > 0">
                         <!-- Table Header -->
                         <div class="lrp-table-header">
@@ -585,10 +625,10 @@
                         data-ng-show="standard.assignments.length > 0">
                     <div class="lrp-table-header">
                         <div class="lrp-table-header-cell lrp-flex-tenth"></div>
-                        <div class="lrp-table-header-cell bubble-text">{{ tranTags.evidence || 'Evidence' }}</div>
-                        <div class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.due_date || 'Due Date' }}</div>
-                        <div class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tags || 'Tags' }}</div>
-                        <div class="lrp-table-header-cell lrp-flex-tenth bubble-text">{{ tranTags.score || 'Score' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.evidence || 'Evidence' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text">{{ tranTags.due_date || 'Due Date' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tags || 'Tags' }}</div>
+                        <div bubble-text-auto class="lrp-table-header-cell lrp-flex-tenth bubble-text">{{ tranTags.score || 'Score' }}</div>
                     </div>
                     <div    class="lrp-table-row lrp-assignment-data lrp-table-assignment-row"
                             data-ng-repeat-start="asmt in standard.assignments"
@@ -601,47 +641,55 @@
                                     data-ng-class="{'expanded': asmt.expanded}">
                             </span>
                         </div>
-                        <div    class="lrp-table-cell bubble-text"
+                        <div    bubble-text-auto
+                                class="lrp-table-cell bubble-text"
                                 data-ng-bind="asmt.asmt">
                             
                         </div>
-                        <div    class="lrp-table-cell lrp-flex-tenth bubble-text"
+                        <div    bubble-text-auto
+                                class="lrp-table-cell lrp-flex-tenth bubble-text"
                                 data-ng-bind="asmt.due_date">
                             
                         </div>
                         <div class="lrp-table-cell lrp-flex-third lrp-full-view-block">
                             <div class="lrp-table-cell-icons">
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.collected || 'collected'}}"
                                         class="bubble-text keyIcon collected lrp-table-cell-content"
                                         data-ng-show="asmt.collected == '1'"
                                         data-title="tranTags.collected || 'collected">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.late || 'Late'}}"
                                         class="bubble-text keyIcon late lrp-table-cell-content"
                                         data-ng-show="asmt.late == '1'"
                                         data-title="tranTags.late || 'Late'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.exempt || 'Exempt'}}"
                                         class="bubble-text keyIcon exempt lrp-table-cell-content"
                                         data-ng-show="asmt.exempt== '1'"
                                         data-title="tranTags.exempt || 'Exempt'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.missing || 'Missing'}}"
                                         class="bubble-text keyIcon missing lrp-table-cell-content"
                                         data-ng-show="asmt.missing == '1'"
                                         data-title="tranTags.missing || 'Missing'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.absent || 'Absent'}}"
                                         class="bubble-text keyIcon absent lrp-table-cell-content"
                                         data-ng-show="asmt.absent == '1'"
                                         data-title="tranTags.absent || 'Absent'">
                                 </span>
                                 <span   tooltip-follow
+                                        bubble-text-auto
                                         data-tooltip-title="{{tranTags.incomplete || 'Incomplete'}}"
                                         class="bubble-text keyIcon incomplete lrp-table-cell-content"
                                         data-ng-show="asmt.incomplete == '1'"
@@ -650,8 +698,10 @@
                             </div>
                         </div>
                         <div    class="lrp-table-cell lrp-flex-tenth bubble-text lrp-big">
-                            <div    class="bubble-text lrp-big lrp-table-cell-icons"
+                            <div    bubble-text-auto
+                                    class="bubble-text lrp-big lrp-table-cell-icons"
                                     data-ng-style="getBkgColor(asmt.color)"
+                                    data-ng-class="{'exclude-from-standard': asmt.not_counted == 1 }"
                                     data-ng-bind="asmt.score">
                             </div>
                         </div>

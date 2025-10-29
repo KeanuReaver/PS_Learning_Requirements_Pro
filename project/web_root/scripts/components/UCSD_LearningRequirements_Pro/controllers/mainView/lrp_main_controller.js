@@ -3,7 +3,7 @@ define(function(require) {
     const module = require('components/UCSD_LearningRequirements_Pro/module');
     const $j = require('jquery');
 
-    module.controller('LearningRequirementsMainController', ['$scope', '$window', '$document', 'mainViewLogic', 'transHashFactory', function($scope, $window, $document, mainViewLogic, transHashFactory) {
+    module.controller('LearningRequirementsMainController', ['$scope', '$window', '$document', 'mainViewLogic', 'transHashFactory', 'bubbleTextService', function($scope, $window, $document, mainViewLogic, transHashFactory, bubbleTextService) {
         $scope.portalAddress;       // init value
         $scope.curyearid;           // init value
         $scope.curstudid;           // init value
@@ -19,8 +19,8 @@ define(function(require) {
         $scope.contentMaxHeight = '0px';
         $scope.windowWidth = $window.innerWidth;
         $scope.isMobile = ($scope.windowWidth <= 880);
-        $scope.showUngraded = false;
-        $scope.showColorsMaster;
+        $scope.showUngraded = true;
+        $scope.showColorsMaster = true; 
         
         function getClassData() {
             console.log($scope.studschoolid);
@@ -29,6 +29,7 @@ define(function(require) {
                     $scope.classList = response.classList;
                     $scope.studentTestScores = response.studentTest;
                     $scope.gradeScales = transHashFactory.translateGradeScales(response.gradeScales, $scope.langCode);
+                    
                 })
                 .catch(error => console.error('Failed to get class/test data:', error));
         }
@@ -66,6 +67,7 @@ define(function(require) {
             getClassData();
             mainViewLogic.organizeInsertedContent();
             $scope.pictureWizardSteps = mainViewLogic.getWizardArray($document[0].getElementById('wizard-data').dataset)
+            bubbleTextService.startAuto({ threshold: 140 });
             
             try {
                 const stored = localStorage.getItem('ucsd_showColorsMaster');
@@ -78,6 +80,7 @@ define(function(require) {
         // Cleanup the event listener when the controller is destroyed
         $scope.$on('$destroy', function() {
             angular.element($window).off('resize');
+            bubbleTextService.stopAuto();
         });
 
     }]);

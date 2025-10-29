@@ -15,7 +15,6 @@
 <form name="navigation">
 ~[wc:teachers_title_student_begin_css]~[text]psx.htmlc.admin.students.learning_requirements_pro.learning_requirements_pro[/text]~[wc:teachers_title_student_end_css]
 </form>
-    ~[wc:teachers_student_detail_header_line]
 
     ~[brij_render:common-ps;:TeacherQuickLookupTabs]
 <!--Adds tab while page is selected and marks it as selected-->
@@ -27,6 +26,17 @@
         window.location.href = document.navigation.page.options[document.navigation.page.selectedIndex].value;
     }
 </script>
+<style>
+    @media print {
+        #nav-teacher,
+        .alertContent,
+        .tabs.show_tabs,
+        #lrp-inserted-content-buttons {
+            display: none !important;
+        }
+        
+    }
+</style>
 <!-- start of content -->
 <div    data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
         data-module-name="lrpmodule"
@@ -143,25 +153,26 @@
             data-assHelper5="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper5]"
             data-assHelper6="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper6]">
     </div>
+        
     <!-- Color Toggle -->
-    <div    class="lrp-accessibility-panel"
-            role="group" 
-            aria-labelledby="colorToggleLabel">
-        <span id="colorToggleLabel" class="toggle-label bold">
-            Colors: 
-        </span>
-        <span aria-hidden="true" class="toggle-option bold">Off</span>
-        <label class="lrp-switch">
-            <input  type="checkbox"
-                    id="showColorsToggle"
-                    data-ng-model="showColorsMaster"
-                    aria-label="Toggle to show or hide color-coded score bubbles"
-                    data-ng-keypress="toggleShowColors($event)"
-                    role="switch">
-            <span class="lrp-slider"></span>
-        </label>
-        <span aria-hidden="true" class="toggle-option bold">On</span>
-    </div>
+    <!--<div    class="lrp-accessibility-panel"-->
+    <!--        role="group" -->
+    <!--        aria-labelledby="colorToggleLabel">-->
+    <!--    <span id="colorToggleLabel" class="toggle-label bold">-->
+    <!--        Colors: -->
+    <!--    </span>-->
+    <!--    <span aria-hidden="true" class="toggle-option bold">Off</span>-->
+    <!--    <label class="lrp-switch">-->
+    <!--        <input  type="checkbox"-->
+    <!--                id="showColorsToggle"-->
+    <!--                data-ng-model="showColorsMaster"-->
+    <!--                aria-label="Toggle to show or hide color-coded score bubbles"-->
+    <!--                data-ng-keypress="toggleShowColors($event)"-->
+    <!--                role="switch">-->
+    <!--        <span class="lrp-slider"></span>-->
+    <!--    </label>-->
+    <!--    <span aria-hidden="true" class="toggle-option bold">On</span>-->
+    <!--</div>-->
     <!-- Helper Buttons -->
 	<div    id="lrp-inserted-content-buttons"
 			class="button-row">
@@ -171,58 +182,66 @@
                 data-tran-tags="tranTags">
         </div>
 	</div>
+	
+	<div main-view-attendance
+                data-curyearid="curyearid"
+                data-tran-tags="tranTags"
+                data-portal-address="portalAddress">
+        </div>
 	<!-- Test Data View -->
 	<div id="lrp-page-content-tests">
 		<div    main-view-test-data
 				data-ng-if="!isMobile"
 				data-student-test-scores="studentTestScores"
 				data-tran-tags="tranTags"
-				data-grade-level="gradeLevel"
-                data-show-colors="showColorsMaster">
+				data-grade-level="gradeLevel">
 		</div>
 		<div    mobile-view-test-data
 				data-ng-if="isMobile"
 				data-student-test-scores="studentTestScores"
 				data-tran-tags="tranTags"
-				data-grade-level="gradeLevel"
-                data-show-colors="showColorsMaster">
+				data-grade-level="gradeLevel">
 		</div>
 	</div>
 	<!-- Learning Requirements View -->
-	<div id="lrp-page-content-class" class="box-round">
-		<h4>
-			~[text:psx.htmlc.admin.students.learning_requirements_pro.class_progress]
-			<div class="button-row">
-				<label>~[text:psx.htmlc.admin.students.learning_requirements_pro.show_ungraded]</label>
-				<label class="lrp-switch">
-					<input type="checkbox" data-ng-model="showUngraded">
-					<span class="lrp-slider"></span>
-				</label>
-			</div>
-		</h4>
-		<!-- Grade Scale Data View -->
-		<div    main-view-grade-scales
-				data-tran-tags="tranTags"
-				data-grade-scales="gradeScales"
-                data-show-colors="showColorsMaster">
-		</div>
-		<!-- Class Data View -->
-		<div    main-view-class-data
-				data-class-list="classList"
-				data-show-ungraded="showUngraded"
-				data-tran-tags="tranTags"
-				data-ng-if="!isMobile"
-				data-show-colors="showColorsMaster">
-		</div>
-		<!-- Mobile Class Data View -->
-		<div    mobile-view-class-data
-				data-class-list="classList"
-				data-show-ungraded="showUngraded"
-				data-tran-tags="tranTags"
-				data-ng-if="isMobile"
-				data-show-colors="showColorsMaster">
-		</div>
-	</div>
+	<div id="lrp-page-content-class" class="lrp-att-grid">
+        <div class="lrp-card lrp-col-span-2">
+            <h2 class="lrp-card-title">
+                ~[text:psx.htmlc.admin.students.learning_requirements_pro.class_progress]
+                <div class="button-row">
+                    <label style="font-size: 14px;">~[text:psx.htmlc.admin.students.learning_requirements_pro.show_ungraded]</label>
+                    <label class="lrp-switch">
+                        <input type="checkbox" data-ng-model="showUngraded">
+                        <span class="lrp-slider"></span>
+                    </label>
+                </div>
+            </h2>
+            <div></div> <!-- No idea why but the first div gets hidden by powerschool for some reason -->
+            <!-- Grade Scale Data View -->
+            <div    main-view-grade-scales
+                    data-tran-tags="tranTags"
+                    data-grade-scales="gradeScales"
+                    data-show-colors="showColorsMaster">
+            </div>
+            <!-- Class Data View -->
+            <div    main-view-class-data
+                    data-class-list="classList"
+                    data-show-ungraded="showUngraded"
+                    data-tran-tags="tranTags"
+                    data-show-colors="showColorsMaster"
+                    data-ng-if="!isMobile">
+            </div>
+            <!-- Mobile Class Data View -->
+            <div    mobile-view-class-data
+                    data-class-list="classList"
+                    data-show-ungraded="showUngraded"
+                    data-tran-tags="tranTags"
+                    data-show-colors="showColorsMaster"
+                    data-ng-if="isMobile">
+            </div>
+        </div>
+            
+    </div>
 	<!-- Print Media -->
 	<div id="lrp-print-view">
 		<!-- Test Data -->

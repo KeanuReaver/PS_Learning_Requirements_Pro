@@ -97,7 +97,7 @@ define(function(require) {
                 };
                 
                 $scope.previewColor = (colorcode, size = '24px', width = null) => {
-                    if ($scope.showColors) {
+                    if (true) {
                         return colorLogic.previewColor(colorcode, size, width);
                     } else if(!$scope.darkMode) {
                         return {

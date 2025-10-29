@@ -1,11 +1,12 @@
 'use strict';
 define(require => {
     const module = require('components/UCSD_LearningRequirements_Pro/module');
+    const $j = require('jquery');
 
     module.factory('getData', ($http, $q, dataManagement, classListUrl, stdListUrl, asmtListUrl, commentListUrl,
             studentTestScoresUrl, colorListUrl, stdAssocCatUrl, allStdCatsUrl, scoreColorsUrl, gradeScaleListUrl,
             schoolListUrl, gradescaleitemsUrl, testScoreRulesUrl, uniqueGradesUrl, GSIColorMatchUrl, sortGradeScaleItemsUrl,
-            testBandsAllUrl, testWindowsAllUrl, performanceBandsUrl, performanceGroupUrl, getMainGradescalesUrl, getStuAltSchoolsUrl
+            testBandsAllUrl, testWindowsAllUrl, performanceBandsUrl, performanceGroupUrl, getMainGradescalesUrl, getStuAltSchoolsUrl, attBandTlist
         ) => {
         const classPath = 'classList.json', 
             stdPath = 'stdList.json', 
@@ -226,6 +227,9 @@ define(require => {
                     .catch(error => {
                         throw error;
                     });
+            },
+            getAttBands: function() {
+                return this.getTList(attBandTlist);
             }
         };
     });

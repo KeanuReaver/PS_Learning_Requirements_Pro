@@ -141,7 +141,7 @@ define(function(require) {
                         );
 
                         if (otherSchools.length === 0) {
-                            const classListFinal = classListFinal = applyGSColors(classList, initialGS);
+                            const classListFinal = applyGSColors(classList, initialGS);
                             return {
                                 classList: classListFinal,
                                 studentTest,

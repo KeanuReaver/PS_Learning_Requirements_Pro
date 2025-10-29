@@ -2,7 +2,7 @@
 define(require => {
     const module = require('components/UCSD_LearningRequirements_Pro/module');
 
-    module.factory('deleteData', ($http, scoreColorsAddr, gradescaleDescAddr, colorsWriteAddr, testBandsAddr) => {
+    module.factory('deleteData', ($http, scoreColorsAddr, gradescaleDescAddr, colorsWriteAddr, testBandsAddr, attBandAddr) => {
         return {
             deleteRecord: function(path, id) {
                 const deletepath = path.endsWith('/') ? path + id : `${path}/${id}`;
@@ -32,6 +32,9 @@ define(require => {
             },
             deleteTestBand: function(id) {
                 return this.deleteRecord(testBandsAddr, id);
+            },
+            deleteAttBand: function(id) {
+                return this.deleteRecord(attBandAddr, id);
             }
         }
     });

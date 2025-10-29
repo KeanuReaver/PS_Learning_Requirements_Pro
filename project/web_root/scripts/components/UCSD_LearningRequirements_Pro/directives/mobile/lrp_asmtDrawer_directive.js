@@ -83,17 +83,17 @@ define(function(require) {
                     $j('body').css('overflow-y', 'auto');
                     startWidth = 0;
                     startX = 0;
-                }
+                };
                 
                 $scope.getBkgColor = function(colorcode) {
                     return {
                         'background-color': `${colorcode}`
                     }
-                }
+                };
                 
                 $scope.trustedHtml = function(html) {
                     return $sce.trustAsHtml(html);
-                }
+                };
                 
                 $scope.parseStyle = function(styleString) {
                     try {
@@ -104,7 +104,7 @@ define(function(require) {
                         console.error('Failed to parse style:', styleString, e);
                         return {};  // Return empty object in case of failure
                     }
-                }
+                };
                 
                 $scope.fixDesc = function(des) {
                     if (des) {
@@ -120,7 +120,7 @@ define(function(require) {
                         }
                     }
                     return '<li>' + des + '</li>'
-                }
+                };
                 
                 $scope.openStdGraph = function(record) {
                     record.stdHistGraph = {};

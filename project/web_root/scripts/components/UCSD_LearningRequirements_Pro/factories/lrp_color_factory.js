@@ -42,12 +42,12 @@ define(require => {
                         throw error; 
                     });
             },
-            previewColor: function(colorcode, size='1em', width = null) {
+            previewColor: function(colorcode, size='auto', width = 'auto') {
                 if (!width) width = size;
                 return {
                     'width': width,
                     'height': size,
-                    'padding': '1px',
+                    'padding': '5px',
                     'background-color': this.isValidColor(colorcode) ? colorcode : '#000000',
                     'margin': '0 auto', 
                     'display': 'block',

@@ -36,15 +36,16 @@
                                     <div    data-ng-show="item.colorcode" 
                                             class="bubble-text" 
                                             data-ng-style="previewColor(item.colorcode)">
+                                        {{ item.colorcode }}
                                     </div>
                                 </div>
                                 <div    class="lrp-dropdown-list" 
                                         data-ng-show="item.isDropdownOpen">
-                                    <div    lass="lrp-dropdown-item" 
-                                            data-ng-click="selectColor(item, color)">
+                                    <div    class="lrp-dropdown-item" 
+                                            data-ng-click="selectColor(item, '')">
                                         <div    class="bubble-text" 
                                                 data-ng-style="previewColor(color.colorcode)">
-                                            {{ item.gsiname }}
+                                            None
                                         </div>
                                     </div>
                                     <div    class="lrp-dropdown-item" 
@@ -52,7 +53,7 @@
                                             data-ng-click="selectColor(item, color)">
                                         <div    class="bubble-text" 
                                                 data-ng-style="previewColor(color.colorcode)">
-                                            {{ item.gsiname }}
+                                            {{ color.colorcode }}
                                         </div>
                                     </div>
                                 </div>

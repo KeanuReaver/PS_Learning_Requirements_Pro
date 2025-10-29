@@ -51,6 +51,7 @@ define([
         .constant('performanceGroupUrl', '/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.performanceGroups.flat?pagesize=0')
         .constant('getMainGradescalesUrl', '/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.getMainPageGradeScales.flat?pagesize=0')
         .constant('getStuAltSchoolsUrl', '/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.getStuAltSchools.flat?pagesize=0')
+        .constant('attBandTlist', '/admin/Learning_Requirements_Pro/queries/attBandList.json')
 
         .constant('colorsWriteAddr', '/ws/schema/table/U_LRNGREQPRO_COLORS')
         .constant('prefWriteAddr', '/ws/schema/table/U_LRNGREQPRO_PREF')
@@ -64,5 +65,6 @@ define([
         .constant('testBandsAddr', '/ws/schema/table/u_lrp_testband')
         .constant('performanceBandAddr', '/ws/schema/table/u_lrp_performance_bands')
         .constant('testWindowsAddr', '/ws/schema/table/u_lrp_testwindow')
-        .constant('performanceGroupAddr', '/ws/schema/table/u_lrp_performance_group');
+        .constant('performanceGroupAddr', '/ws/schema/table/u_lrp_performance_group')
+        .constant('attBandAddr', '/ws/schema/table/u_lrp_att_bands');
 });

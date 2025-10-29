@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Settings</title>
+
+    ~[wc:commonscripts]
+
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <link href="/images/css/learning_requirements_pro/learning_requirements_styles.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    ~[wc:admin_header_css]
+    <!-- breadcrumb start --><a href="/admin/Learning_Requirements_Pro/home.html" target="_top">Home</a> &gt; Attendance Settings<!-- breadcrumb end -->
+    <!-- start of main menu and content -->
+    ~[wc:admin_navigation_css]
+    <!-- Start of Page -->
+    <h1>Attendance Settings</h1>
+    <!-- start of content area -->
+    ~[if.is.a.school]
+    <div class="feedback-alert">Must be at district</div>
+    [else]
+    <div    class="box-round"
+            data-require-path="/scripts/components/UCSD_LearningRequirements_Pro/index.js"
+            data-module-name="lrpmodule"
+            data-ng-controller="attBandColors"
+            data-ng-cloak>
+
+        <!-- Page-level validation errors -->
+        <div class="feedback-alert" data-ng-if="pageError">
+            {{ pageError }}
+        </div>
+    
+        <table class="deletable-rows">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Band Color</th>
+                    <th>Band Name <span aria-hidden="true">*</span></th>
+                    <th>Band Top (%) <span aria-hidden="true">*</span></th>
+                    <th>Band Bottom (%) <span aria-hidden="true">*</span></th>
+                    <th>Default Band</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="band in attBands | orderBy: '-top_band'" data-ng-class="{ 'selected-delete': band.deleteRecord == 1 }">
+                    <td class="center-content" data-ng-bind="band.id || ''"></td>
+                    <td class="center">
+                        <div class="lrp-custom-dropdown">
+                            <div class="lrp-dropdown-header" data-ng-click="toggleDropdown(band)">
+                                <div data-ng-show="!band.colorlistid" class="center">Select Color</div>
+                                <div    class="bubble-text" data-ng-show="band.colorcode"
+                                        data-ng-style="previewColor(band.colorcode)">
+                                    {{ band.colorcode }}
+                                </div>
+                            </div>
+                            <div class="lrp-dropdown-list" data-ng-show="band.isDropdownOpen">
+                                <div class="lrp-dropdown-item" data-ng-click="selectColor(band, null)">
+                                    <div class="bubble-text" data-ng-style="previewColor('')">None</div>
+                                </div>
+                                <div class="lrp-dropdown-item" data-ng-repeat="color in scoreColorList"
+                                    data-ng-click="selectColor(band, color)">
+                                    <div class="bubble-text" data-ng-style="previewColor(color.colorcode)">
+                                        {{ color.colorcode }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <input  type="text"
+                                data-ng-model="band.label"
+                                data-ng-change="markDirty(band)"
+                                placeholder="band name"
+                                size="50"
+                                required>
+                    </td>
+                    <td class="center">
+                        <input  type="number"
+                                data-ng-model="band.top_band"
+                                data-ng-change="markDirty(band)"
+                                min="0" max="100" step="1"
+                                required>
+                    </td>
+                    <td class="center">
+                        <input  type="number"
+                                data-ng-model="band.bottom_band"
+                                data-ng-change="markDirty(band)"
+                                min="0" max="100" step="1"
+                                required>
+                    </td>
+                    <td class="center">
+                        <input  type="checkbox"
+                                data-ng-change="resetDefault(band)"
+                                data-ng-model="band.default_band"
+                                data-ng-true-value="1"
+                                data-ng-false-value="0">
+                    </td>
+                    <td class="center">
+                        <button type="button" data-ng-click="deleteBand(band)">
+                            <span data-ng-show="band.deleteRecord != 1">X</span>
+                            <span data-ng-show="band.deleteRecord == 1">Undo</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <button type="button" data-ng-click="addNewBand()">Add Band</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="button-row">
+            <button type="button" data-ng-click="submitChanges()">Save Bands</button>
+        </div>
+        
+    </div>
+    [/if]
+    <!-- end of content area -->
+    ~[wc:admin_footer_css]
+</body>
+</html>

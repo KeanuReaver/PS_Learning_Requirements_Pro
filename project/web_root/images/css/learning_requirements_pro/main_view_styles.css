@@ -15,6 +15,18 @@
     z-index: 10000;
 }
 
+.lrp-table-row:hover > div > .lrp-table-toggle-button {
+    border: 2px solid black;
+}
+
+.lrp-table-toggle-button {
+    border: 2px solid transparent;
+}
+
+.lrp-table-toggle-button {
+    transition: 0.3s ease;
+}
+
 #lrp-print-view {
     display: none;
 }
@@ -30,6 +42,19 @@
 h4>div.button-row {
     margin: 0 20px 0 20px !important;
 }
+
+.exclude-from-standard {
+    box-shadow: inset 3px 3px #db31db, inset -3px -3px purple, inset -3px 3px purple, inset 3px -3px purple;
+}
+.exclude-from-standard-key-image {
+    width: 1em;
+    display: inline-block;
+    height: 1em;
+    margin: 0 0 -2px 0;
+    padding: 0;
+    box-shadow: inset 3px 3px #db31db, inset -3px -3px purple, inset -3px 3px purple, inset 3px -3px purple;
+}
+
 
 .lrp-test-content-shown-button {
     border: 1px solid #CCCCCC;
@@ -168,9 +193,11 @@ h4>div.button-row {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: red;
+    background-color: #b21010;
     transition: .4s;
     border-radius: 20px;
+    width: 50px;
+    font-size: small;
 }
 
 /* The circle inside the slider */
@@ -184,6 +211,22 @@ h4>div.button-row {
     bottom: 2px;
     background-color: white;
     transition: .4s;
+    z-index: 100;
+}
+
+input:checked + .lrp-slider::after {
+    content: "Yes";
+    color: black;
+    left: 6px;
+}
+
+.lrp-slider::after {
+    content: 'No';
+    position: absolute;
+    transition: background-color 0.4s ease;
+    left: 25px;
+    font-weight: bold;
+    color: #dedede;
 }
 
 /* When the checkbox is checked, change the slider's background and move the circle */
@@ -192,7 +235,7 @@ h4>div.button-row {
 }
 
 .lrp-switch input:checked + .lrp-slider:before {
-    transform: translateX(20px);
+    transform: translateX(30px);
 }
 
 /* Container for the popup window */
@@ -285,7 +328,7 @@ h4>div.button-row {
 
 /* Expand when active (tab is selected) */
 .lrp-grade-scale-content.expanded {
-    max-height: 2000px; /* Large value to fit most content */
+    max-height: 10000px; /* Large value to fit most content */
     opacity: 1; /* Fully visible */
 }
     .lrp-grade-scale-content.ng-enter, .lrp-grade-scale-content.ng-leave-active {
@@ -497,6 +540,7 @@ body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-block {
         width: 0;
         float: none;
         line-height: 1rem;
+        border-radius: 20px;
     }
     
     #lrp-inserted-content-buttons {
@@ -565,6 +609,7 @@ body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-block {
         width: 0;
         float: none;
         line-height: 1rem;
+        border-radius: 20px;
     }
 
     body.set-to-dark:not(.disable-dark-mode) #lrp-inserted-content-buttons {
@@ -574,7 +619,14 @@ body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-block {
         width: 90%;   
     }
 }
+.lrp-table-toggle-button {
+    border-radius: 20px;
+}
 
+.lrp-table-toggle-button:hover {
+    /*color: #eccd8e;*/
+    box-shadow: 5px 5px 5px black;
+}
 
 body.set-to-dark:not(.disable-dark-mode) .lrp-popup {
     background-color: #1f2933;

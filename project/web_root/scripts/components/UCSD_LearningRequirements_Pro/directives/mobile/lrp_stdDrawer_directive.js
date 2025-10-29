@@ -97,19 +97,19 @@ define(function(require) {
                     return {
                         'background-color': `${colorcode}`
                     }
-                }
+                };
                 
                 $scope.trustedHtml = function (html) {
                     return $sce.trustAsHtml(html);
-                }
+                };
                         
                 $scope.filterCurrent = function (crs) {
                     return crs.iscurrent == '1';
-                }
+                };
         
                 $scope.filterPrev = function (crs) {
                     return crs.iscurrent != '1' && crs.iscurrent != '-1';
-                }
+                };
                 
                 $scope.getTrend = function (trend) {
                     if (isNaN(trend)) {
@@ -133,11 +133,11 @@ define(function(require) {
                 $scope.getArrowRotation = function(trend) {
                     let filter = ((trend === 0 || !trend) && $scope.darkMode) ? 'brightness(1.5)' : 'brightness(1)';
                     return getTrend.arrowRotation(trend, filter);
-                }
+                };
                 
                 $scope.getPrintArrowRotation = function(trend) {
                     return getTrend.arrowRotation(trend, '1.5rem', 'brightness(1)', '9px');
-                }
+                };
                 
                 $scope.parseStyle = function (styleString) {
                     try {
@@ -148,7 +148,7 @@ define(function(require) {
                         console.error('Failed to parse style:', styleString, e);
                         return {};  // Return empty object in case of failure
                     }
-                }
+                };
 
                 $scope.getFilteredStandards = function(standards) {
                     if ($scope.showUngraded) {
@@ -157,14 +157,14 @@ define(function(require) {
                     return standards.filter(standard => {
                         standard.grades.some(grade => grade.score !== '--');
                     });
-                }
+                };
                 
                 $scope.standardFilter = function(standard) {
                     if ($scope.showUngraded) {
                         return true; // Show all if showUngraded is true
                     }
                     return standard.assignments.length > 0 || standard.grades.some(grade => grade.score !== '--');
-                }
+                };
             }]
         };
     });

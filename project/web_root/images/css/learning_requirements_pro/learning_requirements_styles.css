@@ -7,6 +7,70 @@
         transition:none !important;
     }
 }
+/* Horizontal Chart Style */
+.lrp-thermo-root { width: 100%; }
+.lrp-thermo-wrapper { position: relative; width: 100%; }
+
+/* bar can keep overflow:hidden */
+.lrp-thermo-bar {
+  position: relative; width: 100%;
+  display: flex; overflow: hidden;
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+.lrp-thermo-seg { height: 100%; flex: 0 0 auto; }
+
+/* arrow is now positioned relative to wrapper, not clipped by the bar */
+.lrp-thermo-arrow {
+  position: absolute;
+  transform: translateX(-50%);
+  pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  z-index: 2;
+}
+
+.lrp-thermo-value {
+  padding: 2px 6px; border-radius: 6px; font-size: 12px; line-height: 1.1;
+  background: #111827; color: #fff; white-space: nowrap;
+}
+.lrp-thermo-tip {
+  width: 0; height: 0;
+  border-left: 6px solid transparent; border-right: 6px solid transparent;
+  border-top: 6px solid #111827;
+}
+
+/* labels etc. unchanged */
+.lrp-thermo-labels { margin-top: 6px; display: flex; width: 100%; }
+.lrp-thermo-label { text-align:center; flex:0 0 auto; padding:2px 4px; border-right:1px dashed rgba(0,0,0,0.08); }
+.lrp-thermo-label:last-child{ border-right:0; }
+.lrp-thermo-label-chip{ display:inline-block; width:10px; height:10px; border-radius:9999px; margin-right:4px; vertical-align:middle; }
+.lrp-thermo-label-text{ font-size:12px; margin-right:4px; }
+.lrp-thermo-label-range{ font-size:11px; color:#6b7280; }
+
+.lrp-thermo-legend {
+    margin-bottom: 8px;
+    font-size: 13px;
+    display: flex;
+    gap: 10px;
+}
+
+.lrp-thermo-label {
+    text-wrap: auto;
+}
+
+.lrp-thermo-lable span {
+    text-wrap-mode: nowrap;
+    text-wrap: nowrap;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.lrp-thermo-sub { color: #6b7280; }
+.set-to-dark .lrp-thermo-sub { color: #9ca3af; }
+
+.set-to-dark .lrp-thermo-value{ background:#e5e7eb; color:#111827; }
+.set-to-dark .lrp-thermo-tip{ border-top-color:#e5e7eb; }
+
 
 /* Table Classes */
 .learning-requirements-table {
@@ -128,7 +192,8 @@ table.deletable-rows .selected-delete td {
 }
 
 table.deletable-rows .selected-delete {
-    border: 2px red solid !important;
+    /*border: 2px red solid !important;*/
+    box-shadow: inset 1px 1px red, inset -1px -1px red, -1px 1px red, 1px -1px red;
 }
 
 /* Repeating checkboxes */
@@ -168,6 +233,44 @@ table.deletable-rows .selected-delete {
     text-align: center;
     font-weight: bold;
     line-height: 1em;
+}
+
+.bubble-text--light-bg {
+    color: #111;
+    -webkit-text-stroke: 1px rgba(136, 136, 136, 0.55);
+    text-shadow: 1px 1px 2px rgba(255,255,255,.6), -1px -1px 2px rgba(0, 0, 0, 0.36), -1px 1px #ffffff78, 1px -1px #ffffff7d;
+    font-weight: 900;
+    line-height: 1em;
+}
+
+body:not(.set-to-dark) .lrp-standard-row:not(.selected) > .bubble-text, 
+body:not(.set-to-dark) .lrp-standard-row:not(.selected) > .bubble-text--light-bg,
+body:not(.set-to-dark) .lrp-table-assignment-row:not(.selected) > .bubble-text, 
+body:not(.set-to-dark) .lrp-table-assignment-row:not(.selected) > .bubble-text--light-bg {
+    color: #111;
+    -webkit-text-stroke: 1px rgba(136, 136, 136, 0.55);
+    text-shadow: 1px 1px 2px rgba(255,255,255,.6), -1px -1px 2px rgba(0, 0, 0, 0.36), -1px 1px #ffffff78, 1px -1px #ffffff7d;
+    font-weight: 900;
+    line-height: 1em;
+}
+
+body:not(.set-to-dark) .lrp-standard-row.selected > .bubble-text, 
+body:not(.set-to-dark) .lrp-standard-row.selected > .bubble-text--light-bg,
+body:not(.set-to-dark) .lrp-table-assignment-row.selected > .bubble-text, 
+body:not(.set-to-dark) .lrp-table-assignment-row.selected > .bubble-text--light-bg {
+    color: rgb(255, 255, 255);
+    text-shadow: -2px -2px 0 black,
+     2px -2px 0 black,
+    -2px  2px 0 black,
+     2px  2px 0 black,
+     0px -2px 0 black,
+     2px  0px 0 black,
+     0px  2px 0 black,
+    -2px  0px 0 black;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1em;
+    -webkit-text-stroke: unset;
 }
 
 .center-content {
@@ -330,6 +433,41 @@ table.deletable-rows .selected-delete {
         margin: 10px 10px;
         border-radius: 10px;
         overflow: hidden;
+    }
+    
+    .lrp-table:not(.lrp-score-table):not(.lrp-grade-scale-table) > :first-child > :first-child {
+        border-top-left-radius: 10px;
+    }
+    .lrp-table:not(.lrp-score-table) > :first-child > :last-child {
+        border-top-right-radius: 10px;
+    }
+    
+    /* Bottom row corners */
+    .lrp-table:not(.lrp-score-table) > :last-child > :first-child {
+        border-bottom-left-radius: 10px;
+    }
+    .lrp-table:not(.lrp-score-table) > :last-child > :last-child {
+        border-bottom-right-radius: 10px;
+    }
+    
+    .lrp-table.lrp-score-table > :first-child > :first-child {
+        border-top-left-radius: 8px;
+    }
+    .lrp-table.lrp-score-table > :first-child > :last-child {
+        border-top-right-radius: 8px;
+    }
+    
+    /* Bottom row corners */
+    .lrp-table.lrp-score-table > :last-child > :first-child {
+        border-bottom-left-radius: 8px;
+    }
+    .lrp-table.lrp-score-table > :last-child > :last-child {
+        border-bottom-right-radius: 8px;
+    }
+    
+    .lrp-score-table .lrp-table-row,
+    .lrp-score-table .lrp-table-header {
+        border: none;
     }
     
     .lrp-table-row {
@@ -497,7 +635,7 @@ table.deletable-rows .selected-delete {
     }
     
     .lrp-table-collapsible-row.expanded {
-        max-height: 3000px; 
+        max-height: 10000px; 
         transition: max-height 0.5s ease-in, border 0.5s ease-in;
         border-left: 10px solid;
         border-right: 2px solid;
@@ -561,9 +699,9 @@ table.deletable-rows .selected-delete {
         font-size: 1.5rem;
     }
     
-    .lrp-table-toggle-button:hover {
-        color: #eccd8e;
-    }
+    /*.lrp-table-toggle-button:hover {*/
+    /*    color: #eccd8e;*/
+    /*}*/
     
     .lrp-score-table {
         display: inline-block; 
@@ -668,7 +806,8 @@ body.set-to-dark:not(.disable-dark-mode) .learning-requirements-table {
 }
 
 body.set-to-dark:not(.disable-dark-mode) .selected-delete {
-    border: 1px rgb(169, 5, 5) solid !important;
+    /*border: 1px rgb(169, 5, 5) solid !important;*/
+    box-shadow: inset 1px 1px red, inset -1px -1px red, -1px 1px red, 1px -1px red;
 }
 
 body.set-to-dark:not(.disable-dark-mode) .lr-button-red {

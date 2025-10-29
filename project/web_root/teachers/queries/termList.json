@@ -1,0 +1,20 @@
+~[tlist_sql;
+    SELECT
+        COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'abbreviation' VALUE terms.abbreviation,
+                'firstday' VALUE terms.firstday,
+                'lastday' VALUE terms.lastday,
+                'portion' VALUE terms.portion
+                RETURNING CLOB
+            )
+            RETURNING CLOB
+        ), TO_CLOB(chr(91)||chr(93)) )
+    FROM
+        terms
+    WHERE
+        terms.schoolid = ~(curschoolid)
+        AND terms.yearid = ~(curyearid)
+;]
+    ~(val)
+[/tlist_sql]

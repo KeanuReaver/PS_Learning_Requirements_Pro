@@ -1,0 +1,20 @@
+~[tlist_sql;
+    SELECT
+        COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id' VALUE to_char(u_lrp_att_bands.id),
+                'colorlistid' VALUE to_char(u_lrp_att_bands.colorlistid),
+                'colorcode' VALUE u_lrp_color_list.colorcode,
+                'label' VALUE u_lrp_att_bands.label,
+                'top_band' VALUE u_lrp_att_bands.top_band,
+                'bottom_band' VALUE u_lrp_att_bands.bottom_band
+                RETURNING CLOB
+            )
+            RETURNING CLOB
+        ), TO_CLOB(chr(91)||chr(93)) )
+    FROM
+        u_lrp_att_bands
+        LEFT JOIN u_lrp_color_list ON u_lrp_color_list.id = u_lrp_att_bands.colorlistid
+;]
+    ~(val)
+[/tlist_sql]

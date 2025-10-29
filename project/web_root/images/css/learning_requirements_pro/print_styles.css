@@ -133,6 +133,15 @@
         justify-content: center;
     }
     
+    .grid.ass-list {
+        width: 90%;
+        width: -webkit-fill-available;
+    }
+    
+    .grid.parent-table td, table.grid.parent-table tbody tr:nth-child(odd) > td, table.grid.parent-table tbody tr:nth-child(even) > td {
+        background-color: white;
+    }
+    
     table.deletable-rows {
         border-collapse: collapse;
     }
@@ -595,4 +604,144 @@
         
     }
 /* End Test Table */
+
+/* Thermometer */
+.lrp-card {
+    background-color: white !important;
+}
+
+.att-band-pill{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  background: var(--band-color, #e5e7eb);
+  font-size:12px;
+  line-height:18px;
+  border:1px solid rgba(0,0,0,.08);
+  font-weight: bold;
+}
+
+.lrp-thermo-root {
+    display: none;
+}
+
+.att-legend { 
+    display:flex; 
+    align-items:center; 
+    gap:8px; 
+    margin:6px 0 4px; 
+    font-size:12px; 
+    opacity:.9; 
+    
+}
+.att-key { 
+    width:12px; 
+    height:12px; 
+    border-radius:3px; 
+    display:inline-block; 
+    
+}
+.att-key-unx { 
+    background:#D32F2F;
+}
+.att-key-exc { 
+    background:#DA7516;
+}
+.att-spacer { 
+    width:16px; 
+    height:1px; 
+    display:inline-block;
+}
+
+.att-popup { 
+    position:fixed; 
+    inset:0; 
+    background:rgba(0,0,0,.35); 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    z-index:9999;
+}
+.att-popup-panel { 
+    background:var(--panel-bg,#fff); 
+    color:inherit; 
+    width:min(1000px,92vw); 
+    max-height:80vh; 
+    border-radius:10px; 
+    box-shadow:0 10px 30px rgba(0,0,0,.2); 
+    display:flex; 
+    flex-direction:column;
+}
+.att-popup-head { 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    padding:12px 16px; 
+    border-bottom:1px solid rgba(0,0,0,.08);
+}
+.att-popup-body { 
+    /*padding:12px 16px; */
+    overflow:auto; 
+}
+.att-close { 
+    border:0; 
+    font-size:20px; 
+    line-height:1; 
+    cursor:pointer;
+}
+.att-empty { 
+    opacity:.7; 
+    font-style:italic; 
+    padding:8px 0;
+}
+
+.att-list { 
+    list-style:none; 
+    padding:0; 
+    margin:0; 
+    display:grid; 
+    gap:6px;
+}
+.att-list li { 
+    display:grid; 
+    grid-template-columns: 110px 90px 1fr; 
+    align-items:center; 
+    gap:8px; 
+    padding:6px 8px; 
+    border-radius:6px; 
+    background:rgba(0,0,0,.03);
+}
+.att-date { 
+    font-variant-numeric: tabular-nums;
+}
+.att-tag { 
+    padding:2px 6px; 
+    border-radius:999px; 
+    font-size:12px; 
+    text-align:center;
+}
+.att-tag.unx { 
+    background:#FCE4E4; 
+    color:#B71C1C;
+}
+.att-tag.exc { 
+    background:#FFF3CD; 
+    color:#8A6D3B;
+}
+
+.att-table {
+  /*width: 100%;*/
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.att-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--panel-bg, #fff);
+  z-index: 1;
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0,0,0,.12);
+}
+
 }

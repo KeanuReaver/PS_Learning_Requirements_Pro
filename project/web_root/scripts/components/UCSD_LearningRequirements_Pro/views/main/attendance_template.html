@@ -1,0 +1,304 @@
+<div class="lrp-att-grid" data-ng-cloak>
+    <!-- Row 1: Stacked month-by-month absences (spans 2 cols) -->
+    
+
+    <!-- Row 2, Col 1: Thermometer (bands + ADA/ADM pointer) -->
+    <div    class="lrp-card lrp-col-span-2" 
+            data-ng-if="attBands.length"
+            data-ng-show="thermoValue">
+        <h2 class="lrp-card-title">
+            Current Year ADA/ADM (Average Attendance)
+            <span data-ng-if="cur_year_graph.yearid">Year {{getYearName(cur_year_graph.yearid)}}</span>
+        </h2>
+        <div class="lrp-thermo-legend">
+            <span   data-ng-if="currentBand"
+                    class="att-band-pill"
+                    ng-style="{'--band-color': currentBand.colorcode, 'color': bandTextColor(currentBand.colorcode)}"
+                    title="{{currentBand.label}} ({{currentBand.bottom_band}}–{{currentBand.top_band}}%)"
+                    aria-label="{{currentBand.label}}">
+                {{currentBand.label}}
+            </span>
+            <span data-ng-if="thermoValue != null">
+                <strong>{{thermoValue}}%</strong> attendance so far for this year
+            </span>
+            <span data-ng-if="cur_year_graph.adaadm_ratio != null" class="lrp-thermo-sub">
+                (ratio {{cur_year_graph.adaadm_ratio | number:3}})
+            </span>
+            
+        </div>
+        <!-- Thermometer directive we built earlier -->
+        <lrp-thermometer-bar
+            bands="attBands"
+            value="thermoValue"
+            default-color="#e5e7eb"
+            height="16"
+            show-labels="true">
+        </lrp-thermometer-bar>
+
+        
+    </div>
+    
+    <!--<div class="lrp-card lrp-col-span-2" data-ng-if="graphType && graphData">-->
+    <!--    <h2 class="lrp-card-title">Monthly Absences by Year</h2>-->
+    <!--    <div class="att-legend">-->
+    <!--        <span class="att-key att-key-unx" aria-hidden="true"></span>-->
+    <!--        <span class="att-label">Unexcused</span>-->
+    <!--        <span class="att-spacer"></span>-->
+    <!--        <span class="att-key att-key-exc" aria-hidden="true"></span>-->
+    <!--        <span class="att-label">Excused</span>-->
+    <!--    </div>-->
+    <!--    <div    fusioncharts-->
+    <!--            id="lrp-att-monthly"-->
+    <!--            width="100%"-->
+    <!--            height="420"-->
+    <!--            type="{{graphType}}"-->
+    <!--            dataSource="{{graphData | json}}"-->
+    <!--            events="{{fcEvents}}">-->
+    <!--    </div>-->
+    <!--    <div class="att-popup" ng-if="popup.open" ng-click="popup.open=false">-->
+    <!--        <div class="att-popup-panel" ng-click="$event.stopPropagation()">-->
+    <!--            <div class="att-popup-head">-->
+    <!--                <h4>{{popup.title}}</h4>-->
+    <!--                <button class="att-close" ng-click="popup.open=false" aria-label="Close">×</button>-->
+    <!--            </div>-->
+    <!--            <div class="att-popup-body">-->
+    <!--                <div ng-if="!popup.items.length" class="att-empty">No absences.</div>-->
+    <!--                <table class="att-table" ng-if="popup.items.length">-->
+    <!--                    <thead>-->
+    <!--                        <tr>-->
+    <!--                        <th>Date</th>-->
+    <!--                        <th>Code</th>-->
+    <!--                        <th>Categories</th>-->
+    <!--                        <th>Course Name</th>-->
+    <!--                        <th>Course #</th>-->
+    <!--                        <th>Period</th>-->
+    <!--                        <th>Status</th>-->
+    <!--                        </tr>-->
+    <!--                    </thead>-->
+    <!--                    <tbody>-->
+    <!--                        <tr ng-repeat="a in popup.items track by $index">-->
+    <!--                        <td class="mono">{{a.date | date:'yyyy-MM-dd'}}</td>-->
+    <!--                        <td class="mono">{{a.att_code}}</td>-->
+    <!--                        <td>{{a.categories}}</td>-->
+    <!--                        <td>{{a.course_name}}</td>-->
+    <!--                        <td class="mono">{{a.course_number}}</td>-->
+    <!--                        <td class="mono">{{a.period}}</td>-->
+    <!--                        <td>-->
+    <!--                            <span class="att-tag" ng-class="{'unx': (a.categories || '').toLowerCase().indexOf('unexcused')>-1, 'exc': (a.categories || '').toLowerCase().indexOf('unexcused')===-1}">-->
+    <!--                                {{ (a.categories || '').toLowerCase().indexOf('unexcused')>-1 ? 'Unexcused' : 'Excused' }}-->
+    <!--                            </span>-->
+    <!--                        </td>-->
+    <!--                        </tr>-->
+    <!--                    </tbody>-->
+    <!--                </table>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--</div>-->
+
+    <!-- Row 2, Col 2: placeholder (optional) -->
+    <div class="lrp-card" data-ng-if="false">
+        <!-- add another widget later -->
+    </div>
+</div>
+<style>
+
+
+
+.att-band-pill{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  background: var(--band-color, #e5e7eb);
+  font-size:12px;
+  line-height:18px;
+  border:1px solid rgba(0,0,0,.08);
+  font-weight: bold;
+}
+.set-to-dark .att-band-pill{
+  border-color: rgba(255,255,255,.12);
+  
+}
+
+.att-legend { 
+    display:flex; 
+    align-items:center; 
+    gap:8px; 
+    margin:6px 0 4px; 
+    font-size:12px; 
+    opacity:.9; 
+    
+}
+.att-key { 
+    width:12px; 
+    height:12px; 
+    border-radius:3px; 
+    display:inline-block; 
+    
+}
+.att-key-unx { 
+    background:#D32F2F;
+}
+.att-key-exc { 
+    background:#DA7516;
+}
+.att-spacer { 
+    width:16px; 
+    height:1px; 
+    display:inline-block;
+}
+
+.att-popup { 
+    position:fixed; 
+    inset:0; 
+    background:rgba(0,0,0,.35); 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    z-index:9999;
+}
+.att-popup-panel { 
+    background:var(--panel-bg,#fff); 
+    color:inherit; 
+    width:min(1000px,92vw); 
+    max-height:80vh; 
+    border-radius:10px; 
+    box-shadow:0 10px 30px rgba(0,0,0,.2); 
+    display:flex; 
+    flex-direction:column;
+}
+.att-popup-head { 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    padding:12px 16px; 
+    border-bottom:1px solid rgba(0,0,0,.08);
+}
+.att-popup-body { 
+    /*padding:12px 16px; */
+    overflow:auto; 
+}
+.att-close { 
+    border:0; 
+    font-size:20px; 
+    line-height:1; 
+    cursor:pointer;
+}
+.att-empty { 
+    opacity:.7; 
+    font-style:italic; 
+    padding:8px 0;
+}
+
+.att-list { 
+    list-style:none; 
+    padding:0; 
+    margin:0; 
+    display:grid; 
+    gap:6px;
+}
+.att-list li { 
+    display:grid; 
+    grid-template-columns: 110px 90px 1fr; 
+    align-items:center; 
+    gap:8px; 
+    padding:6px 8px; 
+    border-radius:6px; 
+    background:rgba(0,0,0,.03);
+}
+.att-date { 
+    font-variant-numeric: tabular-nums;
+}
+.att-tag { 
+    padding:2px 6px; 
+    border-radius:999px; 
+    font-size:12px; 
+    text-align:center;
+}
+.att-tag.unx { 
+    background:#FCE4E4; 
+    color:#B71C1C;
+}
+.att-tag.exc { 
+    background:#FFF3CD; 
+    color:#8A6D3B;
+}
+
+.att-table {
+  /*width: 100%;*/
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.att-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--panel-bg, #fff);
+  z-index: 1;
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0,0,0,.12);
+}
+.set-to-dark .att-table thead th { background: #1f1f22; border-color: rgba(255,255,255,.12); }
+.att-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  vertical-align: top;
+}
+.set-to-dark .att-table td { border-color: rgba(255,255,255,.08); }
+.att-table .mono { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.att-popup-body { max-height: 60vh; overflow: auto; }
+
+.att-tag { padding: 2px 6px; border-radius: 999px; font-size: 12px; text-align: center; white-space: nowrap; }
+.att-tag.unx { background:#FCE4E4; color:#B71C1C; }
+.att-tag.exc { background:#FFF3CD; color:#8A6D3B; }
+
+/* Dark-mode friendly (optional) */
+.set-to-dark .att-popup-panel { --panel-bg:#1f1f22; color:#e6e6e6; }
+.set-to-dark .att-list li { background:rgba(255,255,255,.06); }
+    /* 2-col grid that collapses on small screens */
+.lrp-att-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 0 20px 20px 20px;
+}
+.att-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0 2px;
+    font-size: 12px;
+}
+.att-key {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
+.att-key-unx { background: #D32F2F; }  /* Unexcused */
+.att-key-exc { background: #FFA000; }  /* Excused  */
+.att-spacer { width: 16px; height: 1px; display: inline-block; }
+.att-label { opacity: 0.9; }
+@media (max-width: 900px) {
+    .lrp-att-grid { grid-template-columns: 1fr; }
+}
+.lrp-col-span-2 { grid-column: 1 / -1; }
+
+.lrp-card {
+    background: var(--ps-surface, #fff);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+.set-to-dark .lrp-card {
+    background: #111827;
+    border-color: rgba(255,255,255,0.12);
+}
+
+.lrp-card-title {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+
+</style>

@@ -2,10 +2,23 @@
 define(require => {
     const module = require('components/UCSD_LearningRequirements_Pro/module');
 
-    module.factory('writeData', (getData, colorsWriteAddr, prefWriteAddr, stdCatWriteAddr, shownTestsWriteAddr, 
-            categoriesWriteAddr, gradescaleDescAddr, gradescaleAssignAddr, scoreColorsAddr, gradescaleSortAddr,
-            testBandsAddr, performanceBandAddr, testWindowsAddr, performanceGroupAddr
-    ) => {
+    module.factory('writeData', [
+        'getData', 
+        'colorsWriteAddr', 
+        'prefWriteAddr', 
+        'stdCatWriteAddr', 
+        'shownTestsWriteAddr', 
+        'categoriesWriteAddr', 
+        'gradescaleDescAddr', 
+        'gradescaleAssignAddr', 
+        'scoreColorsAddr', 
+        'gradescaleSortAddr',
+        'testBandsAddr', 
+        'performanceBandAddr', 
+        'testWindowsAddr', 
+        'performanceGroupAddr', 
+        'attBandAddr', 
+        (getData, colorsWriteAddr, prefWriteAddr, stdCatWriteAddr, shownTestsWriteAddr, categoriesWriteAddr, gradescaleDescAddr, gradescaleAssignAddr, scoreColorsAddr, gradescaleSortAddr,testBandsAddr, performanceBandAddr, testWindowsAddr, performanceGroupAddr, attBandAddr) => {
         function writeToTable(path, method, args, parameters = '', orderby = '') {
             const params = orderby !== '' ? `?pagesize=0&order=${orderby}` : '?pagesize=0';
             if (parameters && Object.keys(parameters).length > 0) {
@@ -78,7 +91,10 @@ define(require => {
             },
             writePerformanceGroup: function(args, id = null) {
                 return payLoad(args, performanceGroupAddr, id);
+            },
+            writeAttBands: function(args, id = null) {
+                return payLoad(args, attBandAddr, id);
             }
         }
-    });
+    }]);
 });

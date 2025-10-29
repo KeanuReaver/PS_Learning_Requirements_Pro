@@ -90,6 +90,13 @@
         <implies allow="get">/ws/schema/table/u_lrp_performance_group/#</implies>
         <implies allow="get">/ws/schema/table/u_lrp_performance_group/count</implies>
         <implies allow="get">/ws/schema/table/u_lrp_performance_group</implies>
+        
+        <implies allow="post">/ws/schema/table/u_lrp_att_bands</implies>
+        <implies allow="put">/ws/schema/table/u_lrp_att_bands/#</implies>
+        <implies allow="delete">/ws/schema/table/u_lrp_att_bands/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_att_bands/#</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_att_bands/count</implies>
+        <implies allow="get">/ws/schema/table/u_lrp_att_bands</implies>
 
         <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.proLrngReq.classlist.flat</implies>
         <implies allow="post">/ws/schema/query/us.ia.k12.urbandale.powerschool.lrngReqPro.stdList.flat</implies>

@@ -202,25 +202,25 @@
                 data-assHelper5="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper5]"
                 data-assHelper6="~[text:psx.htmlc.admin.students.learning_requirements_pro.assHelper6]">
         </div>
-        <div    class="lrp-accessibility-panel"
-                role="group" 
-                aria-labelledby="colorToggleLabel">
+        <!--<div    class="lrp-accessibility-panel"-->
+        <!--        role="group" -->
+        <!--        aria-labelledby="colorToggleLabel">-->
             
-            <span id="colorToggleLabel" class="toggle-label bold">
-                Colors: 
-            </span>
-            <span aria-hidden="true" class="toggle-option bold">Off</span>
-            <label class="lrp-switch">
-                <input  type="checkbox"
-                        id="showColorsToggle"
-                        data-ng-model="showColorsMaster"
-                        aria-label="Toggle to show or hide color-coded score bubbles"
-                        data-ng-keypress="toggleShowColors($event)"
-                        role="switch">
-                <span class="lrp-slider"></span>
-            </label>
-            <span aria-hidden="true" class="toggle-option bold">On</span>
-        </div>
+        <!--    <span id="colorToggleLabel" class="toggle-label bold">-->
+        <!--        Colors: -->
+        <!--    </span>-->
+        <!--    <span aria-hidden="true" class="toggle-option bold">Off</span>-->
+        <!--    <label class="lrp-switch">-->
+        <!--        <input  type="checkbox"-->
+        <!--                id="showColorsToggle"-->
+        <!--                data-ng-model="showColorsMaster"-->
+        <!--                aria-label="Toggle to show or hide color-coded score bubbles"-->
+        <!--                data-ng-keypress="toggleShowColors($event)"-->
+        <!--                role="switch">-->
+        <!--        <span class="lrp-slider"></span>-->
+        <!--    </label>-->
+        <!--    <span aria-hidden="true" class="toggle-option bold">On</span>-->
+        <!--</div>-->
         
         <!-- Helper Buttons -->
         <div    id="lrp-inserted-content-buttons"
@@ -230,6 +230,12 @@
                     data-steps="pictureWizardSteps"
                     data-tran-tags="tranTags">
             </div>
+        </div>
+        
+        <div main-view-attendance
+                data-curyearid="curyearid"
+                data-tran-tags="tranTags"
+                data-portal-address="portalAddress">
         </div>
         <!-- Test Data View -->
         <div id="lrp-page-content-tests">
@@ -249,39 +255,43 @@
             </div>
         </div>
         <!-- Learning Requirements View -->
-        <div id="lrp-page-content-class" class="box-round">
-            <h4>
-                ~[text:psx.htmlc.admin.students.learning_requirements_pro.class_progress]
-                <div class="button-row">
-                    <label>~[text:psx.htmlc.admin.students.learning_requirements_pro.show_ungraded]</label>
-                    <label class="lrp-switch">
-                        <input type="checkbox" data-ng-model="showUngraded">
-                        <span class="lrp-slider"></span>
-                    </label>
+        <div id="lrp-page-content-class" class="lrp-att-grid">
+            <div class="lrp-card lrp-col-span-2">
+                <h2 class="lrp-card-title">
+                    ~[text:psx.htmlc.admin.students.learning_requirements_pro.class_progress]
+                    <div class="button-row">
+                        <label style="font-size: 14px;">~[text:psx.htmlc.admin.students.learning_requirements_pro.show_ungraded]</label>
+                        <label class="lrp-switch">
+                            <input type="checkbox" data-ng-model="showUngraded">
+                            <span class="lrp-slider"></span>
+                        </label>
+                    </div>
+                </h2>
+                <div></div> <!-- No idea why but the first div gets hidden by powerschool for some reason -->
+                <!-- Grade Scale Data View -->
+                <div    main-view-grade-scales
+                        data-tran-tags="tranTags"
+                        data-grade-scales="gradeScales"
+                        data-show-colors="showColorsMaster">
                 </div>
-            </h4>
-            <!-- Grade Scale Data View -->
-            <div    main-view-grade-scales
-                    data-tran-tags="tranTags"
-                    data-grade-scales="gradeScales"
-                    data-show-colors="showColorsMaster">
+                <!-- Class Data View -->
+                <div    main-view-class-data
+                        data-class-list="classList"
+                        data-show-ungraded="showUngraded"
+                        data-tran-tags="tranTags"
+                        data-show-colors="showColorsMaster"
+                        data-ng-if="!isMobile">
+                </div>
+                <!-- Mobile Class Data View -->
+                <div    mobile-view-class-data
+                        data-class-list="classList"
+                        data-show-ungraded="showUngraded"
+                        data-tran-tags="tranTags"
+                        data-show-colors="showColorsMaster"
+                        data-ng-if="isMobile">
+                </div>
             </div>
-            <!-- Class Data View -->
-            <div    main-view-class-data
-                    data-class-list="classList"
-                    data-show-ungraded="showUngraded"
-                    data-tran-tags="tranTags"
-                    data-show-colors="showColorsMaster"
-                    data-ng-if="!isMobile">
-            </div>
-            <!-- Mobile Class Data View -->
-            <div    mobile-view-class-data
-                    data-class-list="classList"
-                    data-show-ungraded="showUngraded"
-                    data-tran-tags="tranTags"
-                    data-show-colors="showColorsMaster"
-                    data-ng-if="isMobile">
-            </div>
+                
         </div>
         <!-- Print Media -->
         <div id="lrp-print-view">

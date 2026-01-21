@@ -6,7 +6,7 @@
                 aria-label="{{tranTags.collected || 'collected'}}"
                 data-tooltip-title="{{tranTags.collected || 'collected'}}"
                 class="keyIcon keyItem collected"
-                title="tranTags.collected || 'collected'">
+                data-title="tranTags.collected || 'collected'">
             - {{ tranTags.collected || 'collected' }} 
         </span>
         <span   tooltip-follow
@@ -80,6 +80,9 @@
         <div class="lrp-table-header-cell lrp-flex-tenth"></div>
         <div bubble-text-auto class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.exp || 'Exp' }}</div>
         <div bubble-text-auto class="lrp-table-header-cell bubble-text">{{ tranTags.course || 'Course' }}</div>
+        <div    bubble-text-auto 
+                class="lrp-table-header-cell lrp-flex-tenth lrp-full-view-block bubble-text"
+                data-ng-if="checkClassAttendance(classList)">{{ tranTags.crs_att_presence || 'Presence' }}</div>
         <div bubble-text-auto class="lrp-table-header-cell lrp-flex-third lrp-full-view-block bubble-text">{{ tranTags.tag_shortcuts || 'Tag Shortcuts' }}</div>
         <div bubble-text-auto class="lrp-table-header-cell lrp-flex-quarter bubble-text">{{ tranTags.assessment || 'Assessment' }}</div>
     </div>
@@ -109,13 +112,28 @@
                 data-ng-bind-html="trustedHtml(class.course_name)">
             </div>
         </div>
+        <div    class="lrp-table-cell lrp-full-view-block lrp-flex-tenth lrp-big"
+                data-ng-show="checkClassAttendance(classList)">
+            <div    bubble-text-auto
+                    class="bubble-text lrp-table-cell-icons lrp-table-cell-content"
+                    data-ng-style="getBkgColor(class.attendance.alpha.colorcode)"
+                    data-ng-show="class.attendance.rate">
+                {{ class.attendance.rate }}%
+            </div>
+        </div>    
         <div class="lrp-table-cell lrp-flex-third lrp-full-view-block">
             <div    class="lrp-table-cell-icons"
                     data-ng-show="class.lateCount > 0 || class.missingCount > 0 || class.incompCount > 0">
                 <span   tooltip-follow
                         bubble-text-auto
                         data-tooltip-title="{{tranTags.late_assignment_count_details || 'late assignment count: click to expand'}}"
-                        class="bubble-text keyIcon late lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                        class="bubble-text 
+                            keyIcon 
+                            late 
+                            lrp-table-cell-content 
+                            lrp-table-cell-key-content 
+                            lrp-cursor
+                            lrp-key-count"
                         data-ng-show="class.lateCount > 0"
                         data-ng-click="expandWarnings('late', class)"
                         data-title="tranTags.late_assignment_count_details || 'late assignment count: click to expand'">
@@ -124,7 +142,13 @@
                 <span   tooltip-follow
                         bubble-text-auto
                         data-tooltip-title="{{tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'}}"
-                        class="bubble-text keyIcon missing lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                        class="bubble-text 
+                            keyIcon 
+                            missing 
+                            lrp-table-cell-content 
+                            lrp-table-cell-key-content 
+                            lrp-cursor
+                            lrp-key-count"
                         data-ng-show="class.missingCount > 0"
                         data-ng-click="expandWarnings('missing', class)"
                         data-title="tranTags.missing_assignment_count_details || 'missing assignment count: click to expand'">
@@ -133,7 +157,13 @@
                 <span   tooltip-follow
                         bubble-text-auto
                         data-tooltip-title="{{tranTags.incomplete_assignment_count_details || 'incomplete assignment count: click to expand'}}"
-                        class="bubble-text keyIcon incomplete lrp-table-cell-content lrp-table-cell-key-content lrp-cursor"
+                        class="bubble-text 
+                            keyIcon 
+                            incomplete 
+                            lrp-table-cell-content 
+                            lrp-table-cell-key-content 
+                            lrp-cursor
+                            lrp-key-count"
                         data-ng-show="class.incompCount > 0"
                         data-ng-click="expandWarnings('incomplete', class)"
                         data-title="tranTags.incomplete_assignment_count_details || incomplete assignment count: click to expand">
@@ -171,11 +201,94 @@
             data-ng-repeat-end 
             data-ng-class="{'expanded': class.expanded}"
             data-ng-style="selectedStyle(class)">
-        <div    class="lrp-table lrp-sub-table"
-                data-ng-show="class.standards.length === 0">
+<!-- Attendace -->
+        <div class="lrp-table-row" data-ng-show="class.attendance.rate">
+            <div class="lrp-table-cell lrp-crs-attendance-btn-cell">
+                <div    data-ng-class="{'expanded': class.attendance.showAttendance}"
+                        data-ng-click="class.attendance.showAttendance = !class.attendance.showAttendance"
+                        class="lrp-crs-attendance-details"
+                        data-ng-if="class.attendance.absences.length > 0 || class.attendance.tardies.length > 0">
+                    {{ tranTags.crs_att_attendance || 'Attendance' }}
+                </div>
+                <div    class="lrp-crs-attendance-noclick"
+                        data-ng-if="!(class.attendance.absences.length > 0 || class.attendance.tardies.length > 0)">
+                    {{ tranTags.crs_att_attendance || 'Attendance' }}
+                </div>
+            </div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_meetings || 'Total Meetings' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.meetings }}</div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_absences || 'Absences' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.absences.length }}</div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_tardies || 'Tardies' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.tardies.length }}</div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_rate || 'Rate' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.rate }}%</div>
+            <div  class="lrp-table-cell lrp-flex-double">
+                <div    bubble-text-auto 
+                        class="bubble-text lrp-table-cell-icons lrp-table-cell-content"
+                        data-ng-style="getBkgColor(class.attendance.alpha.colorcode)">
+                    {{ class.attendance.alpha.label }}
+                </div>
+            </div>
+        </div>
+        <div    class="lrp-crs-attendance-content" 
+                data-ng-show="class.attendance.showAttendance"
+                data-ng-class="{'expanded': class.attendance.showAttendance}">
             <div class="lrp-table-row">
                 <div bubble-text-auto class="lrp-table-cell bubble-text">
-                    {{ tranTags.no_academic_learning_requirements_to_show || 'No Academic Learning Requirements To Show' }}
+                    {{ tranTags.crs_att_date || 'Date' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_type || 'Type' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_code || 'Code' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_minutes || 'Minutes Missed' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_categories || 'Categories' }}
+                </div>
+            </div>
+            <div    class="lrp-table-row"
+                    data-ng-repeat="attRec in class.attendance.absences">
+                <div class="lrp-table-cell ">
+                    {{ formatDate(attRec.date_value) }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.type }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.att_code }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.minutes }}
+                </div>
+                <div class="lrp-table-cell lrp-table-cell-left">
+                    <span class="lrp-table-cell-icons" data-ng-repeat="cat in attRec.categories">{{ cat }}</span>
+                </div>
+            </div>
+            <div    class="lrp-table-row"
+                    data-ng-if="class.attendance.tardies.length > 0">
+                <div class="lrp-table-cell" style="background-color: #0d253a"></div>
+            </div>
+            <div    class="lrp-table-row"
+                    data-ng-repeat="attRec in class.attendance.tardies">
+                <div class="lrp-table-cell ">
+                    {{ formatDate(attRec.date_value) }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.type }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.att_code }}
+                </div>
+                <div class="lrp-table-cell">
+                    --
+                </div>
+                <div class="lrp-table-cell lrp-table-cell-left">
+                    <span class="lrp-table-cell-icons" data-ng-repeat="cat in attRec.categories">{{ cat }}</span>
                 </div>
             </div>
         </div>
@@ -204,11 +317,22 @@
                 </div>
             </div>
         </div>
+        <div    class="lrp-table lrp-sub-table"
+                data-ng-show="class.standards.length === 0">
+            <div class="lrp-table-row">
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.no_academic_learning_requirements_to_show || 'No Academic Learning Requirements To Show' }}
+                </div>
+            </div>
+        </div>
 <!-- Standards -->
         <div class="lrp-table lrp-sub-table" data-ng-repeat="category in class.standards">
             <div    class="lrp-table-header"
                     data-ng-style="parseStyle(category.catstyle)">
-                <div bubble-text-auto class="lrp-table-header-cell bubble-text" data-ng-bind="category.category"></div>
+                <div    bubble-text-auto 
+                        class="lrp-table-header-cell bubble-text"
+                        data-ng-class="{ 'lock-bubble-text': category.catstyle }"
+                        data-ng-bind="category.category"></div>
             </div>
             <div class="lrp-table-header">
                 <div class="lrp-table-header-cell lrp-flex-tenth"></div>
@@ -229,8 +353,10 @@
                     </span>
                 </div>
                 <div    bubble-text-auto
-                        class="lrp-table-cell bubble-text lrp-big"
+                        class="lrp-table-cell bubble-text lrp-big lrp-table-cell-left">
+                    <div class="lrp-table-cell-content" 
                         data-ng-bind-html="trustedHtml(standard.standardName)">
+                    </div>
                 </div>
                 <div    class="lrp-table-cell lrp-flex-quarter lrp-big lrp-full-view-block">
                     <div class="lrp-table lrp-score-table" data-ng-show="standard.grades.length > 0">
@@ -307,7 +433,7 @@
                     <div    class="lrp-table-row lrp-assignment-data lrp-table-assignment-row"
                             data-ng-repeat-start="asmt in standard.assignments"
                             data-ng-repeat-index="{{$index}}"
-                            data-ng-class="{'selected': asmt.expanded}">
+                            data-ng-class="{ 'selected': asmt.expanded, 'count-expanded': asmt.count_expanded }">
                         <div    bubble-text-auto
                                 class="lrp-table-cell lrp-flex-tenth bubble-text">
                             <span   class="lrp-table-toggle-button" 
@@ -502,6 +628,97 @@
             <div class="lrp-table-row">
                 <div class="lrp-table-cell">
                     {{ tranTags.no_academic_learning_requirements_to_show || 'No Academic Learning Requirements To Show' }}
+                </div>
+            </div>
+        </div>
+        <!-- Attendace -->
+        <div class="lrp-table-row" data-ng-show="class.attendance.rate">
+            <div class="lrp-table-cell lrp-crs-attendance-btn-cell">
+                <div    data-ng-class="{'expanded': class.attendance.showAttendance}"
+                        data-ng-click="class.attendance.showAttendance = !class.attendance.showAttendance"
+                        class="lrp-crs-attendance-details"
+                        data-ng-if="class.attendance.absences.length > 0 || class.attendance.tardies.length > 0">
+                    {{ tranTags.crs_att_attendance || 'Attendance' }}
+                </div>
+                <div    class="lrp-crs-attendance-noclick"
+                        data-ng-if="!(class.attendance.absences.length > 0 || class.attendance.tardies.length > 0)">
+                    {{ tranTags.crs_att_attendance || 'Attendance' }}
+                </div>
+            </div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_meetings || 'Total Meetings' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.meetings }}</div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_absences || 'Absences' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.absences.length }}</div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_tardies || 'Tardies' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.tardies.length }}</div>
+            <div class="lrp-table-cell">{{ tranTags.crs_att_rate || 'Rate' }}:</div>
+            <div bubble-text-auto class="lrp-table-cell lrp-table-cell-left bubble-text">{{ class.attendance.rate }}%</div>
+            <div  class="lrp-table-cell lrp-flex-double">
+                <div    bubble-text-auto 
+                        class="bubble-text lrp-table-cell-icons lrp-table-cell-content"
+                        data-ng-style="getBkgColor(class.attendance.alpha.colorcode)">
+                    {{ class.attendance.alpha.label }}
+                </div>
+            </div>
+        </div>
+        <div    class="lrp-crs-attendance-content" 
+                data-ng-show="class.attendance.showAttendance"
+                data-ng-class="{'expanded': class.attendance.showAttendance}">
+            <div class="lrp-table-row">
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_date || 'Date' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_type || 'Type' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_code || 'Code' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_minutes || 'Minutes Missed' }}
+                </div>
+                <div bubble-text-auto class="lrp-table-cell bubble-text">
+                    {{ tranTags.crs_att_categories || 'Categories' }}
+                </div>
+            </div>
+            <div    class="lrp-table-row"
+                    data-ng-repeat="attRec in class.attendance.absences">
+                <div class="lrp-table-cell ">
+                    {{ formatDate(attRec.date_value) }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.type }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.att_code }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.minutes }}
+                </div>
+                <div class="lrp-table-cell lrp-table-cell-left">
+                    <span class="lrp-table-cell-icons" data-ng-repeat="cat in attRec.categories">{{ cat }}</span>
+                </div>
+            </div>
+            <div    class="lrp-table-row"
+                    data-ng-if="class.attendance.tardies.length > 0">
+                <div class="lrp-table-cell" style="background-color: #0d253a"></div>
+            </div>
+            <div    class="lrp-table-row"
+                    data-ng-repeat="attRec in class.attendance.tardies">
+                <div class="lrp-table-cell ">
+                    {{ formatDate(attRec.date_value) }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.type }}
+                </div>
+                <div class="lrp-table-cell">
+                    {{ attRec.att_code }}
+                </div>
+                <div class="lrp-table-cell">
+                    --
+                </div>
+                <div class="lrp-table-cell lrp-table-cell-left">
+                    <span class="lrp-table-cell-icons" data-ng-repeat="cat in attRec.categories">{{ cat }}</span>
                 </div>
             </div>
         </div>

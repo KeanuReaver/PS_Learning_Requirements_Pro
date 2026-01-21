@@ -15,6 +15,52 @@
     z-index: 10000;
 }
 
+.lrp-parent-pages a.button.lrp-report-new-att {
+    background-color: #db7676;
+    color: white;
+    transition: 3ms ease;
+}
+
+body.set-to-dark .lrp-parent-pages a.button.lrp-report-new-att {
+    background-color: #db7676;
+    color: black;
+}
+
+.lrp-parent-pages a.button.lrp-pay-fees {
+    background-color: #3faf4d;
+    color: white;
+    transition: 3ms ease;
+}
+
+body.set-to-dark .lrp-parent-pages a.button.lrp-pay-fees {
+    background-color: #3faf4d;
+    color: black;
+}
+
+.lrp-parent-pages a.button.lrp-view-archived-letters,
+body.set-to-dark .lrp-parent-pages a.button.lrp-view-archived-letters,
+body.set-to-dark .lrp-parent-pages a.button.lrp-view-archived-letters:hover {
+    background-color: black;
+    color: white !important;
+}
+
+.lrp-split-button-rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+}
+
+.lrp-parent-pages {
+    display: flex;
+    margin-left: 10px;
+    padding: 0;
+    text-align: start !important;
+}
+
+.lrp-parent-pages a {
+    margin-top: 0;
+}
+
 .lrp-table-row:hover > div > .lrp-table-toggle-button {
     border: 2px solid black;
 }
@@ -37,6 +83,15 @@
     width: -webkit-fill-available;
     width: -moz-available;
     width: fill-available;
+}
+
+#wizard-step-text {
+    text-align: start;
+}
+
+.picture-wizard-popout-window button {
+    margin-bottom: 2px !important;
+    margin-top: 2px !important;
 }
 
 h4>div.button-row {
@@ -145,6 +200,13 @@ h4>div.button-row {
     margin-right: 5px;
     background-color: lightgrey;
     
+}
+
+@supports (corner-shape: squircle) {
+    .test-cell {
+        corner-shape: squircle;
+        border-radius: 50px;
+    }
 }
 /* Accessibility Panel */
 
@@ -271,9 +333,23 @@ input:checked + .lrp-slider::after {
 
 /* Close button */
 .lrp-popup-close {
-    font-size: 18px;
+    display: inline-flex;
+    align-items: center;      /* vertical center */
+    justify-content: center;  /* horizontal center */
+
+    width: 1.5rem;
+    height: 1.5rem;
+
+    padding: 0;               /* remove default button padding */
+    border: none;             /* tweak as needed */
+    background: transparent;  /* or whatever your style is */
+
+    font-size: 1rem;
+    font-weight: 900;
     cursor: pointer;
+    line-height: 1;           /* don't let line-height fight you */
 }
+
 
 /* Content area of the popup */
 .lrp-popup-content {
@@ -322,8 +398,8 @@ input:checked + .lrp-slider::after {
     display: block;
     overflow: hidden;
     max-height: 0; /* Start collapsed */
-    opacity: 0; /* Start invisible */
-    transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0; 
+    transition: max-height 0.3s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 /* Expand when active (tab is selected) */
@@ -345,7 +421,7 @@ input:checked + .lrp-slider::after {
 .lrp-grade-scale-table {
     border-collapse: collapse;
     border: 1px solid #ddd;
-    transition: all 0.5s ease;
+    /*transition: all 0.5s ease;*/
     border-radius: 0 10px 10px !important;
     margin-top: 0 !important;
 }
@@ -402,6 +478,12 @@ input:checked + .lrp-slider::after {
     background-size: contain;
     background-repeat: no-repeat;
     padding-left: 20px;
+    cursor: default;
+}
+
+.lrp-table-cell-icons > .keyIcon.lrp-cursor {
+    background-size: 1.3rem;
+    background-position: 2px;
 }
 
 .keyItem::after {
@@ -486,7 +568,34 @@ body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-block {
         border-radius: 0 0 0 10px;
         margin-top: 0;
     }
+    .lrp-split-button-rows {
+        grid-template-columns: 1fr;
+    }
     
+    @supports (corner-shape: scoop) and (corner-shape: squircle) {
+        .test-content-wrapper {
+            corner-shape: squircle;
+            border-radius: 50px;
+        }
+        .test-cell {
+            corner-shape: scoop;
+            border-radius: 10px;
+        }
+        
+        .test-record {
+            margin-bottom: 2px;
+        }
+        
+        .testviews > :first-child > :first-child > :first-child {
+            corner-shape: squircle squircle scoop scoop;
+            border-radius: 50px 50px 10px 10px;
+        }
+        
+        .testviews > :last-child > :last-child > :last-child {
+            corner-shape: scoop scoop squircle squircle;
+            border-radius: 10px 10px 50px 50px;
+        }
+    }
     
     .box-round {
         padding-right: 0 !important;
@@ -623,10 +732,7 @@ body.set-to-dark:not(.disable-dark-mode) .lrp-mobile-view-block {
     border-radius: 20px;
 }
 
-.lrp-table-toggle-button:hover {
-    /*color: #eccd8e;*/
-    box-shadow: 5px 5px 5px black;
-}
+
 
 body.set-to-dark:not(.disable-dark-mode) .lrp-popup {
     background-color: #1f2933;

@@ -7,7 +7,8 @@
                 'colorcode' VALUE u_lrp_color_list.colorcode,
                 'label' VALUE u_lrp_att_bands.label,
                 'top_band' VALUE u_lrp_att_bands.top_band,
-                'bottom_band' VALUE u_lrp_att_bands.bottom_band
+                'bottom_band' VALUE u_lrp_att_bands.bottom_band,
+                'default_band' VALUE u_lrp_att_bands.default_band
                 RETURNING CLOB
             )
             RETURNING CLOB

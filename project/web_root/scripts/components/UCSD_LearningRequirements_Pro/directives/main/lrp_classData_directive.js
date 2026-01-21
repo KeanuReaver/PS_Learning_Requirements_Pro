@@ -13,7 +13,7 @@ define(function(require) {
                 showColors: '='
             },
             templateUrl: '/scripts/components/UCSD_LearningRequirements_Pro/views/main/classData_template.html',
-            controller: ['$scope', '$sce', '$timeout', 'mainViewLogic', 'getTrend', function($scope, $sce, $timeout, mainViewLogic, getTrend) {
+            controller: ['$scope', '$sce', '$timeout', 'mainViewLogic', 'getTrend', 'timeUtil', function($scope, $sce, $timeout, mainViewLogic, getTrend, timeUtil) {
                 $scope.stdHistTitle = '';
                 $scope.stdHistGraph = {};
                 $scope.popupPosition = {};
@@ -33,6 +33,16 @@ define(function(require) {
                 $scope.closeStdPopup = function() {
                     $scope.stdPopOpen = false;
                 }
+                
+                $scope.checkClassAttendance = function (classList) {
+                    if (!Array.isArray(classList)) return false;
+                    return classList.some(rec =>
+                        rec &&
+                        rec.attendance &&
+                        ('rate' in rec.attendance) &&  // property exists…
+                        rec.attendance.rate !== null    // …and is not null (0 is OK)
+                    );
+                };
                 
                 $scope.openStdPopup = function (record) {
                     $scope.stdHistGraph = {};
@@ -83,8 +93,46 @@ define(function(require) {
                     
                 }
                 
+                function clearExpandedDeep(node) {
+                    if (!node || typeof node !== 'object') return;
+                
+                    // If this object has an `expanded` flag, clear it
+                    if (Object.prototype.hasOwnProperty.call(node, 'expanded')) {
+                        node.expanded = false;
+                    }
+                
+                    // Walk all properties
+                    for (const key in node) {
+                        if (!Object.prototype.hasOwnProperty.call(node, key)) continue;
+                
+                        const val = node[key];
+                
+                        if (!val || typeof val !== 'object') continue;
+                
+                        if (Array.isArray(val)) {
+                            // Recurse into each item in arrays (standards, assignments, etc.)
+                            for (const item of val) {
+                                clearExpandedDeep(item);
+                            }
+                        } else {
+                            // Recurse into nested objects
+                            clearExpandedDeep(val);
+                        }
+                    }
+                }
+                
                 $scope.toggleExpand = function(row) {
                     row.expanded = !row.expanded;
+                
+                    // If we just collapsed this row, also collapse all descendants
+                    if (!row.expanded) {
+                        clearExpandedDeep(row);
+                    }
+                
+                    // keep your special case
+                    if (row.count_expanded) {
+                        row.count_expanded = false;
+                    }
                 }
                 
                 $scope.toggleExpandComments = function (row, event) {
@@ -110,6 +158,7 @@ define(function(require) {
                 
                                 if (assignment[type] === '1') {
                                     assignment.expanded = true;
+                                    assignment.count_expanded = true;
                                     shouldExpandStandard = true;
                                 }
                             }
@@ -119,6 +168,10 @@ define(function(require) {
                             }
                         }
                     }
+                }
+                
+                $scope.formatDate = function(val) {
+                    return timeUtil.formatDate(val, 'yyyy-MM-dd');
                 }
                 
                 $scope.parseStyle = function (styleString) {

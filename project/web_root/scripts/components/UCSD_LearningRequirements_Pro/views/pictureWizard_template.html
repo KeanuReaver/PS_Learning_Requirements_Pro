@@ -68,19 +68,19 @@
     }
     
     .picture-wizard-popout-window {
-        position: fixed; 
+        position: fixed;
         top: 50%;
-        left: 50%; 
+        left: 50%;
         transform: translate(-50%, -50%);
-        width: min(80%, 1300px); 
-        height: auto; 
+        width: min(80%, 1300px);
+        height: 80vh;
         max-height: 90vh;
-        background-color: white; 
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-        border-radius: 8px; 
-        box-sizing: border-box; 
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        box-sizing: border-box;
         overflow-y: auto;
-        z-index:10000
+        z-index: 10000;
     }
 
     .picture-wizard-drawer-header {
@@ -122,12 +122,13 @@
     }
 
     .wizard-image img {
-        max-width: 100%;
+        max-width: 95%;
         height: auto;
         border: 1px solid black;
     }
     .wizard-image {
         text-align: center;
+        padding: 4px;
     }
 
     .picture-wizard-navigation {

@@ -6,12 +6,11 @@ define(function(require) {
         return {
             restrict: 'E',
             scope: {
-                bands: '=',         // [{ label, bottom_band, top_band, colorcode }, ...]
-                value: '=',         // number the arrow points to
-                defaultColor: '@?', // fallback color for uncovered spans
-                height: '@?',       // px, e.g., "24"
-                showLabels: '@?',   // "true" | "false"
-                // optional custom key names if yours differ
+                bands: '=',         
+                value: '=',         
+                defaultColor: '@?', 
+                height: '@?',       
+                showLabels: '@?',   
                 labelProp: '@?',
                 lowProp: '@?',
                 highProp: '@?',
@@ -47,7 +46,7 @@ define(function(require) {
                 '    </div>',
                 '  </div>',
             
-                '</div>' // create new template and add tooltips
+                '</div>'
             ].join(''),
             link: function(scope) {
                 const DEFAULTS = {

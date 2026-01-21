@@ -3,7 +3,7 @@ define(function(require) {
     const module = require('components/UCSD_LearningRequirements_Pro/module');
     const $j = require('jquery');
 
-    module.controller('LearningRequirementsMainController', ['$scope', '$window', '$document', 'mainViewLogic', 'transHashFactory', 'bubbleTextService', function($scope, $window, $document, mainViewLogic, transHashFactory, bubbleTextService) {
+    module.controller('LearningRequirementsMainController', ['$scope', '$window', '$document', 'mainViewLogic', 'transHashFactory', 'bubbleTextService', 'attLogic', function($scope, $window, $document, mainViewLogic, transHashFactory, bubbleTextService, attLogic) {
         $scope.portalAddress;       // init value
         $scope.curyearid;           // init value
         $scope.curstudid;           // init value
@@ -16,20 +16,26 @@ define(function(require) {
         $scope.studentTestScores = [];
         $scope.classList = [];
         $scope.gradeScales = [];
+        $scope.attData = [];
+        $scope.attBands = [];
         $scope.contentMaxHeight = '0px';
         $scope.windowWidth = $window.innerWidth;
         $scope.isMobile = ($scope.windowWidth <= 880);
         $scope.showUngraded = true;
-        $scope.showColorsMaster = true; 
+        $scope.showColorsMaster = true;
+        $scope.showAttendance = false;
         
         function getClassData() {
             console.log($scope.studschoolid);
             mainViewLogic.getLearningRequirementsTlists($scope.portalAddress, $scope.curstudid, $scope.curyearid, $scope.studschoolid)
                 .then(response => {
-                    $scope.classList = response.classList;
+                    $scope.attData = response.attData;
+                    $scope.attBands = response.attBands;
                     $scope.studentTestScores = response.studentTest;
+                    $scope.classList = attLogic.attachAbsencesToClasses(response.classList, response.attData, response.attBands, $scope.curyearid);
                     $scope.gradeScales = transHashFactory.translateGradeScales(response.gradeScales, $scope.langCode);
                     
+                    console.log($scope.classList);
                 })
                 .catch(error => console.error('Failed to get class/test data:', error));
         }
@@ -39,7 +45,6 @@ define(function(require) {
         }
         
         $scope.darkMode = mainViewLogic.getDarkMode();
-        
         
         $scope.toggleShowColors = function ($event) {
             if ($event && $event.type === 'keypress' && ($event.key === 'Enter' || $event.key === ' ')) {
@@ -67,7 +72,7 @@ define(function(require) {
             getClassData();
             mainViewLogic.organizeInsertedContent();
             $scope.pictureWizardSteps = mainViewLogic.getWizardArray($document[0].getElementById('wizard-data').dataset)
-            bubbleTextService.startAuto({ threshold: 140 });
+            
             
             try {
                 const stored = localStorage.getItem('ucsd_showColorsMaster');
@@ -76,6 +81,8 @@ define(function(require) {
                 $scope.showColorsMaster = true;
             }
         });
+        
+        bubbleTextService.startAuto({ threshold: 140 });
     
         // Cleanup the event listener when the controller is destroyed
         $scope.$on('$destroy', function() {

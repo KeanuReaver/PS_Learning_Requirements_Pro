@@ -144,16 +144,20 @@ define(function(require) {
             },
             smashClasses: function(data) {
                 const grouped = {};
+                console.log(data);
                 data.forEach(item => {
-                    const courseName = item.course_name.trim();
+                    const courseName = item.course_name.trim() + item.period.trim();
+                    console.log(grouped);
+                    console.log(courseName);
         
                     if (grouped[courseName]) {
+                        const checkIsCurrent = Math.max(parseInt(grouped[courseName].iscurrent, 10), parseInt(item.iscurrent, 10));
                         grouped[courseName].suppress = Math.min(parseInt(grouped[courseName].suppress, 10), parseInt(item.suppress, 10));
-                        grouped[courseName].iscurrent = Math.max(parseInt(grouped[courseName].iscurrent, 10), parseInt(item.iscurrent, 10));
-                        if (!grouped[courseName].period) grouped[courseName].period = item.period;
+                        grouped[courseName].iscurrent = checkIsCurrent;
+                        if (!grouped[courseName].period && checkIsCurrent === 1) grouped[courseName].period = item.period;
                     } else {
                         grouped[courseName] = {
-                            course_name: courseName,
+                            course_name: item.course_name.trim(),
                             suppress: parseInt(item.suppress),
                             grades: [],
                             sched_department: item.sched_department,

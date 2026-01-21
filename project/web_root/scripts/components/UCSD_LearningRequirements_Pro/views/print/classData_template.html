@@ -1,3 +1,4 @@
+<div class="lrp-card">
 <div    class="tableKey"
         style="text-align: center">
     <span><strong>{{ tranTags.key || 'Key' }}:  </strong></span>
@@ -30,8 +31,8 @@
 <table class="grid parent-table">
     <tbody>
         <tr data-ng-repeat-start="class in classList | filter: filterCurrent | orderBy:'period'">
-            <td data-ng-bind="class.period"></td>
-            <td data-ng-bind-html="trustedHtml(class.course_name)"></td>
+            <td data-ng-bind="class.period" class="course-headers"></td>
+            <td data-ng-bind-html="trustedHtml(class.course_name)" class="course-headers"></td>
             <td>
                 <div    class="lrp-table-cell-icons"
                         data-ng-show="class.lateCount > 0 || class.missingCount > 0 || class.incompCount > 0">
@@ -85,6 +86,41 @@
                 </div>
             </td>
         </tr>
+        <tr data-ng-show="class.attendance.rate">
+            <td colspan="4">
+                <table class="grid">
+                    <tbody>
+                        <tr>
+                            <td>{{ tranTags.crs_att_attendance || 'Attendance' }}</td>
+                            <td>
+                                <span>
+                                    <em>{{ tranTags.crs_att_meetings || 'Total Meetings' }}:</em>
+                                    <span>{{ class.attendance.meetings }}</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span>
+                                    <em>{{ tranTags.crs_att_absences || 'Absences' }}:</em>
+                                    <span>{{ class.attendance.absences.length }}</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span>
+                                    <em>{{ tranTags.crs_att_tardies || 'Tardies' }}:</em>
+                                    <span>{{ class.attendance.tardies.length }}</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span>
+                                    <em>{{ tranTags.crs_att_rate || 'Rate' }}:</em>
+                                    <span>{{ class.attendance.rate }}%</span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
         <tr data-ng-show="class.comment.length > 0">
             <td colspan="4">
                 <div    class="lrp-comments">
@@ -120,7 +156,7 @@
                     </thead>
                     <tbody>
                         <tr data-ng-repeat-start="standard in getFilteredStandards(category)">
-                            <td data-ng-bind-html="trustedHtml(standard.standardName)"></td>
+                            <td data-ng-bind-html="trustedHtml(standard.standardName)" class="standard-headers"></td>
                             <td style="width: 5rem; justify-items: center">
                                 <div class="lrp-table lrp-score-table" data-ng-show="standard.grades.length > 0">
                
@@ -180,8 +216,8 @@
                                     </thead>
                                     <tbody>
                                         <tr data-ng-repeat-start="asmt in standard.assignments">
-                                            <td data-ng-bind="asmt.asmt"></td>
-                                            <td data-ng-bind="asmt.due_date"></td>
+                                            <td data-ng-bind="asmt.asmt" class="asmt-headers"></td>
+                                            <td data-ng-bind="asmt.due_date" class="asmt-headers"></td>
                                             <td>
                                                 <div class="lrp-table-cell-icons">
                                                     <span   tooltip-follow
@@ -491,3 +527,4 @@
         </tr>
     </tbody>
 </table>
+</div>

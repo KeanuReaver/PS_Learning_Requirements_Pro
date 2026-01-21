@@ -140,9 +140,7 @@ define(function(require) {
                 
                 $scope.toggleSection = function(section) {
                     // If the clicked section is already open, close it
-                    if ($scope.openSection === section) {
-                        $scope.openSection = null;
-                    } else {
+                    if ($scope.openSection !== section) {
                         // Otherwise, open the clicked section
                         $scope.openSection = section;
                     }

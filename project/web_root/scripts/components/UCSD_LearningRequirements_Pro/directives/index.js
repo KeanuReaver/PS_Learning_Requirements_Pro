@@ -10,6 +10,7 @@ define([
     'components/UCSD_LearningRequirements_Pro/directives/lrp_toolTips_directive',
     'components/UCSD_LearningRequirements_Pro/directives/lrp_helpWizard_directive',
     'components/UCSD_LearningRequirements_Pro/directives/lrp_pictureWizard_directive',
+    'components/UCSD_LearningRequirements_Pro/directives/lrp_thermometer_directive',
     'components/UCSD_LearningRequirements_Pro/directives/main/index',
     'components/UCSD_LearningRequirements_Pro/directives/mobile/index',
     'components/UCSD_LearningRequirements_Pro/directives/print/index'

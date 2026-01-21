@@ -3,7 +3,7 @@ define(function(require) {
     const module = require('components/UCSD_LearningRequirements_Pro/module');
     const $j = require('jquery');
 
-    module.factory('mainViewLogic', ($q, $window, getData, Luxon) => {
+    module.factory('mainViewLogic', ['$q', '$window', 'getData', 'Luxon', ($q, $window, getData, Luxon) => {
         const   testPath = 'testList.json',
                 scalePath = 'scaleList.json',
                 altSchoolsPath = 'altSchools.json';
@@ -44,7 +44,7 @@ define(function(require) {
             return Array.from(allGradeScalesMap.values());
         }
         
-        function processClassList(classList, initialGS) {
+        function processClassList(classList, initialGS, meeting_count = []) {
             // Create a map with both colorcode and gsvalue
             const gradeScaleMap = new Map();
             initialGS.forEach(school => 
@@ -59,6 +59,8 @@ define(function(require) {
                 record.lateCount = 0;
                 record.incompCount = 0;
                 let validScores = [];
+                
+                const meetings = meeting_count.find(item => item.course_name.trim() === record.course_name.trim());
                 const countedAssignments = new Set(); // Track counted assignments by their `asmt`
         
                 if (record.standards) {
@@ -119,6 +121,7 @@ define(function(require) {
                     record.avgColor = '#CCCCCC'; // Default color (e.g., gray)
                     record.avgScore = null; // No valid scores, so no average
                 }
+                if (!!meetings) record.attendance = { meetings: meetings.meetings };
             }
         
             return classList;
@@ -182,13 +185,16 @@ define(function(require) {
                 const testPromise = getData.getTList(`${portalPath}${testPath}?curstudid=${curstudid}`);
                 const gradeScalesPromise = getData.getTList(`${portalPath}${scalePath}?studschoolid=${studschoolid}`);
                 const altSchoolsPromise = getData.getTList(`${portalPath}${altSchoolsPath}?curstudid=${curstudid}&curyearid=${curyearid}`);
+                const attDataPromise = getData.getTList(`${portalPath}attendance.json?start_year_id=${curyearid - 2}`);
+                const attBandsPromise = getData.getTList(`${portalPath}attBandList.json`);
+                const crsCtPromise = getData.getTList(`${portalPath}crsMeetingCts.json`);
 
-                return $q.all([classPromise, testPromise, gradeScalesPromise, altSchoolsPromise])
-                    .then(([classList, studentTestDirty, gradeScalesDirty, altSchoolsDirty]) => {
+                return $q.all([classPromise, testPromise, gradeScalesPromise, altSchoolsPromise, attDataPromise, attBandsPromise, crsCtPromise])
+                    .then(([classList, studentTestDirty, gradeScalesDirty, altSchoolsDirty, attData, attBands, crsCounts]) => {
                         const studentTest = studentTestDirty.filter(obj => Object.keys(obj).length > 0);
                         const gradeScales = gradeScalesDirty.filter(obj => Object.keys(obj).length > 0);
                         const altSchools = altSchoolsDirty.filter(obj => Object.keys(obj).length > 0);
-                        
+                        console.log('classlist:', classList);
                         studentTest.map(record => {
                             const luxonDate = Luxon.DateTime.fromFormat(record.test_date, 'MM/dd/yyyy');
 
@@ -202,7 +208,6 @@ define(function(require) {
                         
                             return record;
                         });
-                        
 
                         let initialGS = buildGradeScales(gradeScales);
 
@@ -211,11 +216,13 @@ define(function(require) {
                         );
 
                         if (otherSchools.length === 0) {
-                            const classListFinal = processClassList(classList, initialGS);
+                            const classListFinal = processClassList(classList, initialGS, crsCounts);
                             return {
                                 classList: classListFinal,
                                 studentTest,
-                                gradeScales: initialGS
+                                gradeScales: initialGS,
+                                attData: attData || [],
+                                attBands: attBands || []
                             };
                         }
 
@@ -237,11 +244,13 @@ define(function(require) {
                                 });
                             })
                             .then(() => {
-                                const classListFinal = processClassList(classList, initialGS);
+                                const classListFinal = processClassList(classList, initialGS, crsCounts);
                                 return {
                                     classList: classListFinal,
                                     studentTest,
-                                    gradeScales: initialGS
+                                    gradeScales: initialGS,
+                                    attData: attData || [],
+                                    attBands: attBands || []
                                 };
                             });
                     })
@@ -254,7 +263,7 @@ define(function(require) {
                 if (type === 'lrp-test') {
                     const graphDataRaw = data
                             .filter(record => record.testscoredcid === testscoredcid)
-                            .reverse();
+                            .sort((a,b) => new Date(a.test_date) - new Date(b.test_date));
                 
                     const chartPrefs = {
                         "caption": capName || "Historical Test Records",
@@ -447,5 +456,5 @@ define(function(require) {
                 });
             }
         };
-    });
+    }]);
 });

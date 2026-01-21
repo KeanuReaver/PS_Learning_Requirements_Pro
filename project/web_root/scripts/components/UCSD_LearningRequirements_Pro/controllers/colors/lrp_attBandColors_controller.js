@@ -20,6 +20,7 @@ define(function(require) {
                 .then(([colorlist, bandlist]) => {
                     $scope.scoreColorList = colorlist;
                     // Normalize property names to match what we save (top_band/bottom_band)
+                    console.log(bandlist);
                     $scope.attBands = (bandlist || []).map(b => ({
                         id: b.id,
                         label: b.label || '',
@@ -28,8 +29,10 @@ define(function(require) {
                         top_band: (b.top_band != null ? Number(b.top_band) : null),
                         bottom_band: (b.bottom_band != null ? Number(b.bottom_band) : null),
                         deleteRecord: b.deleteRecord || 0,
-                        default_band: b.default_band || 0
+                        default_band: b.default_band || 0,
+                        display_alert: b.display_alert || 0
                     }));
+                    console.log($scope.attBands);
                 })
                 .catch(error => {
                     console.error('Failed to pull data:', error);
@@ -178,7 +181,8 @@ define(function(require) {
                         label: String(item.label || ''),
                         top_band: String(sanitizeNum(item.top_band)),
                         bottom_band: String(sanitizeNum(item.bottom_band)),
-                        default_band: String(item.default_band)
+                        default_band: String(item.default_band),
+                        display_alert: String(item.display_alert) || '0'
                     };
                     if (item.colorlistid) args.colorlistid = item.colorlistid;
                     promises.push(writeData.writeAttBands(args, item.id || null));

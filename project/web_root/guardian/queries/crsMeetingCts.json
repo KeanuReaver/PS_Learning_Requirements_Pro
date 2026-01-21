@@ -1,0 +1,51 @@
+~[tlist_sql;
+    SELECT
+        COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'course_name'   VALUE meeting_count.course_name,
+                'meetings'      VALUE NVL(meeting_count.meetings, 0)
+                RETURNING CLOB
+            )
+            RETURNING CLOB
+        ), TO_CLOB(chr(91)||chr(93)) )
+    FROM
+    (
+        SELECT
+            courses.course_name             AS course_name,
+            COUNT(courses.course_name)      AS meetings
+        FROM
+            students
+            INNER JOIN terms ON terms.schoolid = students.schoolid
+                AND terms.isyearrec = 1
+                AND terms.yearid = ~(curyearid)
+            INNER JOIN cc ON cc.studentid = students.id
+                AND cc.schoolid = students.schoolid
+                AND cc.termid >= terms.id
+            INNER JOIN sections ON cc.sectionid = sections.id
+            
+            LEFT JOIN schoolstaff ON schoolstaff.id = sections.teacher
+            LEFT JOIN users ON schoolstaff.users_dcid = users.dcid
+            INNER JOIN courses ON courses.course_number = sections.course_number
+            INNER JOIN section_meeting ON section_meeting.sectionid = sections.id
+            INNER JOIN period ON period.period_number = section_meeting.period_number
+                AND period.schoolid = section_meeting.schoolid
+                AND period.year_id = section_meeting.year_id
+            INNER JOIN cycle_day ON cycle_day.letter = section_meeting.cycle_day_letter
+                AND cycle_day.schoolid = students.schoolid
+                AND cycle_day.year_id = terms.yearid
+            INNER JOIN calendar_day ON calendar_day.schoolid = students.schoolid
+                AND calendar_day.insession = 1
+                AND calendar_day.cycle_day_id = cycle_day.id
+                AND calendar_day.date_value BETWEEN cc.dateenrolled AND cc.dateleft
+                AND sysdate >= calendar_day.date_value
+            INNER JOIN bell_schedule ON calendar_day.bell_schedule_id = bell_schedule.id
+            INNER JOIN bell_schedule_items ON bell_schedule_items.bell_schedule_id = bell_schedule.id
+                AND bell_schedule_items.period_id = period.id
+        WHERE
+            students.id = ~(curstudid)
+        GROUP BY
+            courses.course_name
+    ) meeting_count
+;]
+    ~(val)
+[/tlist_sql]

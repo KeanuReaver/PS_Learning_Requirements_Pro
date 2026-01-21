@@ -12,4 +12,6 @@ define([
     'components/UCSD_LearningRequirements_Pro/factories/lrp_tests_factory',
     'components/UCSD_LearningRequirements_Pro/factories/lrp_transHash_factory',
     'components/UCSD_LearningRequirements_Pro/factories/lrp_bubbleText_factory',
+    'components/UCSD_LearningRequirements_Pro/factories/lrp_attendance_factory',
+    'components/UCSD_LearningRequirements_Pro/factories/lrp_timeUtil_factory'
 ]);
